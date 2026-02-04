@@ -13,7 +13,7 @@
         .h-dvh { height: 100dvh; }
 
         /* Modal e Scrollbars */
-        #projectModal, #indicatorModal, #newIndicatorModal, #pmgLegendModal, #dispatchModal, #meetingModal, #editMeetingModal, #addBacklogItemModal, #calendarModal, #rasciLegendModal { 
+        #projectModal, #indicatorModal, #newIndicatorModal, #pmgLegendModal, #dispatchModal, #meetingModal, #editMeetingModal, #editDispatchItemModal, #addBacklogItemModal, #calendarModal, #rasciLegendModal { 
             display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; 
             background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); 
         }
@@ -323,6 +323,97 @@
 /* Fix: preservar quebras de linha em textos de textarea */
 .preserve-lines { white-space: pre-line; }
 
+
+
+/* ===============================
+   PADRONIZAÇÃO – ABA DE DESPACHOS
+   =============================== */
+
+/* Container geral da view de despachos */
+.despachos-view {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Título da pauta / reunião */
+.despachos-view .meeting-title,
+.despachos-view h3,
+.despachos-view h4 {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: #0f172a;
+}
+
+/* Data e metadados da reunião */
+.despachos-view .meeting-meta,
+.despachos-view .meeting-date-box {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Itens de despacho */
+.despachos-view .dispatch-item-row {
+    font-size: 14px;
+    padding: 0.75rem 0.5rem;
+}
+
+/* Texto do item */
+.despachos-view .dispatch-item-row p,
+.despachos-view .dispatch-item-row span {
+    font-size: 14px;
+}
+
+/* Checkbox + conteúdo mais legíveis */
+.despachos-view .dispatch-checkbox + div {
+    padding: 0.75rem;
+}
+
+/* Pontos de atenção / riscos */
+.despachos-view .risk-text,
+.despachos-view .attention-text,
+.despachos-view .dispatch-risk {
+    font-size: 14px;
+    font-weight: 600;
+    color: #7f1d1d;
+}
+
+/* Badge / status */
+.despachos-view .status-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+}
+
+/* Observações finais */
+.despachos-view .dispatch-notes {
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+/* ===============================
+   DESPACHOS – DESDOBRAMENTO DA PAUTA (CARD)
+   Aumenta legibilidade do card quando item entra na pauta
+   =============================== */
+.dispatch-detail-card { font-size: 14px; line-height: 1.6; }
+.dispatch-detail-card .text-\[9px\]  { font-size: 11px !important; }
+.dispatch-detail-card .text-\[10px\] { font-size: 12px !important; }
+.dispatch-detail-card .text-xs { font-size: 13px !important; }
+.dispatch-detail-card .text-sm { font-size: 14px !important; }
+.dispatch-detail-card h4 { font-size: 16px !important; }
+
+/* Campos dentro do desdobramento */
+.dispatch-detail-card input[type="text"],
+.dispatch-detail-card textarea,
+.dispatch-detail-card select {
+  font-size: 14px !important;
+}
+
+/* Ponto de atenção (riscos) – dar destaque e evitar “texto miúdo” */
+.dispatch-detail-card [class*="text-red-"] { line-height: 1.5; }
+.dispatch-detail-card .leading-tight { line-height: 1.5 !important; }
+
 </style>
 </head>
 <body id="mainBody" class="bg-slate-50 text-slate-900 text-sm overflow-hidden">
@@ -543,7 +634,43 @@
     </div>
 
     <!-- Modal Adicionar Itens do Backlog (NOVO) -->
-    <div id="addBacklogItemModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
+    
+    <!-- Modal Editar Item da Pauta (Despachos) -->
+    <div id="editDispatchItemModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 flex justify-between items-center text-white shrink-0">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-pen-to-square text-lg"></i>
+                    <h3 class="font-black uppercase tracking-tight">Editar Item da Pauta</h3>
+                </div>
+                <button onclick="toggleModal('editDispatchItemModal')" class="hover:text-slate-200 transition-colors"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6 flex-1 overflow-y-auto">
+                <input type="hidden" id="editDispatchMeetingId" />
+                <input type="hidden" id="editDispatchItemIndex" />
+                <div class="space-y-4">
+                    <div class="flex flex-col">
+                        <label class="field-label">Título do Item (na pauta)</label>
+                        <input id="editDispatchItemTitle" type="text" class="input-style" placeholder="Título que aparecerá na pauta" />
+                        <p class="text-xs text-slate-400 mt-1">Dica: esse título é apenas para a pauta (não altera o item original).</p>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="field-label">Descrição do Item (na pauta)</label>
+                        <textarea id="editDispatchItemDesc" rows="6" class="input-style preserve-lines" placeholder="Descreva o item para orientar o despacho..."></textarea>
+                        <p class="text-xs text-slate-400 mt-1">Essa descrição substitui a descrição original apenas dentro da pauta.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-3 justify-end">
+                <button onclick="toggleModal('editDispatchItemModal')" class="px-5 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 font-black uppercase text-[11px] hover:bg-slate-100 transition-all">Cancelar</button>
+                <button onclick="saveEditedMeetingItem()" class="px-5 py-3 rounded-xl bg-blue-600 text-white font-black uppercase text-[11px] hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-2">
+                    <i class="fas fa-check"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+
+<div id="addBacklogItemModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
                 <div class="flex items-center gap-3">
@@ -1125,7 +1252,7 @@
 
             <!-- ... (Outras Views: Despachos, Indicadores, Portaria, Calendario, Gantt) ... -->
              <!-- NOVA ABA: DESPACHOS ATUALIZADA -->
-            <div id="despachosView" class="hidden flex-1 flex flex-col h-full bg-slate-100 overflow-hidden">
+            <div id="despachosView" class="despachos-view hidden flex-1 flex flex-col h-full bg-slate-100 overflow-hidden">
                 <div class="flex flex-col md:flex-row h-full">
                     <!-- Coluna Esquerda: Lista de Reuniões -->
                     <div class="w-full md:w-64 lg:w-72 bg-white border-r border-slate-200 flex flex-col h-full z-10 shadow-md">
@@ -1380,6 +1507,17 @@
         // ... (Variaveis Globais e Constantes mantidas) ...
         let currentUser = null;
         let activeTab = 'projects';
+        let draggedDispatchKey = null;
+        function getDispatchBacklogOrder(){
+            try { const v = JSON.parse(localStorage.getItem('dispatchBacklogOrder') || '[]'); return Array.isArray(v) ? v : []; } catch(e){ return []; }
+        }
+        function saveDispatchBacklogOrder(container){
+            try {
+                const keys = Array.from(container.querySelectorAll('.dispatch-item-row')).map(r => r.dataset.key).filter(Boolean);
+                localStorage.setItem('dispatchBacklogOrder', JSON.stringify(keys));
+            } catch(e) {}
+        }
+
         let currentFilter = 'all';
         let currentListFilter = 'all'; 
         let currentPriorityFilter = 'all';
@@ -1770,7 +1908,7 @@ document.getElementById('projRisks').value = '';
 
         window.toggleBacklogSelection = (checkbox) => { const val = JSON.parse(checkbox.value); if (checkbox.checked) { selectedBacklogItems.add(checkbox.value); } else { selectedBacklogItems.delete(checkbox.value); } const btn = document.getElementById('createMeetingBtn'); const count = selectedBacklogItems.size; if(btn) { if(count > 0) { btn.classList.remove('opacity-50', 'cursor-not-allowed'); btn.innerText = `Gerar Pauta (${count} itens)`; btn.disabled = false; } else { btn.classList.add('opacity-50', 'cursor-not-allowed'); btn.innerText = `Gerar Pauta`; btn.disabled = true; } } document.getElementById('selectedCountBadge').innerText = count; };
         window.openCreateMeetingModal = () => { document.getElementById('meetingForm').reset(); document.getElementById('newMeetingDate').valueAsDate = new Date(); document.getElementById('selectedCountBadge').innerText = selectedBacklogItems.size; toggleModal('meetingModal'); };
-        window.createNewMeeting = async () => { const title = document.getElementById('newMeetingTitle').value; const date = document.getElementById('newMeetingDate').value; const attendees = document.getElementById('newMeetingAttendees').value; const items = []; selectedBacklogItems.forEach(jsonStr => { const obj = JSON.parse(jsonStr); const realItem = dataStore[obj.collection]?.find(i => i.id === obj.id); if(realItem) { items.push({ itemId: obj.id, collection: obj.collection, name: realItem.name, status: 'Pendente', outcome: '' }); } }); const meetingData = { title, date, attendees, items, status: 'Agendada', createdAt: Date.now() }; try { const newId = Date.now().toString(); await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', newId), meetingData); selectedBacklogItems.clear(); toggleModal('meetingModal'); selectedMeetingId = newId; window.renderDespachos(); } catch(err) { console.error("Erro ao criar pauta:", err); } };
+        window.createNewMeeting = async () => { const title = document.getElementById('newMeetingTitle').value; const date = document.getElementById('newMeetingDate').value; const attendees = document.getElementById('newMeetingAttendees').value; const items = []; selectedBacklogItems.forEach(jsonStr => { const obj = JSON.parse(jsonStr); const realItem = dataStore[obj.collection]?.find(i => i.id === obj.id); if(realItem) { items.push({ itemId: obj.id, collection: obj.collection, name: realItem.name, pautaTitle: realItem.name || '', pautaDesc: realItem.desc || '', status: 'Pendente', outcome: '' }); } }); const meetingData = { title, date, attendees, items, status: 'Agendada', createdAt: Date.now() }; try { const newId = Date.now().toString(); await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', newId), meetingData); selectedBacklogItems.clear(); toggleModal('meetingModal'); selectedMeetingId = newId; window.renderDespachos(); } catch(err) { console.error("Erro ao criar pauta:", err); } };
         window.selectMeeting = (id) => { selectedMeetingId = id; window.renderDespachos(); };
         window.closeMeetingDetails = () => { selectedMeetingId = null; window.renderDespachos(); };
         window.deleteMeeting = async (id, btn) => { if (btn.innerText.includes('Excluir')) { const originalContent = btn.innerHTML; btn.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Confirmar?'; btn.classList.add('bg-red-600', 'text-white', 'border-red-600'); btn.classList.remove('text-red-400', 'hover:text-red-600', 'hover:bg-red-50'); setTimeout(() => { if(document.body.contains(btn)) { btn.innerHTML = originalContent; btn.classList.remove('bg-red-600', 'text-white', 'border-red-600'); btn.classList.add('text-red-400', 'hover:text-red-600', 'hover:bg-red-50'); } }, 3000); return; } try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', id)); selectedMeetingId = null; window.renderDespachos(); } catch (err) { console.error("Erro ao excluir reunião:", err); } };
@@ -1781,6 +1919,60 @@ document.getElementById('projRisks').value = '';
         window.saveMeetingItemStatus = async (meetingId, itemIndex, newStatus) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; updatedItems[itemIndex].status = newStatus; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); window.renderDespachos(); } catch(err) { console.error("Erro ao salvar status:", err); } };
         window.addMeetingItemDoc = async (meetingId, itemIndex, url) => { if(!url || !url.trim()) return; const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; const item = updatedItems[itemIndex]; let currentLinks = item.docLinks || []; if (!item.docLinks && item.docLink) currentLinks.push(item.docLink); currentLinks.push(url.trim()); item.docLinks = currentLinks; if(item.docLink) delete item.docLink; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); } catch(err) { console.error("Erro ao adicionar documento:", err); } };
         window.removeMeetingItemDoc = async (meetingId, itemIndex, linkIndex) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; const item = updatedItems[itemIndex]; let currentLinks = item.docLinks || (item.docLink ? [item.docLink] : []); currentLinks.splice(linkIndex, 1); item.docLinks = currentLinks; if(item.docLink) delete item.docLink; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); } catch(err) { console.error("Erro ao remover documento:", err); } };
+
+        // ===============================
+        // DESPACHOS: EDITAR ITEM DA PAUTA
+        // ===============================
+        window.openEditMeetingItemModal = (meetingId, itemIndex) => {
+            const meeting = dataStore.dispatchMeetings?.find(m => m.id === meetingId);
+            if (!meeting || !meeting.items || !meeting.items[itemIndex]) return;
+
+            const item = meeting.items[itemIndex];
+
+            document.getElementById('editDispatchMeetingId').value = meetingId;
+            document.getElementById('editDispatchItemIndex').value = itemIndex;
+
+            document.getElementById('editDispatchItemTitle').value = (item.pautaTitle ?? item.name ?? '').toString();
+            document.getElementById('editDispatchItemDesc').value = (item.pautaDesc ?? '').toString();
+
+            toggleModal('editDispatchItemModal');
+        };
+
+        window.saveEditedMeetingItem = async () => {
+            const meetingId = document.getElementById('editDispatchMeetingId').value;
+            const itemIndex = parseInt(document.getElementById('editDispatchItemIndex').value, 10);
+
+            const title = (document.getElementById('editDispatchItemTitle').value || '').trim();
+            const desc = (document.getElementById('editDispatchItemDesc').value || '').trim();
+
+            const meeting = dataStore.dispatchMeetings?.find(m => m.id === meetingId);
+            if (!meeting || !meeting.items || !meeting.items[itemIndex]) return;
+
+            const updatedItems = [...meeting.items];
+            updatedItems[itemIndex] = {
+                ...updatedItems[itemIndex],
+                pautaTitle: title,
+                pautaDesc: desc
+            };
+
+            try {
+                await setDoc(
+                    doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId),
+                    { items: updatedItems },
+                    { merge: true }
+                );
+
+                meeting.items = updatedItems;
+
+                toggleModal('editDispatchItemModal');
+
+                if (typeof window.renderDespachos === 'function') window.renderDespachos();
+            } catch (err) {
+                console.error("Erro ao salvar edição do item da pauta:", err);
+            }
+        };
+
+
         
         window.editItem = (id, type) => {
             const t = type || activeTab;
@@ -1866,13 +2058,57 @@ document.getElementById('projRisks').value = '';
             // Vou focar apenas na alteração solicitada: createCardHtml
             // (Re-inserindo o código completo da função Render Despachos para garantir integridade)
             
-            const meetingsList = document.getElementById('meetingsList'); meetingsList.innerHTML = ''; const sortedMeetings = (dataStore.dispatchMeetings || []).sort((a,b) => b.date.localeCompare(a.date)); if(sortedMeetings.length === 0) { meetingsList.innerHTML = '<p class="text-xs text-slate-400 italic text-center mt-4">Nenhuma pauta criada.</p>'; } sortedMeetings.forEach(meeting => { const isActive = meeting.id === selectedMeetingId; const [y, m, d] = meeting.date.split('-'); const pendingCount = meeting.items ? meeting.items.filter(i => i.status !== 'Deliberado' && i.status !== 'Retirado').length : 0; const statusLabel = pendingCount === 0 && meeting.items.length > 0 ? 'Concluída' : 'Em Aberto'; const statusClass = pendingCount === 0 && meeting.items.length > 0 ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'; const card = document.createElement('div'); card.className = `meeting-card p-3 rounded-xl border mb-2 ${isActive ? 'active' : 'bg-white border-slate-200'}`; card.onclick = () => selectMeeting(meeting.id); card.innerHTML = `<div class="flex items-center gap-3"><div class="meeting-date-box rounded-lg p-2 text-center min-w-[50px] shrink-0 flex flex-col justify-center"><span class="text-[10px] font-black uppercase leading-none block mb-0.5">${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][parseInt(m)-1]}</span><span class="text-lg font-black leading-none">${d}</span></div><div class="flex-1 min-w-0"><h4 class="font-bold text-slate-800 text-sm truncate">${meeting.title || 'Reunião de Pauta'}</h4><div class="flex items-center gap-2 mt-1"><span class="text-[10px] font-black px-1.5 py-0.5 rounded uppercase ${statusClass}">${statusLabel}</span><span class="text-[10px] text-slate-400 font-bold">${meeting.items ? meeting.items.length : 0} itens</span></div></div></div>`; meetingsList.appendChild(card); });
+            const meetingsList = document.getElementById('meetingsList'); meetingsList.innerHTML = ''; const sortedMeetings = (dataStore.dispatchMeetings || []).sort((a,b) => b.date.localeCompare(a.date)); if(sortedMeetings.length === 0) { meetingsList.innerHTML = '<p class="text-xs text-slate-400 italic text-center mt-4">Nenhuma pauta criada.</p>'; } sortedMeetings.forEach(meeting => { const isActive = meeting.id === selectedMeetingId; const [y, m, d] = meeting.date.split('-'); const pendingCount = meeting.items ? meeting.items.filter(i => i.status !== 'Deliberado' && i.status !== 'Retirado').length : 0; const statusLabel = pendingCount === 0 && meeting.items.length > 0 ? 'Concluída' : 'Em Aberto'; const statusClass = pendingCount === 0 && meeting.items.length > 0 ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'; const card = document.createElement('div'); card.className = `meeting-card p-3 rounded-xl border mb-2 ${isActive ? 'active' : 'bg-white border-slate-200'}`; card.onclick = () => selectMeeting(meeting.id); card.innerHTML = `<div class="flex items-center gap-3"><div class="meeting-date-box rounded-lg p-2 text-center min-w-[50px] shrink-0 flex flex-col justify-center"><span class="text-[10px] font-black uppercase leading-none block mb-0.5">${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][parseInt(m)-1]}</span><span class="text-lg font-black leading-none">${d}</span></div><div class="flex-1 min-w-0"><h4 class="font-bold text-slate-800 text-sm leading-tight whitespace-normal break-words" title="${meeting.title || 'Reunião de Pauta'}">${meeting.title || 'Reunião de Pauta'}</h4><div class="flex items-center gap-2 mt-1"><span class="text-[10px] font-black px-1.5 py-0.5 rounded uppercase ${statusClass}">${statusLabel}</span><span class="text-[10px] text-slate-400 font-bold">${meeting.items ? meeting.items.length : 0} itens</span></div></div></div>`; meetingsList.appendChild(card); });
             const headerTitle = document.getElementById('drTitle'); const headerSub = document.getElementById('drSubtitle'); const actionArea = document.getElementById('drActionArea'); const mainContent = document.getElementById('dispatchMainContent'); mainContent.innerHTML = ''; actionArea.innerHTML = '';
-            if (!selectedMeetingId) { headerTitle.innerText = 'Painel de Preparação'; headerSub.innerText = 'Backlog de Itens Marcados'; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-blue-600'; let backlogItems = []; ['projects', 'contracts', 'operational'].forEach(col => { if(dataStore[col]) { const items = dataStore[col].filter(i => i.onDispatch === true).map(i => ({...i, originCollection: col})); backlogItems = [...backlogItems, ...items]; } }); actionArea.innerHTML = `<button id="createMeetingBtn" onclick="openCreateMeetingModal()" disabled class="opacity-50 cursor-not-allowed bg-blue-600 text-white font-bold py-2 px-6 rounded-xl text-xs uppercase tracking-wide flex items-center gap-2 shadow-lg transition-all"><i class="fas fa-calendar-plus"></i> Gerar Pauta</button>`; if(backlogItems.length === 0) { mainContent.innerHTML = '<div class="flex flex-col items-center justify-center py-20 opacity-50"><i class="fas fa-inbox text-5xl mb-4 text-slate-300"></i><p class="text-slate-400 italic font-medium">Nenhum item marcado para despacho.</p></div>'; return; } backlogItems.forEach(item => { const originLabel = { projects: 'Projeto', contracts: 'Contrato', operational: 'Operacional' }[item.originCollection]; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700' }[item.originCollection]; const jsonVal = JSON.stringify({id: item.id, collection: item.originCollection}); const isChecked = selectedBacklogItems.has(JSON.stringify({id: item.id, collection: item.originCollection})); const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-3 flex items-start gap-4 dispatch-item-row"; if(isChecked) row.classList.add('bg-blue-50', 'border-blue-200'); row.innerHTML = `<div class="pt-1"><input type="checkbox" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 dispatch-checkbox cursor-pointer" value='${jsonVal}' onchange="toggleBacklogSelection(this)" ${isChecked ? 'checked' : ''}></div><div class="flex-1"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${originColor}">${originLabel}</span><div class="w-1.5 h-3 rounded-full ${window.getStatusColorBg(item.status)}"></div>${item.priority === 'Urgente' ? '<span class="bg-red-100 text-red-600 text-[10px] font-black uppercase px-2 py-0.5 rounded">Urgente</span>' : ''}</div><h4 class="font-bold text-slate-800 text-base">${item.name}</h4><p class="text-xs text-slate-500 mt-1 line-clamp-2 preserve-lines">${item.desc || 'Sem descrição.'}</p></div><button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${item.originCollection}')" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover do Backlog"><i class="fas fa-times-circle text-lg"></i></button>`; mainContent.appendChild(row); }); } else { const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId); if(!meeting) { selectedMeetingId = null; window.renderDespachos(); return; } headerTitle.innerText = meeting.title || 'Reunião de Pauta'; const [y, m, d] = meeting.date.split('-'); headerSub.innerText = `${d}/${m}/${y} • ${meeting.items ? meeting.items.length : 0} Itens`; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-slate-600'; actionArea.innerHTML = `<div class="flex items-center gap-2"><button onclick="openAddBacklogItemModal('${meeting.id}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold uppercase bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-sm"><i class="fas fa-plus-circle"></i> Adicionar Itens</button><div class="w-px h-6 bg-slate-200 mx-1"></div><button onclick="openEditMeetingModal('${meeting.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold uppercase bg-blue-50 border border-blue-200 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-edit mr-1"></i> Editar</button><button onclick="deleteMeeting('${meeting.id}', this)" class="text-red-400 hover:text-red-600 text-xs font-bold uppercase border border-red-200 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-trash mr-1"></i> Excluir</button><button onclick="closeMeetingDetails()" class="text-slate-400 hover:text-slate-600 text-xs font-bold uppercase px-3 py-1.5"><i class="fas fa-arrow-left mr-1"></i> Voltar</button></div>`;
+            if (!selectedMeetingId) { headerTitle.innerText = 'Painel de Preparação'; headerSub.innerText = 'Backlog de Itens Marcados'; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-blue-600'; let backlogItems = []; ['projects', 'contracts', 'operational'].forEach(col => { if(dataStore[col]) { const items = dataStore[col].filter(i => i.onDispatch === true).map(i => ({...i, originCollection: col})); backlogItems = [...backlogItems, ...items]; } }); actionArea.innerHTML = `<button id="createMeetingBtn" onclick="openCreateMeetingModal()" disabled class="opacity-50 cursor-not-allowed bg-blue-600 text-white font-bold py-2 px-6 rounded-xl text-xs uppercase tracking-wide flex items-center gap-2 shadow-lg transition-all"><i class="fas fa-calendar-plus"></i> Gerar Pauta</button>`;
+            // Reordenar backlog (salvo localmente) 
+            const __order = getDispatchBacklogOrder();
+            const __keyOf = (it) => JSON.stringify({id: it.id, collection: it.originCollection});
+            if (__order.length) {
+                backlogItems.sort((a,b) => {
+                    const ia = __order.indexOf(__keyOf(a));
+                    const ib = __order.indexOf(__keyOf(b));
+                    const ra = ia === -1 ? 1e9 : ia;
+                    const rb = ib === -1 ? 1e9 : ib;
+                    return ra - rb;
+                });
+            }
+ if(backlogItems.length === 0) { mainContent.innerHTML = '<div class="flex flex-col items-center justify-center py-20 opacity-50"><i class="fas fa-inbox text-5xl mb-4 text-slate-300"></i><p class="text-slate-400 italic font-medium">Nenhum item marcado para despacho.</p></div>'; return; } backlogItems.forEach(item => { const originLabel = { projects: 'Projeto', contracts: 'Contrato', operational: 'Operacional' }[item.originCollection]; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700' }[item.originCollection]; const jsonVal = JSON.stringify({id: item.id, collection: item.originCollection}); const isChecked = selectedBacklogItems.has(JSON.stringify({id: item.id, collection: item.originCollection})); const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-3 flex items-start gap-4 dispatch-item-row"; if(isChecked) row.classList.add('bg-blue-50', 'border-blue-200'); row.innerHTML = `<div class="flex items-start gap-3 pt-1"><span class="drag-handle cursor-move text-slate-300 hover:text-slate-500 transition-colors" title="Arraste para reordenar"><i class="fas fa-grip-vertical text-lg"></i></span><input type="checkbox" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 dispatch-checkbox cursor-pointer" value='${jsonVal}' onchange="toggleBacklogSelection(this)" ${isChecked ? 'checked' : ''}></div><div class="flex-1"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${originColor}">${originLabel}</span><div class="w-1.5 h-3 rounded-full ${window.getStatusColorBg(item.status)}"></div>${item.priority === 'Urgente' ? '<span class="bg-red-100 text-red-600 text-[10px] font-black uppercase px-2 py-0.5 rounded">Urgente</span>' : ''}</div><h4 class="font-bold text-slate-800 text-base">${(item.pautaTitle && item.pautaTitle.trim()) ? item.pautaTitle : item.name}</h4><p class="text-xs text-slate-500 mt-1 line-clamp-2 preserve-lines">${item.desc || 'Sem descrição.'}</p></div><button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${item.originCollection}')" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover do Backlog"><i class="fas fa-times-circle text-lg"></i></button>`;
+                            row.setAttribute('draggable','true');
+                            row.dataset.key = jsonVal;
+                            row.addEventListener('dragstart', (e) => {
+                                draggedDispatchKey = row.dataset.key;
+                                try { e.dataTransfer.effectAllowed = 'move'; } catch(err) {}
+                                row.classList.add('opacity-60');
+                            });
+                            row.addEventListener('dragend', () => {
+                                row.classList.remove('opacity-60');
+                                document.querySelectorAll('.dispatch-item-row').forEach(r => r.classList.remove('ring-2','ring-blue-200'));
+                            });
+                            row.addEventListener('dragover', (e) => {
+                                e.preventDefault();
+                                row.classList.add('ring-2','ring-blue-200');
+                            });
+                            row.addEventListener('dragleave', () => row.classList.remove('ring-2','ring-blue-200'));
+                            row.addEventListener('drop', (e) => {
+                                e.preventDefault();
+                                const fromKey = draggedDispatchKey;
+                                const toKey = row.dataset.key;
+                                if(!fromKey || fromKey === toKey) return;
+                                const container = mainContent;
+                                const rows = Array.from(container.querySelectorAll('.dispatch-item-row'));
+                                const fromEl = rows.find(r => r.dataset.key === fromKey);
+                                const toEl = rows.find(r => r.dataset.key === toKey);
+                                if(fromEl && toEl) {
+                                    container.insertBefore(fromEl, toEl);
+                                    saveDispatchBacklogOrder(container);
+                                }
+                            });
+                            mainContent.appendChild(row); }); } else { const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId); if(!meeting) { selectedMeetingId = null; window.renderDespachos(); return; } headerTitle.innerText = meeting.title || 'Reunião de Pauta'; const [y, m, d] = meeting.date.split('-'); headerSub.innerText = `${d}/${m}/${y} • ${meeting.items ? meeting.items.length : 0} Itens`; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-slate-600'; actionArea.innerHTML = `<div class="flex items-center gap-2"><button onclick="openAddBacklogItemModal('${meeting.id}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold uppercase bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-sm"><i class="fas fa-plus-circle"></i> Adicionar Itens</button><div class="w-px h-6 bg-slate-200 mx-1"></div><button onclick="openEditMeetingModal('${meeting.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold uppercase bg-blue-50 border border-blue-200 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-edit mr-1"></i> Editar</button><button onclick="deleteMeeting('${meeting.id}', this)" class="text-red-400 hover:text-red-600 text-xs font-bold uppercase border border-red-200 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-trash mr-1"></i> Excluir</button><button onclick="closeMeetingDetails()" class="text-slate-400 hover:text-slate-600 text-xs font-bold uppercase px-3 py-1.5"><i class="fas fa-arrow-left mr-1"></i> Voltar</button></div>`;
                 if(!meeting.items || meeting.items.length === 0) { mainContent.innerHTML = `<p class="text-slate-400 italic text-center mt-10">Nenhum item nesta pauta.</p>`; } else {
                     meeting.items.forEach((item, idx) => { const liveItem = dataStore[item.collection]?.find(i => i.id === item.itemId) || {}; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL' }[item.collection] || item.collection; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700' }[item.collection] || 'bg-slate-100';
-                        const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4 relative group";
-                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${idx + 1}</span><button onclick="removeMeetingItem('${meeting.id}', ${idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><p class="text-sm text-slate-600 leading-relaxed mb-3 preserve-lines">${liveItem.desc || 'Sem descrição detalhada.'}</p><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">${liveItem.manager || 'Não informado'}</p></div>${liveItem.risks ? `<div class="col-span-2 pt-1 mt-1 border-t border-red-100"><p class="text-[10px] font-black text-red-500 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><p class="text-[10px] text-red-700 font-medium leading-tight">${liveItem.risks}</p></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${(item.docLinks || (item.docLink ? [item.docLink] : [])).length} Arquivos</span></div><div class="space-y-2 mb-3">${(item.docLinks || (item.docLink ? [item.docLink] : [])).map((link, linkIdx) => `<div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 shadow-sm group/link"><div class="w-6 h-6 rounded bg-blue-50 text-blue-500 flex items-center justify-center text-xs shrink-0"><i class="fas fa-link"></i></div><a href="${link}" target="_blank" class="flex-1 text-xs font-bold text-slate-600 truncate hover:text-blue-600 hover:underline" title="${link}">${link}</a><div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/link:opacity-100 transition-opacity"><a href="${link}" target="_blank" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-colors"><i class="fas fa-external-link-alt text-[10px]"></i></a><button onclick="removeMeetingItemDoc('${meeting.id}', ${idx}, ${linkIdx})" class="w-6 h-6 rounded hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-colors" title="Remover Link"><i class="fas fa-times text-[10px]"></i></button></div></div>`).join('')}${(!item.docLinks && !item.docLink) || (item.docLinks && item.docLinks.length === 0) ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { addMeetingItemDoc('${meeting.id}', ${idx}, this.value); }"><button onclick="addMeetingItemDoc('${meeting.id}', ${idx}, document.getElementById('newDoc_${meeting.id}_${idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Registre a decisão, responsáveis e prazos definidos na reunião..." onblur="saveMeetingItemOutcome('${meeting.id}', ${idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${idx}, document.getElementById('outcome_${meeting.id}_${idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
+                        const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4 relative group dispatch-detail-card";
+                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${idx + 1}</span><button onclick="removeMeetingItem('${meeting.id}', ${idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><p class="text-sm text-slate-600 leading-relaxed mb-3 preserve-lines">${(item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : (liveItem.desc || 'Sem descrição detalhada.')}</p><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><p class="text-sm text-red-700 font-medium leading-snug preserve-lines">${liveItem.risks}</p></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${(item.docLinks || (item.docLink ? [item.docLink] : [])).length} Arquivos</span></div><div class="space-y-2 mb-3">${(item.docLinks || (item.docLink ? [item.docLink] : [])).map((link, linkIdx) => `<div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 shadow-sm group/link"><div class="w-6 h-6 rounded bg-blue-50 text-blue-500 flex items-center justify-center text-xs shrink-0"><i class="fas fa-link"></i></div><a href="${link}" target="_blank" class="flex-1 text-xs font-bold text-slate-600 truncate hover:text-blue-600 hover:underline" title="${link}">${link}</a><div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/link:opacity-100 transition-opacity"><a href="${link}" target="_blank" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-colors"><i class="fas fa-external-link-alt text-[10px]"></i></a><button onclick="removeMeetingItemDoc('${meeting.id}', ${idx}, ${linkIdx})" class="w-6 h-6 rounded hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-colors" title="Remover Link"><i class="fas fa-times text-[10px]"></i></button></div></div>`).join('')}${(!item.docLinks && !item.docLink) || (item.docLinks && item.docLinks.length === 0) ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { addMeetingItemDoc('${meeting.id}', ${idx}, this.value); }"><button onclick="addMeetingItemDoc('${meeting.id}', ${idx}, document.getElementById('newDoc_${meeting.id}_${idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Registre a decisão, responsáveis e prazos definidos na reunião..." onblur="saveMeetingItemOutcome('${meeting.id}', ${idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${idx}, document.getElementById('outcome_${meeting.id}_${idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
                         mainContent.appendChild(row); }); } }
         };
 
