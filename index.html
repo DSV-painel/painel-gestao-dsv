@@ -485,40 +485,6 @@
   page-break-inside: avoid !important; 
 }
 
-
-/* ===============================
-   PDF DESPACHO – VERSÃO LIMPA (PRESIDÊNCIA)
-   =============================== */
-.pdf-export-root .dispatch-detail-card * {
-  display: none !important;
-}
-
-/* Mostrar apenas título, descrição da pauta e materiais */
-.pdf-export-root .dispatch-detail-card h4,
-.pdf-export-root .dispatch-detail-card .preserve-lines,
-.pdf-export-root .dispatch-detail-card .fa-folder-open,
-.pdf-export-root .dispatch-detail-card .fa-link,
-.pdf-export-root .dispatch-detail-card a,
-.pdf-export-root .dispatch-detail-card .group\/link,
-.pdf-export-root .dispatch-detail-card .bg-slate-50 {
-  display: block !important;
-}
-
-/* Organização vertical */
-.pdf-export-root .dispatch-detail-card h4 {
-  font-size: 16px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.pdf-export-root .dispatch-detail-card .preserve-lines {
-  margin-bottom: 10px;
-}
-
-.pdf-export-root .dispatch-detail-card .group\/link {
-  margin-bottom: 6px;
-}
-
 </style>
 </head>
 <body id="mainBody" class="bg-slate-50 text-slate-900 text-sm overflow-hidden">
@@ -3262,7 +3228,6 @@ window.createIndicator = async function createIndicator() {
 
                 // Wrapper com o MESMO modelo visual da aba (título + conteúdo renderizado)
                 const wrapper = document.createElement('div');
-wrapper.classList.add('pdf-export-root');
                 wrapper.className = 'despachos-view pdf-export-root bg-white p-6';
 
                 const safeTitle = (meeting.title || 'Pauta').toString();
