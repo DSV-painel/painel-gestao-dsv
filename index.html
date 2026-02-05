@@ -6,6 +6,7 @@
     <title>DSV 2026 - Painel de Gestão</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Open Sans', sans-serif; }
@@ -326,6 +327,57 @@
 
 
 /* ===============================
+   PDF EXPORT – evitar quebras ruins
+   =============================== */
+
+/* ===============================
+   PDF EXPORT – REFORÇO ANTI-QUEBRA DE CARD (Despachos)
+   =============================== */
+.pdf-export-root .dispatch-detail-card,
+.pdf-export-root .dispatch-detail-card > div,
+.pdf-export-root .dispatch-detail-card .rounded-lg,
+.pdf-export-root .dispatch-detail-card .rounded-xl,
+.pdf-export-root .dispatch-detail-card .rounded-2xl{
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+
+.pdf-export-root{
+    background:#ffffff;
+    /* ajuda o html2pdf a calcular melhor o layout */
+    box-sizing:border-box;
+}
+
+/* Evita quebra no meio dos cards/linhas da pauta */
+.pdf-export-root .dispatch-item-row,
+.pdf-export-root .meeting-date-box,
+.pdf-export-root .form-section-title,
+.pdf-export-root .meeting-title,
+.pdf-export-root .meeting-meta{
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+/* Evita títulos ficarem isolados no final da página */
+.pdf-export-root h1,
+.pdf-export-root h2,
+.pdf-export-root h3,
+.pdf-export-root h4{
+    break-after: avoid;
+    page-break-after: avoid;
+}
+
+/* Em caso de listas/grids, tenta manter o item inteiro */
+.pdf-export-root li,
+.pdf-export-root .rounded-xl,
+.pdf-export-root .rounded-2xl{
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+
+
+/* ===============================
    PADRONIZAÇÃO – ABA DE DESPACHOS
    =============================== */
 
@@ -413,6 +465,59 @@
 /* Ponto de atenção (riscos) – dar destaque e evitar “texto miúdo” */
 .dispatch-detail-card [class*="text-red-"] { line-height: 1.5; }
 .dispatch-detail-card .leading-tight { line-height: 1.5 !important; }
+
+
+/* ===============================
+   PDF EXPORT – PAGINAÇÃO DE CARDS ALTOS
+   =============================== */
+.pdf-export-root .pdf-force-page-break { 
+  break-before: page !important; 
+  page-break-before: always !important; 
+}
+/* Permite que cards muito altos quebrem por seções, sem cortar linha */
+.pdf-export-root .dispatch-detail-card { 
+  break-inside: auto !important; 
+  page-break-inside: auto !important; 
+}
+/* Mas mantém blocos pequenos inteiros */
+.pdf-export-root .pdf-avoid-break { 
+  break-inside: avoid !important; 
+  page-break-inside: avoid !important; 
+}
+
+
+/* ===============================
+   PDF DESPACHO – VERSÃO LIMPA (PRESIDÊNCIA)
+   =============================== */
+.pdf-export-root .dispatch-detail-card * {
+  display: none !important;
+}
+
+/* Mostrar apenas título, descrição da pauta e materiais */
+.pdf-export-root .dispatch-detail-card h4,
+.pdf-export-root .dispatch-detail-card .preserve-lines,
+.pdf-export-root .dispatch-detail-card .fa-folder-open,
+.pdf-export-root .dispatch-detail-card .fa-link,
+.pdf-export-root .dispatch-detail-card a,
+.pdf-export-root .dispatch-detail-card .group\/link,
+.pdf-export-root .dispatch-detail-card .bg-slate-50 {
+  display: block !important;
+}
+
+/* Organização vertical */
+.pdf-export-root .dispatch-detail-card h4 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.pdf-export-root .dispatch-detail-card .preserve-lines {
+  margin-bottom: 10px;
+}
+
+.pdf-export-root .dispatch-detail-card .group\/link {
+  margin-bottom: 6px;
+}
 
 </style>
 </head>
@@ -2116,12 +2221,12 @@ document.getElementById('projRisks').value = '';
                                     saveDispatchBacklogOrder(container);
                                 }
                             });
-                            mainContent.appendChild(row); }); } else { const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId); if(!meeting) { selectedMeetingId = null; window.renderDespachos(); return; } headerTitle.innerText = meeting.title || 'Reunião de Pauta'; const [y, m, d] = meeting.date.split('-'); headerSub.innerText = `${d}/${m}/${y} • ${meeting.items ? meeting.items.length : 0} Itens`; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-slate-600'; actionArea.innerHTML = `<div class="flex items-center gap-2"><button onclick="openAddBacklogItemModal('${meeting.id}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold uppercase bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-sm"><i class="fas fa-plus-circle"></i> Adicionar Itens</button><div class="w-px h-6 bg-slate-200 mx-1"></div><button onclick="openEditMeetingModal('${meeting.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold uppercase bg-blue-50 border border-blue-200 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-edit mr-1"></i> Editar</button><button onclick="deleteMeeting('${meeting.id}', this)" class="text-red-400 hover:text-red-600 text-xs font-bold uppercase border border-red-200 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-trash mr-1"></i> Excluir</button><button onclick="closeMeetingDetails()" class="text-slate-400 hover:text-slate-600 text-xs font-bold uppercase px-3 py-1.5"><i class="fas fa-arrow-left mr-1"></i> Voltar</button></div>`;
+                            mainContent.appendChild(row); }); } else { const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId); if(!meeting) { selectedMeetingId = null; window.renderDespachos(); return; } headerTitle.innerText = meeting.title || 'Reunião de Pauta'; const [y, m, d] = meeting.date.split('-'); headerSub.innerText = `${d}/${m}/${y} • ${meeting.items ? meeting.items.length : 0} Itens`; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-slate-600'; actionArea.innerHTML = `<div class="flex items-center gap-2"><button onclick="openAddBacklogItemModal('${meeting.id}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold uppercase bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-sm"><i class="fas fa-plus-circle"></i> Adicionar Itens</button><div class="w-px h-6 bg-slate-200 mx-1"></div><button onclick="openEditMeetingModal('${meeting.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold uppercase bg-blue-50 border border-blue-200 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-edit mr-1"></i> Editar</button><button onclick="exportSelectedMeetingPdf()" class="text-slate-900 hover:text-slate-950 text-xs font-bold uppercase bg-slate-100 border border-slate-200 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1"><i class=\"fas fa-file-pdf\"></i> PDF</button><button onclick="deleteMeeting('${meeting.id}', this)" class="text-red-400 hover:text-red-600 text-xs font-bold uppercase border border-red-200 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-trash mr-1"></i> Excluir</button><button onclick="closeMeetingDetails()" class="text-slate-400 hover:text-slate-600 text-xs font-bold uppercase px-3 py-1.5"><i class="fas fa-arrow-left mr-1"></i> Voltar</button></div>`;
                 if(!meeting.items || meeting.items.length === 0) { mainContent.innerHTML = `<p class="text-slate-400 italic text-center mt-10">Nenhum item nesta pauta.</p>`; } else {
                     const __orderedItems = (meeting.items || []).map((it,i)=>({ ...it, __idx: i, order: (it.order ?? it.itemNumber ?? (i+1)) })).sort((a,b)=>(a.order||0)-(b.order||0));
                     __orderedItems.forEach((item, idx) => { const liveItem = dataStore[item.collection]?.find(i => i.id === item.itemId) || {}; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL' }[item.collection] || item.collection; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700' }[item.collection] || 'bg-slate-100';
                         const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4 relative group dispatch-detail-card";
-                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><p class="text-sm text-slate-600 leading-relaxed mb-3 preserve-lines">${(item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : (liveItem.desc || 'Sem descrição detalhada.')}</p><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><p class="text-sm text-red-700 font-medium leading-snug preserve-lines">${liveItem.risks}</p></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${(item.docLinks || (item.docLink ? [item.docLink] : [])).length} Arquivos</span></div><div class="space-y-2 mb-3">${(item.docLinks || (item.docLink ? [item.docLink] : [])).map((link, linkIdx) => `<div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 shadow-sm group/link"><div class="w-6 h-6 rounded bg-blue-50 text-blue-500 flex items-center justify-center text-xs shrink-0"><i class="fas fa-link"></i></div><a href="${link}" target="_blank" class="flex-1 text-xs font-bold text-slate-600 truncate hover:text-blue-600 hover:underline" title="${link}">${link}</a><div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/link:opacity-100 transition-opacity"><a href="${link}" target="_blank" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-colors"><i class="fas fa-external-link-alt text-[10px]"></i></a><button onclick="removeMeetingItemDoc('${meeting.id}', ${idx}, ${linkIdx})" class="w-6 h-6 rounded hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-colors" title="Remover Link"><i class="fas fa-times text-[10px]"></i></button></div></div>`).join('')}${(!item.docLinks && !item.docLink) || (item.docLinks && item.docLinks.length === 0) ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { addMeetingItemDoc('${meeting.id}', ${idx}, this.value); }"><button onclick="addMeetingItemDoc('${meeting.id}', ${idx}, document.getElementById('newDoc_${meeting.id}_${idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Registre a decisão, responsáveis e prazos definidos na reunião..." onblur="saveMeetingItemOutcome('${meeting.id}', ${idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${idx}, document.getElementById('outcome_${meeting.id}_${idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
+                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><p class="text-sm text-slate-600 leading-relaxed mb-3 preserve-lines">${(item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : (liveItem.desc || 'Sem descrição detalhada.')}</p><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><p class="text-sm text-red-700 font-medium leading-snug preserve-lines">${liveItem.risks}</p></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${(item.docLinks || (item.docLink ? [item.docLink] : [])).length} Arquivos</span></div><div class="space-y-2 mb-3">${(item.docLinks || (item.docLink ? [item.docLink] : [])).map((link, linkIdx) => `<div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 shadow-sm group/link"><div class="w-6 h-6 rounded bg-blue-50 text-blue-500 flex items-center justify-center text-xs shrink-0"><i class="fas fa-link"></i></div><a href="${link}" target="_blank" class="flex-1 text-xs font-bold text-slate-600 truncate hover:text-blue-600 hover:underline" title="${link}">${link}</a><div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/link:opacity-100 transition-opacity"><a href="${link}" target="_blank" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-colors"><i class="fas fa-external-link-alt text-[10px]"></i></a><button onclick="removeMeetingItemDoc('${meeting.id}', ${item.__idx}, ${linkIdx})" class="w-6 h-6 rounded hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-colors" title="Remover Link"><i class="fas fa-times text-[10px]"></i></button></div></div>`).join('')}${(!item.docLinks && !item.docLink) || (item.docLinks && item.docLinks.length === 0) ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${item.__idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); addMeetingItemDoc('${meeting.id}', ${item.__idx}, this.value); this.value=''; }"><button onclick="addMeetingItemDoc('${meeting.id}', ${item.__idx}, document.getElementById('newDoc_${meeting.id}_${item.__idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Registre a decisão, responsáveis e prazos definidos na reunião..." onblur="saveMeetingItemOutcome('${meeting.id}', ${idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${idx}, document.getElementById('outcome_${meeting.id}_${idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
                         mainContent.appendChild(row); }); } }
         };
 
@@ -3123,6 +3228,146 @@ window.createIndicator = async function createIndicator() {
 };
 
 /* =================== FIM DA CORRECAO =================== */
+
+
+        // ===============================
+        // Exportação PDF - Aba Despachos
+        // ===============================
+        window.exportSelectedMeetingPdf = async () => {
+            try {
+                if (!window.html2pdf) {
+                    alert('Biblioteca de PDF não carregada (html2pdf). Verifique sua conexão e tente novamente.');
+                    return;
+                }
+                if (!selectedMeetingId) {
+                    alert('Selecione uma pauta para exportar.');
+                    return;
+                }
+                const meeting = (dataStore.dispatchMeetings || []).find(m => String(m.id) === String(selectedMeetingId));
+                if (!meeting) {
+                    alert('Pauta não encontrada.');
+                    return;
+                }
+
+                const fmtDate = (() => {
+                    if (!meeting.date) return '';
+                    const parts = String(meeting.date).split('-');
+                    if (parts.length !== 3) return meeting.date;
+                    const [y, mo, d] = parts;
+                    return `${d}/${mo}/${y}`;
+                })();
+
+                const src = document.getElementById('dispatchMainContent');
+                if (!src) return;
+
+                // Wrapper com o MESMO modelo visual da aba (título + conteúdo renderizado)
+                const wrapper = document.createElement('div');
+wrapper.classList.add('pdf-export-root');
+                wrapper.className = 'despachos-view pdf-export-root bg-white p-6';
+
+                const safeTitle = (meeting.title || 'Pauta').toString();
+                const safeMeta = `${fmtDate} • ${(meeting.items || []).length} Itens`;
+
+                wrapper.innerHTML = `
+                    <div class="mb-4 pb-3 border-b border-slate-200">
+                        <h3 class="meeting-title text-2xl font-black text-slate-900 uppercase tracking-tight">${safeTitle.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</h3>
+                        <p class="meeting-meta text-sm text-slate-600 font-bold mt-1 uppercase tracking-wider">${safeMeta.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+                    </div>
+                `;
+
+                const cloned = src.cloneNode(true);
+
+                // Remover ações/interações do clone (se houver)
+                cloned.querySelectorAll('button, [data-no-pdf="true"], .no-pdf').forEach(el => el.remove());
+
+                // Garantir que inputs/selects/textarea apareçam como texto no PDF (mantendo o layout)
+                cloned.querySelectorAll('input, textarea, select').forEach(el => {
+                    const value = (el.tagName === 'SELECT')
+                        ? (el.options?.[el.selectedIndex]?.text || el.value || '')
+                        : (el.value || '');
+                    const div = document.createElement('div');
+                    div.className = (el.className || 'input-style') + ' preserve-lines';
+                    div.textContent = value;
+                    el.replaceWith(div);
+                });
+
+                wrapper.appendChild(cloned);
+
+                // Paginação: se algum card ficar maior que a página, quebra por seções (sem cortar no meio)
+                const usableHeightPx = __pdfMeasurePx(277); // A4 (297mm) - margens (~10mm top/bottom)
+                __pdfPaginateTallCards(wrapper, usableHeightPx);
+
+                
+// ============================
+// PDF – Paginação inteligente (cards altos)
+// ============================
+function __pdfMeasurePx(mmValue) {
+  const probe = document.createElement('div');
+  probe.style.position = 'absolute';
+  probe.style.left = '-9999px';
+  probe.style.top = '-9999px';
+  probe.style.height = mmValue + 'mm';
+  probe.style.width = '10mm';
+  probe.style.visibility = 'hidden';
+  document.body.appendChild(probe);
+  const px = probe.getBoundingClientRect().height;
+  probe.remove();
+  return px;
+}
+
+function __pdfPaginateTallCards(wrapperEl, usableHeightPx) {
+  const cards = wrapperEl.querySelectorAll('.dispatch-detail-card');
+  cards.forEach(card => {
+    // marca blocos internos para evitar quebra (itens de link, cabeçalho, etc.)
+    card.querySelectorAll('.dispatch-item-row, .rounded-lg, .rounded-xl, .rounded-2xl, .meeting-title, .meeting-meta').forEach(el => {
+      el.classList.add('pdf-avoid-break');
+    });
+
+    // Se o card não é alto, mantém tudo como avoid
+    const cardH = card.getBoundingClientRect().height;
+    if (cardH <= usableHeightPx * 1.05) return;
+
+    // Card alto: quebra por "blocos" (filhos diretos) em pontos seguros
+    const blocks = Array.from(card.children).filter(n => n.nodeType === 1);
+    let acc = 0;
+    blocks.forEach((block, i) => {
+      // não quebra antes do primeiro bloco
+      const h = block.getBoundingClientRect().height;
+      if (i === 0) { acc = h; return; }
+
+      // Se estourou a altura, força quebra ANTES deste bloco
+      if (acc + h > usableHeightPx) {
+        block.classList.add('pdf-force-page-break');
+        acc = h;
+      } else {
+        acc += h;
+      }
+    });
+  });
+}
+
+const filenameBase = (safeTitle || 'pauta')
+                    .toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '');
+                const filename = `pauta-${meeting.date || 'sem-data'}-${filenameBase}.pdf`;
+
+                const opt = {
+                    margin: 10,
+                    filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    pagebreak: { mode: ['avoid-all','css','legacy'], avoid: ['.dispatch-item-row', '.dispatch-detail-card', '.meeting-title', '.meeting-meta', '.meeting-date-box'] },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                await window.html2pdf().set(opt).from(wrapper).save();
+            } catch (err) {
+                console.error('Erro ao exportar PDF:', err);
+                alert('Não foi possível gerar o PDF. Veja o console para detalhes.');
+            }
+        };
 
 </script>
 </body>
