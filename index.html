@@ -1960,7 +1960,27 @@ document.getElementById('projRisks').value = '';
         };
 
         // ... (Delete Project, Dispatch Toggle, Meeting functions... mantidas) ...
-        window.deleteProject = async () => { const id = document.getElementById('editId').value; if (!id) return; const btn = document.getElementById('deleteBtn'); if (btn.innerText.includes('Excluir')) { btn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Confirmar?'; btn.classList.add('bg-red-600', 'text-white'); btn.classList.remove('bg-red-50', 'text-red-600'); setTimeout(() => { if(document.getElementById('projectModal').style.display !== 'none') { btn.innerHTML = '<i class="fas fa-trash mr-2"></i> Excluir'; btn.classList.remove('bg-red-600', 'text-white'); btn.classList.add('bg-red-50', 'text-red-600'); } }, 3000); return; } try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id)); toggleModal('projectModal'); } catch (err) { console.error("Erro ao excluir:", err); } };
+        window.deleteProject = async () => {
+            const id = document.getElementById('editId').value;
+            if (!id) return;
+
+            const msg = (activeTab === 'contracts')
+                ? 'Excluir este contrato/convênio? Esta ação não poderá ser desfeita.'
+                : (activeTab === 'operational')
+                    ? 'Excluir esta atividade operacional? Esta ação não poderá ser desfeita.'
+                    : 'Excluir este projeto? Esta ação não poderá ser desfeita.';
+
+            if (!confirm(msg)) return;
+
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id));
+                toggleModal('projectModal');
+            } catch (err) {
+                console.error("Erro ao excluir:", err);
+                alert('Erro ao excluir no Firebase. Veja o console.');
+            }
+        };
+
         window.toggleDispatch = async (id, collectionName) => { if(!collectionName) collectionName = activeTab; const item = dataStore[collectionName].find(i => i.id === id); if(!item) return; const newVal = !item.onDispatch; try { item.onDispatch = newVal; await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), { onDispatch: newVal }, { merge: true }); if(activeTab === 'despachos') window.renderDespachos(); else window.renderData(); } catch (err) { console.error("Erro ao atualizar despacho:", err); } };
 
 
@@ -1988,14 +2008,84 @@ document.getElementById('projRisks').value = '';
         window.createNewMeeting = async () => { const title = document.getElementById('newMeetingTitle').value; const date = document.getElementById('newMeetingDate').value; const attendees = document.getElementById('newMeetingAttendees').value; const items = []; selectedBacklogItems.forEach(jsonStr => { const obj = JSON.parse(jsonStr); const realItem = dataStore[obj.collection]?.find(i => i.id === obj.id); if(realItem) { items.push({ itemId: obj.id, collection: obj.collection, name: realItem.name, pautaTitle: realItem.name || '', pautaDesc: realItem.desc || '', status: 'Pendente', outcome: '', order: (items.length + 1) }); } }); const meetingData = { title, date, attendees, items, status: 'Agendada', createdAt: Date.now() }; try { const newId = Date.now().toString(); await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', newId), meetingData); selectedBacklogItems.clear(); toggleModal('meetingModal'); selectedMeetingId = newId; window.renderDespachos(); } catch(err) { console.error("Erro ao criar pauta:", err); } };
         window.selectMeeting = (id) => { selectedMeetingId = id; window.renderDespachos(); };
         window.closeMeetingDetails = () => { selectedMeetingId = null; window.renderDespachos(); };
-        window.deleteMeeting = async (id, btn) => { if (btn.innerText.includes('Excluir')) { const originalContent = btn.innerHTML; btn.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Confirmar?'; btn.classList.add('bg-red-600', 'text-white', 'border-red-600'); btn.classList.remove('text-red-400', 'hover:text-red-600', 'hover:bg-red-50'); setTimeout(() => { if(document.body.contains(btn)) { btn.innerHTML = originalContent; btn.classList.remove('bg-red-600', 'text-white', 'border-red-600'); btn.classList.add('text-red-400', 'hover:text-red-600', 'hover:bg-red-50'); } }, 3000); return; } try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', id)); selectedMeetingId = null; window.renderDespachos(); } catch (err) { console.error("Erro ao excluir reunião:", err); } };
-        window.removeMeetingItem = async (meetingId, itemIndex) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; updatedItems.splice(itemIndex, 1); try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); window.renderDespachos(); } catch(err) { console.error("Erro ao remover item da pauta:", err); } };
+        window.deleteMeeting = async (id, btn) => {
+            if (!id) return;
+
+            const title = (dataStore.dispatchMeetings || []).find(m => m.id === id)?.title;
+            const msg = title
+                ? `Excluir a pauta "${title}"? Esta ação não poderá ser desfeita.`
+                : 'Excluir esta pauta? Esta ação não poderá ser desfeita.';
+
+            if (!confirm(msg)) return;
+
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', id));
+                selectedMeetingId = null;
+                window.renderDespachos();
+            } catch (err) {
+                console.error("Erro ao excluir reunião:", err);
+                alert('Erro ao excluir no Firebase. Veja o console.');
+            }
+        };
+
+        window.removeMeetingItem = async (meetingId, itemIndex) => {
+            const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId);
+            if (!meeting) return;
+
+            const item = meeting.items?.[itemIndex];
+            const itemTitle = item?.pautaTitle || item?.name || 'este item';
+            if (!confirm(`Remover "${itemTitle}" da pauta?`)) return;
+
+            const updatedItems = [...meeting.items];
+            updatedItems.splice(itemIndex, 1);
+
+            try {
+                await setDoc(
+                    doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId),
+                    { items: updatedItems },
+                    { merge: true }
+                );
+                window.renderDespachos();
+            } catch (err) {
+                console.error("Erro ao remover item da pauta:", err);
+                alert('Erro ao atualizar no Firebase. Veja o console.');
+            }
+        };
+
         window.openEditMeetingModal = (meetingId) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; document.getElementById('editMeetingId').value = meeting.id; document.getElementById('editMeetingTitle').value = meeting.title || ''; document.getElementById('editMeetingDate').value = meeting.date; document.getElementById('editMeetingAttendees').value = meeting.attendees || ''; toggleModal('editMeetingModal'); };
         window.saveMeetingEdit = async () => { const id = document.getElementById('editMeetingId').value; const updates = { title: document.getElementById('editMeetingTitle').value, date: document.getElementById('editMeetingDate').value, attendees: document.getElementById('editMeetingAttendees').value }; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', id), updates, { merge: true }); toggleModal('editMeetingModal'); window.renderDespachos(); } catch(err) { console.error("Erro ao editar reunião:", err); } };
         window.saveMeetingItemOutcome = async (meetingId, itemIndex, val, btnElement) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; if(btnElement) { var originalHtml = btnElement.innerHTML; btnElement.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Salvando...'; btnElement.classList.add('opacity-75', 'cursor-not-allowed'); } const updatedItems = [...meeting.items]; updatedItems[itemIndex].outcome = val; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); if(btnElement) { btnElement.innerHTML = '<i class="fas fa-check mr-1"></i> Salvo!'; btnElement.classList.remove('bg-blue-100', 'text-blue-600'); btnElement.classList.add('bg-green-100', 'text-green-600'); setTimeout(() => { btnElement.innerHTML = originalHtml; btnElement.classList.remove('bg-green-100', 'text-green-600', 'opacity-75', 'cursor-not-allowed'); btnElement.classList.add('bg-blue-100', 'text-blue-600'); }, 2000); } } catch(err) { console.error("Erro ao salvar deliberação:", err); if(btnElement) btnElement.innerHTML = '<i class="fas fa-times mr-1"></i> Erro'; } };
         window.saveMeetingItemStatus = async (meetingId, itemIndex, newStatus) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; updatedItems[itemIndex].status = newStatus; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); window.renderDespachos(); } catch(err) { console.error("Erro ao salvar status:", err); } };
         window.addMeetingItemDoc = async (meetingId, itemIndex, url) => { if(!url || !url.trim()) return; const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; const item = updatedItems[itemIndex]; let currentLinks = item.docLinks || []; if (!item.docLinks && item.docLink) currentLinks.push(item.docLink); currentLinks.push(url.trim()); item.docLinks = currentLinks; if(item.docLink) delete item.docLink; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); } catch(err) { console.error("Erro ao adicionar documento:", err); } };
-        window.removeMeetingItemDoc = async (meetingId, itemIndex, linkIndex) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; const item = updatedItems[itemIndex]; let currentLinks = item.docLinks || (item.docLink ? [item.docLink] : []); currentLinks.splice(linkIndex, 1); item.docLinks = currentLinks; if(item.docLink) delete item.docLink; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); } catch(err) { console.error("Erro ao remover documento:", err); } };
+        window.removeMeetingItemDoc = async (meetingId, itemIndex, linkIndex) => {
+            const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId);
+            if (!meeting) return;
+
+            const updatedItems = [...meeting.items];
+            const item = updatedItems[itemIndex];
+            if (!item) return;
+
+            const currentLinks = item.docLinks || (item.docLink ? [item.docLink] : []);
+            const link = currentLinks?.[linkIndex];
+
+            if (!confirm(link ? 'Remover este link da pauta?' : 'Remover este documento da pauta?')) return;
+
+            currentLinks.splice(linkIndex, 1);
+            item.docLinks = currentLinks;
+            if (item.docLink) delete item.docLink;
+
+            try {
+                await setDoc(
+                    doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId),
+                    { items: updatedItems },
+                    { merge: true }
+                );
+            } catch (err) {
+                console.error("Erro ao remover documento:", err);
+                alert('Erro ao atualizar no Firebase. Veja o console.');
+            }
+        };
+
 
         // ===============================
         // DESPACHOS: EDITAR ITEM DA PAUTA
@@ -2976,7 +3066,21 @@ document.getElementById('projRisks').value = '';
         };
         window.openCalendarModal = (e = null) => { const sel = document.getElementById('calEventArea'); if(sel.options.length === 0) sel.innerHTML = areasList.map(a => `<option value="${a}">${a}</option>`).join(''); if(e) { document.getElementById('calEventId').value = e.id; document.getElementById('calEventName').value = e.name; document.getElementById('calEventArea').value = e.area; document.getElementById('calEventDate').value = e.prazo; document.getElementById('calEventObs').value = e.obs || ''; document.getElementById('btnDeleteEvent').classList.remove('hidden'); } else { document.getElementById('calendarForm').reset(); document.getElementById('calEventId').value = ''; document.getElementById('calEventDate').valueAsDate = new Date(); document.getElementById('btnDeleteEvent').classList.add('hidden'); } toggleModal('calendarModal'); };
         window.saveCalendarEvent = async () => { const id = document.getElementById('calEventId').value || Date.now().toString(); await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'calendar_events', id), { name: document.getElementById('calEventName').value, area: document.getElementById('calEventArea').value, prazo: document.getElementById('calEventDate').value, obs: document.getElementById('calEventObs').value }); toggleModal('calendarModal'); };
-        window.deleteCalendarEvent = async () => { const id = document.getElementById('calEventId').value; if(id) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'calendar_events', id)); toggleModal('calendarModal'); };
+        window.deleteCalendarEvent = async () => {
+            const id = document.getElementById('calEventId').value;
+            if (!id) return;
+
+            if (!confirm('Excluir este evento do calendário? Esta ação não poderá ser desfeita.')) return;
+
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'calendar_events', id));
+                toggleModal('calendarModal');
+            } catch (err) {
+                console.error("Erro ao excluir evento:", err);
+                alert('Erro ao excluir no Firebase. Veja o console.');
+            }
+        };
+
         window.getStatusColorBg = s => ({"Backlog":"bg-slate-300","Iniciado":"bg-sky-400","Em Planejamento":"bg-indigo-500","Em Execução (Dentro do Planejado)":"bg-green-500","Em Execução (Atenção)":"bg-amber-400","Em Execução (Em Risco / Atrasado)":"bg-orange-500","Crítico":"bg-red-600","Concluído":"bg-emerald-600","Cancelado":"bg-slate-500"}[s] || "bg-slate-200");
         window.getStatusColor = s => (s === "Cancelado" ? "text-slate-600 bg-slate-100 border-slate-300" : (s === "Concluído" || s.includes("Dentro") ? "text-green-600 bg-green-50 border-green-200" : (s === "Crítico" || s.includes("Risco") ? "text-red-600 bg-red-50 border-red-200" : (s.includes("Atenção") ? "text-amber-600 bg-amber-50 border-amber-200" : "text-slate-600 bg-slate-50 border-slate-200"))));
         window.setListFilter = f => { currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Iniciado':'cardIniciado','Em Planejamento':'cardPlanejado','Em Execução (Dentro do Planejado)':'cardExecDP','Em Execução (Atenção)':'cardExecEA','Em Execução (Em Risco / Atrasado)':'cardExecRA','Crítico':'cardCritico','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f]) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
