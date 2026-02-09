@@ -848,7 +848,9 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <label class="field-label">Observações Gerais</label>
-                                    <textarea id="projObs" rows="3" class="input-style resize-none" placeholder="Informações adicionais..."></textarea>
+                                    <textarea id="projObs" rows="3" class="input-style resize-none" placeholder="Digite uma observação e pressione Enter para salvar no histórico. (Shift+Enter para quebrar linha)"></textarea>
+                                    <div class="mt-2 text-[11px] font-bold text-slate-400">Enter = salvar no histórico • Shift+Enter = nova linha</div>
+                                    <div id="projObsHistory" class="mt-3 space-y-2"></div>
                                 </div>
                                 <div id="contractRelationWrapper" class="flex flex-col hidden-field space-y-3 pt-3 border-t border-slate-100">
                                     <label class="field-label">Relação com Projeto?</label>
@@ -1164,7 +1166,10 @@
                     <p class="text-[11px] font-normal text-slate-500 uppercase tracking-widest mb-2 px-2 hidden md:block">Visualização</p>
                     <div class="flex md:block space-x-2 md:space-x-0 md:space-y-1">
                         <button onclick="switchTab('projects')" id="tab-projects" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
-                            <i class="fas fa-folder w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Projetos</span>
+                            <i class="fas fa-diagram-project w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Projetos</span>
+                        </button>
+                        <button onclick="switchTab('processes')" id="tab-processes" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
+                            <i class="fas fa-arrows-rotate w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Processos</span>
                         </button>
                         <button onclick="switchTab('contracts')" id="tab-contracts" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
                             <i class="fas fa-file-contract w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Contratos</span>
@@ -1190,7 +1195,7 @@
                     </div>
                 </div>
                 
-                <div class="flex-none min-w-[200px] md:w-full border-l md:border-l-0 border-slate-700 pl-2 md:pl-0 h-full md:h-auto flex items-center md:block">
+                <div id="coordFiltersWrapper" class="flex-none min-w-[200px] md:w-full border-l md:border-l-0 border-slate-700 pl-2 md:pl-0 h-full md:h-auto flex items-center md:block">
                     <div class="w-full">
                         <p class="text-[11px] font-normal text-slate-500 uppercase tracking-widest mb-1 px-2 hidden md:block">Coordenações</p>
                         <div id="coordBtnContainer" class="flex md:grid md:grid-cols-2 gap-2 px-1">
@@ -1612,7 +1617,7 @@
         const STATUS_COLORS_HEX = { "Backlog": "#cbd5e1", "Iniciado": "#38bdf8", "Em Planejamento": "#6366f1", "Em Execução (Dentro do Planejado)": "#22c55e", "Em Execução (Atenção)": "#fbbf24", "Em Execução (Em Risco / Atrasado)": "#f97316", "Crítico": "#dc2626", "Concluído": "#059669", "Cancelado": "#64748b" };
         const STATUS_COLORS_TW_BG = { "Backlog": "bg-slate-300", "Iniciado": "bg-sky-400", "Em Planejamento": "bg-indigo-500", "Em Execução (Dentro do Planejado)": "bg-green-500", "Em Execução (Atenção)": "bg-amber-400", "Em Execução (Em Risco / Atrasado)": "bg-orange-500", "Crítico": "bg-red-600", "Concluído": "bg-emerald-600", "Cancelado": "bg-slate-500" };
 
-        let dataStore = { projects: [], contracts: [], operational: [], calendarEvents: [], indicators: [], dispatchMeetings: [] };
+        let dataStore = { projects: [], processes: [], contracts: [], operational: [], calendarEvents: [], indicators: [], dispatchMeetings: [] };
         
         // ... (Constantes PORTARIA_DATA e INITIAL_INDICATORS mantidas) ...
         const PORTARIA_DATA = [
@@ -1777,7 +1782,7 @@
         initAuth();
 
         function initListeners() {
-            ['projects', 'contracts', 'operational', 'calendar_events', 'indicators', 'dispatch_meetings'].forEach(colName => {
+            ['projects', 'processes', 'contracts', 'operational', 'calendar_events', 'indicators', 'dispatch_meetings'].forEach(colName => {
                 const storeKey = colName === 'calendar_events' ? 'calendarEvents' : (colName === 'dispatch_meetings' ? 'dispatchMeetings' : colName);
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', colName), (snapshot) => {
                     // IMPORTANTE: garante que o id do Firestore prevaleça mesmo que exista um campo "id" no documento
@@ -1816,6 +1821,8 @@
         window.openNewModal = () => {
             const form = document.getElementById('projectForm');
             form.reset();
+            document.getElementById('projObs').value = '';
+            if (typeof window.renderObsHistory === 'function') window.renderObsHistory([]);
             // Reset de links de documentos (multi-links)
             const docsC = document.getElementById('projDocsContainer');
             if (docsC) { docsC.innerHTML = ''; }
@@ -1856,11 +1863,14 @@ document.getElementById('projRisks').value = '';
             document.getElementById('deleteBtn').classList.add('hidden');
 
             const statusSelect = document.getElementById('projStatus');
-            statusSelect.innerHTML = (activeTab === 'projects' ? PROJECT_STATUS : (activeTab === 'contracts' ? CONTRACT_STATUS : UNIFIED_STATUS)).map(s => `<option value="${s}">${s}</option>`).join('');
+            statusSelect.innerHTML = ((activeTab === 'projects' || activeTab === 'processes') ? PROJECT_STATUS : (activeTab === 'contracts' ? CONTRACT_STATUS : UNIFIED_STATUS)).map(s => `<option value="${s}">${s}</option>`).join('');
 
             if (activeTab === 'projects') {
                 document.getElementById('modalTitle').innerText = 'Novo Projeto Estratégico';
                 complexityField.classList.remove('hidden-field'); 
+            } else if (activeTab === 'processes') {
+                document.getElementById('modalTitle').innerText = 'Novo Processo';
+                complexityField.classList.remove('hidden-field');
             } else if (activeTab === 'contracts') {
                 document.getElementById('modalTitle').innerText = 'Novo Contrato / Convênio';
                 typeField.classList.remove('hidden-field');
@@ -1945,17 +1955,126 @@ document.getElementById('projRisks').value = '';
         
         window.addRoadmapRow = (data = '', etapa = '') => { const container = document.getElementById('roadmapContainer'); const row = document.createElement('div'); row.className = 'grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm'; row.innerHTML = `<div class="sm:col-span-4"><input type="date" class="input-style roadmap-date" value="${data}"></div><div class="sm:col-span-7"><input type="text" class="input-style roadmap-step" placeholder="Etapa..." value="${etapa}"></div><div class="sm:col-span-1 text-center"><button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button></div>`; container.appendChild(row); };
 
+        
+        // ===== Observações Gerais: histórico (obsLog) =====
+        function formatDateTime(ts){
+            try { return new Date(ts).toLocaleString('pt-BR'); } catch { return ''; }
+        }
+
+        window.renderObsHistory = function(obsLog = []) {
+            const el = document.getElementById('projObsHistory');
+            if (!el) return;
+
+            if (!Array.isArray(obsLog) || obsLog.length === 0) {
+                el.innerHTML = `<div class="text-xs italic text-slate-400">Sem histórico de observações.</div>`;
+                return;
+            }
+
+            const sorted = [...obsLog].sort((a,b) => (b.ts||0) - (a.ts||0));
+            el.innerHTML = sorted.map(o => `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                            ${formatDateTime(o.ts || Date.now())}
+                        </div>
+                    </div>
+                    <div class="text-sm text-slate-700 preserve-lines mt-1">${String(o.text || '').replace(/</g,'&lt;')}</div>
+                </div>
+            `).join('');
+        };
+
+        window.addObsEntry = async function() {
+            if (!currentUser) return;
+
+            const ta = document.getElementById('projObs');
+            if (!ta) return;
+
+            const text = (ta.value || '').trim();
+            if (!text) return;
+
+            // garante ID mesmo antes do "Gravar Dados"
+            const editIdEl = document.getElementById('editId');
+            let id = editIdEl?.value;
+            if (!id) {
+                id = Date.now().toString();
+                if (editIdEl) editIdEl.value = id;
+            }
+
+            // histórico atual (cache local)
+            const existing = dataStore[activeTab]?.find(i => i.id === id);
+            let obsLog = [];
+
+            // migração simples: se era legado (obs string) e ainda não tem obsLog
+            if (existing?.obsLog && Array.isArray(existing.obsLog)) obsLog = [...existing.obsLog];
+            else if (existing?.obs && String(existing.obs).trim()) obsLog = [{ ts: Date.now(), text: String(existing.obs).trim() }];
+
+            const entry = { ts: Date.now(), text };
+            obsLog.push(entry);
+
+            try {
+                await setDoc(
+                    doc(db, 'artifacts', appId, 'public', 'data', activeTab, id),
+                    { obsLog, obs: text, updatedAt: Date.now() },
+                    { merge: true }
+                );
+
+                // Atualiza cache local (pra refletir no edit sem recarregar)
+                if (existing) {
+                    existing.obsLog = obsLog;
+                    existing.obs = text;
+                }
+
+                ta.value = '';
+                window.renderObsHistory(obsLog);
+            } catch (err) {
+                console.error('Erro ao salvar observação:', err);
+                alert('Erro ao salvar observação no Firebase. Veja o console.');
+            }
+        };
+
+        // Enter salva no histórico | Shift+Enter quebra linha
+        (function bindObsEnterToSave(){
+            const ta = document.getElementById('projObs');
+            if (!ta) return;
+            if (ta.dataset.obsBound === '1') return;
+            ta.dataset.obsBound = '1';
+
+            ta.addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    await window.addObsEntry();
+                }
+            });
+        })();
+
+
         window.saveProject = async () => {
             if (!currentUser) return;
             const id = document.getElementById('editId').value || Date.now().toString();
+            // Se houver texto não salvo em Observações Gerais, salva no histórico antes de gravar o restante
+            const __taObs = document.getElementById('projObs');
+            if (__taObs && (__taObs.value || '').trim() && typeof window.addObsEntry === 'function') {
+                document.getElementById('editId').value = id;
+                await window.addObsEntry();
+            }
             const roadmap = [];
             document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date').value; const e = row.querySelector('.roadmap-step').value; if (d && e) roadmap.push({ data: d, etapa: e }); });
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const data = {
-                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, obs: document.getElementById('projObs').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap,
+                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap,
                 rasci: { r: getTagsFromContainer('rasciContainerR'), a: getTagsFromContainer('rasciContainerA'), s: getTagsFromContainer('rasciContainerS'), c: getTagsFromContainer('rasciContainerC'), i: getTagsFromContainer('rasciContainerI') }, updatedAt: Date.now()
             };
             if (activeTab === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (activeTab === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
+            // Confirmação ao marcar como Concluído
+            const __existingItem = (document.getElementById('editId').value && (dataStore[activeTab] || []).find(i => i.id === id)) || null;
+            const __oldStatus = (__existingItem && __existingItem.status) ? __existingItem.status : '';
+            const __newStatus = data.status || '';
+            if (__newStatus === 'Concluído' && __oldStatus !== 'Concluído') {
+                window.__pendingCompleteSave = { id, data };
+                window.openConfirmCompleteModal && window.openConfirmCompleteModal(__existingItem);
+                return;
+            }
+            if (__newStatus === 'Concluído' && !data.concludedAt) data.concludedAt = (__existingItem && __existingItem.concludedAt) ? __existingItem.concludedAt : Date.now();
             try { if(document.getElementById('editId').value) { const existing = dataStore[activeTab].find(i => i.id === id); if(existing && existing.onDispatch) data.onDispatch = true; if(existing && existing.onPlanner) data.onPlanner = true; if(existing && existing.dispatchData) data.dispatchData = existing.dispatchData; } await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, {merge: true}); toggleModal('projectModal'); } catch (err) { console.error("Erro ao salvar:", err); }
         };
 
@@ -2171,7 +2290,7 @@ document.getElementById('projRisks').value = '';
                 services.forEach(s => window.addServiceTag(s));
                 if (item.originType) { const radio = document.querySelector(`input[name="originType"][value="${item.originType}"]`); if(radio) { radio.checked = true; window.toggleOriginInput(); setTimeout(() => { if(item.projRelation) document.getElementById('projRelation').value = item.projRelation; }, 50); } }
             } else {
-                 document.getElementById('modalTitle').innerText = 'Editar Projeto Estratégico';
+                 document.getElementById('modalTitle').innerText = (t === 'processes' ? 'Editar Processo' : 'Editar Projeto Estratégico');
                  document.getElementById('complexityField').classList.remove('hidden-field');
             }
 
@@ -2184,7 +2303,11 @@ document.getElementById('projRisks').value = '';
 
             document.getElementById('projName').value = item.name || '';
             document.getElementById('projDesc').value = item.desc || '';
-            document.getElementById('projObs').value = item.obs || '';
+            document.getElementById('projObs').value = ''; // campo vira "nova observação"
+            const obsLog = (Array.isArray(item.obsLog) && item.obsLog.length)
+                ? item.obsLog
+                : (item.obs ? [{ ts: Date.now(), text: String(item.obs) }] : []);
+            window.renderObsHistory(obsLog);
             document.getElementById('projSei').value = item.sei || '';
             document.getElementById('projPrazo').value = item.prazo || '';
             document.getElementById('projCoord').value = item.coord || '';
@@ -2217,11 +2340,17 @@ document.getElementById('projRisks').value = '';
         // ... (Render Portaria, Switch Tab, Render Gantt, Backlog Items functions... mantidas) ...
         window.setPortariaFilter = (type) => { currentPortariaFilter = type; document.querySelectorAll('.portaria-filter-btn').forEach(btn => btn.classList.remove('active')); const activeBtn = document.getElementById('pf-' + type); if(activeBtn) activeBtn.classList.add('active'); window.renderPortaria(); };
         window.renderPortaria = () => { const container = document.getElementById('portariaList'); const search = document.getElementById('searchInput').value.toLowerCase(); container.innerHTML = ''; let filtered = PORTARIA_DATA.filter(item => item.title.toLowerCase().includes(search) || item.items.some(sub => sub.toLowerCase().includes(search)) || item.art.toLowerCase().includes(search)); if (currentPortariaFilter !== 'all') filtered = filtered.filter(item => item.type === currentPortariaFilter); if(filtered.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center mt-10">Nenhum item encontrado.</p>'; return; } filtered.forEach(item => { let bc = '', tc = ''; if(item.type === 'Diretoria') { bc = 'badge-diretoria'; tc = 'type-diretoria'; } else if(item.type === 'Coordenadoria') { bc = 'badge-coordenadoria'; tc = 'type-coordenadoria'; } else if(item.type === 'Divisão') { bc = 'badge-divisao'; tc = 'type-divisao'; } else { bc = 'badge-servico'; tc = 'type-servico'; } const itemsHtml = item.items.map((sub, idx) => `<li class="flex items-start gap-3 relative pl-2 group/item"><span class="text-[10px] font-bold text-slate-400 mt-0.5 w-5 shrink-0 text-right">${['I','II','III','IV','V','VI','VII','VIII','IX','X'][idx] || '-'}</span><span class="text-sm text-slate-700 leading-snug border-l border-slate-200 pl-3">${sub}</span></li>`).join(''); container.innerHTML += `<div class="portaria-card ${tc}"><div class="flex items-start justify-between mb-4"><div><span class="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-1">${item.art}</span><h4 class="font-bold text-slate-800 text-lg leading-tight mb-2">${item.title}</h4><p class="text-xs text-slate-500 italic border-l-2 border-slate-200 pl-2 leading-relaxed max-w-2xl">${item.preamble}</p></div><span class="portaria-badge ${bc} ml-2 shrink-0">${item.type}</span></div><ul class="space-y-3 pt-2">${itemsHtml}</ul></div>`; }); };
-        window.switchTab = (tab) => { activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-blue-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
-            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'operational') { addBtn.classList.add('btn-theme-operational'); addBtnText.innerText = 'Adicionar Atividade'; app.classList.add('operational-theme'); document.getElementById('viewTitle').innerText = 'Atividades Operacionais'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(false, true); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = tab === 'operational' ? 'flex' : 'none'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); if(tab !== 'portaria' && tab !== 'calendar' && tab !== 'indicators' && tab !== 'despachos' && tab !== 'gantt') window.renderData(); };
+        window.switchTab = (tab) => { activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", processes: "bg-blue-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
+            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'processes') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Processo'; document.getElementById('viewTitle').innerText = 'Processos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'operational') { addBtn.classList.add('btn-theme-operational'); addBtnText.innerText = 'Adicionar Atividade'; app.classList.add('operational-theme'); document.getElementById('viewTitle').innerText = 'Atividades Operacionais'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(false, true); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = tab === 'operational' ? 'flex' : 'none'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
+            if (coordWrapper) {
+              const showCoord = ['projects','contracts','operational','gantt'].includes(tab);
+              // Use inline display to avoid any Tailwind utility precedence issues (e.g., flex vs hidden)
+              coordWrapper.style.display = showCoord ? '' : 'none';
+              coordWrapper.classList.toggle('hidden', !showCoord);
+            } if(tab !== 'portaria' && tab !== 'calendar' && tab !== 'indicators' && tab !== 'despachos' && tab !== 'gantt') window.renderData(); };
         window.setGanttFilter = (filter) => { currentGanttFilter = filter; document.getElementById('btnGanttAll').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'all' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; document.getElementById('btnGanttProj').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'projects' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; document.getElementById('btnGanttContr').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'contracts' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; window.renderGantt(); };
         window.renderGantt = () => { const container = document.getElementById('ganttBodyContainer'); container.innerHTML = ''; let items = []; if (currentGanttFilter === 'all' || currentGanttFilter === 'projects') { items = [...items, ...dataStore.projects.map(i => ({...i, type: 'project'}))]; } if (currentGanttFilter === 'all' || currentGanttFilter === 'contracts') { items = [...items, ...dataStore.contracts.map(i => ({...i, type: 'contract'}))]; } items = items.filter(i => i.prazo); items.sort((a,b) => a.prazo.localeCompare(b.prazo)); const yearStart = new Date('2026-01-01').getTime(); const yearEnd = new Date('2026-12-31').getTime(); const yearDuration = yearEnd - yearStart; const today = new Date().getTime(); if(items.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026.</p>'; return; } items.forEach(item => { const deadlineDate = new Date(item.prazo).getTime(); let startDate = yearStart; if (item.roadmap && item.roadmap.length > 0) { const sorted = [...item.roadmap].sort((a,b) => a.data.localeCompare(b.data)); startDate = new Date(sorted[0].data).getTime(); } const safeStart = Math.max(startDate, yearStart); const safeEnd = Math.min(deadlineDate, yearEnd); if (safeEnd < safeStart) return; const left = ((safeStart - yearStart) / yearDuration) * 100; const width = ((safeEnd - safeStart) / yearDuration) * 100; const colorClass = item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'; const row = document.createElement('div'); row.className = 'gantt-row'; let milestonesHtml = ''; if (item.roadmap) { item.roadmap.forEach(r => { const mDate = new Date(r.data).getTime(); if (mDate >= yearStart && mDate <= yearEnd) { const mPos = ((mDate - yearStart) / yearDuration) * 100; const mColor = item.type === 'project' ? 'bg-blue-400' : 'bg-purple-400'; const fmtDate = new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); milestonesHtml += `<div class="gantt-milestone-wrapper" style="left: ${mPos}%"><div class="gantt-milestone-diamond ${mColor}"></div><div class="gantt-milestone-tooltip"><div class="font-bold text-emerald-300 mb-0.5 uppercase tracking-wider">${fmtDate}</div><div class="font-medium text-white text-[11px] leading-tight">${r.etapa}</div></div></div>`; } }); } row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${item.coord || 'N/A'}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${item.name}">${item.name}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${item.type === 'project' ? 'projects' : 'contracts'}')"><span class="gantt-bar-label">${item.status}</span></div>${milestonesHtml}</div>`; container.appendChild(row); }); if (today >= yearStart && today <= yearEnd) { const todayPos = ((today - yearStart) / yearDuration) * 100; const line = document.createElement('div'); line.className = 'gantt-today-line'; line.style.left = `${todayPos}%`; line.innerHTML = `<div class="gantt-today-label">Hoje</div>`; container.appendChild(line); } };
-        window.openAddBacklogItemModal = (meetingId) => { if(meetingId) selectedMeetingId = meetingId; const list = document.getElementById('backlogItemsListForModal'); list.innerHTML = ''; const emptyMsg = document.getElementById('emptyBacklogMsg'); emptyMsg.classList.add('hidden'); const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId); const existingIds = meeting ? new Set(meeting.items.map(i => i.itemId)) : new Set(); let count = 0; ['projects', 'contracts', 'operational'].forEach(col => { if(dataStore[col]) { dataStore[col].filter(i => i.onDispatch === true && !existingIds.has(i.id)).forEach(item => { count++; const originColor = { projects: 'bg-blue-100 text-blue-700 border-blue-200', contracts: 'bg-purple-100 text-purple-700 border-purple-200', operational: 'bg-orange-100 text-orange-700 border-orange-200' }[col]; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL' }[col]; const row = document.createElement('label'); row.className = "flex items-start gap-3 cursor-pointer bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all select-none group relative overflow-hidden"; row.innerHTML = `<div class="pt-1"><input type="checkbox" class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 transition-all backlog-add-checkbox" data-id="${item.id}" data-col="${col}" onchange="toggleBacklogItemStyle(this)"></div><div class="flex-1 min-w-0 z-10"><div class="flex items-center gap-2 mb-1.5"><span class="text-[9px] font-black uppercase px-2 py-0.5 rounded border ${originColor}">${originLabel}</span>${item.priority === 'Urgente' ? '<span class="bg-red-50 text-red-600 text-[9px] font-black uppercase px-1.5 py-0.5 rounded border border-red-100">Urgente</span>' : ''}</div><p class="text-sm font-bold text-slate-800 leading-tight group-hover:text-indigo-700 transition-colors">${item.name}</p><p class="text-xs text-slate-400 mt-1 truncate preserve-lines preserve-lines">${item.desc || 'Sem descrição'}</p></div>`; list.appendChild(row); }); } }); if(count === 0) { emptyMsg.classList.remove('hidden'); } toggleModal('addBacklogItemModal'); };
+        window.openAddBacklogItemModal = (meetingId) => { if(meetingId) selectedMeetingId = meetingId; const list = document.getElementById('backlogItemsListForModal'); list.innerHTML = ''; const emptyMsg = document.getElementById('emptyBacklogMsg'); emptyMsg.classList.add('hidden'); const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId); const existingIds = meeting ? new Set(meeting.items.map(i => i.itemId)) : new Set(); let count = 0; ['projects', 'processes', 'contracts', 'operational'].forEach(col => { if(dataStore[col]) { dataStore[col].filter(i => i.onDispatch === true && !existingIds.has(i.id)).forEach(item => { count++; const originColor = { projects: 'bg-blue-100 text-blue-700 border-blue-200', processes: 'bg-blue-100 text-blue-700 border-blue-200', contracts: 'bg-purple-100 text-purple-700 border-purple-200', operational: 'bg-orange-100 text-orange-700 border-orange-200' }[col]; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL' }[col]; const row = document.createElement('label'); row.className = "flex items-start gap-3 cursor-pointer bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all select-none group relative overflow-hidden"; row.innerHTML = `<div class="pt-1"><input type="checkbox" class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 transition-all backlog-add-checkbox" data-id="${item.id}" data-col="${col}" onchange="toggleBacklogItemStyle(this)"></div><div class="flex-1 min-w-0 z-10"><div class="flex items-center gap-2 mb-1.5"><span class="text-[9px] font-black uppercase px-2 py-0.5 rounded border ${originColor}">${originLabel}</span>${item.priority === 'Urgente' ? '<span class="bg-red-50 text-red-600 text-[9px] font-black uppercase px-1.5 py-0.5 rounded border border-red-100">Urgente</span>' : ''}</div><p class="text-sm font-bold text-slate-800 leading-tight group-hover:text-indigo-700 transition-colors">${item.name}</p><p class="text-xs text-slate-400 mt-1 truncate preserve-lines preserve-lines">${item.desc || 'Sem descrição'}</p></div>`; list.appendChild(row); }); } }); if(count === 0) { emptyMsg.classList.remove('hidden'); } toggleModal('addBacklogItemModal'); };
         window.toggleBacklogItemStyle = (cb) => { const card = cb.parentElement.parentElement; if(cb.checked) { card.classList.add('border-indigo-500', 'bg-indigo-50', 'ring-1', 'ring-indigo-500'); } else { card.classList.remove('border-indigo-500', 'bg-indigo-50', 'ring-1', 'ring-indigo-500'); } };
         window.addSelectedBacklogItems = async () => { const checkedBoxes = document.querySelectorAll('.backlog-add-checkbox:checked'); if(checkedBoxes.length === 0) { const btn = document.querySelector('#addBacklogItemModal button[onclick="addSelectedBacklogItems()"]'); const originalText = btn.innerHTML; btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Selecione um item'; btn.classList.add('bg-red-500'); setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('bg-red-500'); }, 2000); return; } const meeting = dataStore.dispatchMeetings.find(m => String(m.id) === String(selectedMeetingId)); if(!meeting) return; const newItems = meeting.items ? [...meeting.items] : []; const __maxOrder = newItems.reduce((mx,it)=>Math.max(mx, (parseInt(it.order ?? it.itemNumber ?? 0,10)||0)), 0); let __orderCounter = __maxOrder; checkedBoxes.forEach(cb => { const id = cb.getAttribute('data-id'); const col = cb.getAttribute('data-col'); const realItem = dataStore[col]?.find(i => String(i.id) === String(id)); if(realItem) { const alreadyExists = newItems.some(existing => String(existing.itemId) === String(id)); if (!alreadyExists) { newItems.push({ itemId: id, collection: col, name: realItem.name, status: 'Pendente', outcome: '', order: (++__orderCounter) }); } } }); try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meeting.id), { items: newItems }, { merge: true }); toggleModal('addBacklogItemModal'); window.renderDespachos(); } catch(err) { console.error("Erro ao adicionar itens:", err); } };
         window.renderDespachos = () => { /* ... Render Despachos (igual ao anterior) ... */ 
@@ -2233,7 +2362,7 @@ document.getElementById('projRisks').value = '';
             
             const meetingsList = document.getElementById('meetingsList'); meetingsList.innerHTML = ''; const sortedMeetings = (dataStore.dispatchMeetings || []).sort((a,b) => b.date.localeCompare(a.date)); if(sortedMeetings.length === 0) { meetingsList.innerHTML = '<p class="text-xs text-slate-400 italic text-center mt-4">Nenhuma pauta criada.</p>'; } sortedMeetings.forEach(meeting => { const isActive = meeting.id === selectedMeetingId; const [y, m, d] = meeting.date.split('-'); const pendingCount = meeting.items ? meeting.items.filter(i => i.status !== 'Deliberado' && i.status !== 'Retirado').length : 0; const statusLabel = pendingCount === 0 && meeting.items.length > 0 ? 'Concluída' : 'Em Aberto'; const statusClass = pendingCount === 0 && meeting.items.length > 0 ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'; const card = document.createElement('div'); card.className = `meeting-card p-3 rounded-xl border mb-2 ${isActive ? 'active' : 'bg-white border-slate-200'}`; card.onclick = () => selectMeeting(meeting.id); card.innerHTML = `<div class="flex items-center gap-3"><div class="meeting-date-box rounded-lg p-2 text-center min-w-[50px] shrink-0 flex flex-col justify-center"><span class="text-[10px] font-black uppercase leading-none block mb-0.5">${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][parseInt(m)-1]}</span><span class="text-lg font-black leading-none">${d}</span></div><div class="flex-1 min-w-0"><h4 class="font-bold text-slate-800 text-sm leading-tight whitespace-normal break-words" title="${meeting.title || 'Reunião de Pauta'}">${meeting.title || 'Reunião de Pauta'}</h4><div class="flex items-center gap-2 mt-1"><span class="text-[10px] font-black px-1.5 py-0.5 rounded uppercase ${statusClass}">${statusLabel}</span><span class="text-[10px] text-slate-400 font-bold">${meeting.items ? meeting.items.length : 0} itens</span></div></div></div>`; meetingsList.appendChild(card); });
             const headerTitle = document.getElementById('drTitle'); const headerSub = document.getElementById('drSubtitle'); const actionArea = document.getElementById('drActionArea'); const mainContent = document.getElementById('dispatchMainContent'); mainContent.innerHTML = ''; actionArea.innerHTML = '';
-            if (!selectedMeetingId) { headerTitle.innerText = 'Painel de Preparação'; headerSub.innerText = 'Backlog de Itens Marcados'; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-blue-600'; let backlogItems = []; ['projects', 'contracts', 'operational'].forEach(col => { if(dataStore[col]) { const items = dataStore[col].filter(i => i.onDispatch === true).map(i => ({...i, originCollection: col})); backlogItems = [...backlogItems, ...items]; } }); actionArea.innerHTML = `<button id="createMeetingBtn" onclick="openCreateMeetingModal()" disabled class="opacity-50 cursor-not-allowed bg-blue-600 text-white font-bold py-2 px-6 rounded-xl text-xs uppercase tracking-wide flex items-center gap-2 shadow-lg transition-all"><i class="fas fa-calendar-plus"></i> Gerar Pauta</button>`;
+            if (!selectedMeetingId) { headerTitle.innerText = 'Painel de Preparação'; headerSub.innerText = 'Backlog de Itens Marcados'; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-blue-600'; let backlogItems = []; ['projects', 'processes', 'contracts', 'operational'].forEach(col => { if(dataStore[col]) { const items = dataStore[col].filter(i => i.onDispatch === true).map(i => ({...i, originCollection: col})); backlogItems = [...backlogItems, ...items]; } }); actionArea.innerHTML = `<button id="createMeetingBtn" onclick="openCreateMeetingModal()" disabled class="opacity-50 cursor-not-allowed bg-blue-600 text-white font-bold py-2 px-6 rounded-xl text-xs uppercase tracking-wide flex items-center gap-2 shadow-lg transition-all"><i class="fas fa-calendar-plus"></i> Gerar Pauta</button>`;
             // Reordenar backlog (salvo localmente) 
             const __order = getDispatchBacklogOrder();
             const __keyOf = (it) => JSON.stringify({id: it.id, collection: it.originCollection});
@@ -2282,7 +2411,7 @@ document.getElementById('projRisks').value = '';
                     const __orderedItems = (meeting.items || []).map((it,i)=>({ ...it, __idx: i, order: (it.order ?? it.itemNumber ?? (i+1)) })).sort((a,b)=>(a.order||0)-(b.order||0));
                     __orderedItems.forEach((item, idx) => { const liveItem = dataStore[item.collection]?.find(i => i.id === item.itemId) || {}; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL' }[item.collection] || item.collection; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700' }[item.collection] || 'bg-slate-100';
                         const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4 relative group dispatch-detail-card";
-                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><p class="text-sm text-slate-600 leading-relaxed mb-3 preserve-lines">${(item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : (liveItem.desc || 'Sem descrição detalhada.')}</p><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><p class="text-sm text-red-700 font-medium leading-snug preserve-lines">${liveItem.risks}</p></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${(item.docLinks || (item.docLink ? [item.docLink] : [])).length} Arquivos</span></div><div class="space-y-2 mb-3">${(item.docLinks || (item.docLink ? [item.docLink] : [])).map((link, linkIdx) => `<div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 shadow-sm group/link"><div class="w-6 h-6 rounded bg-blue-50 text-blue-500 flex items-center justify-center text-xs shrink-0"><i class="fas fa-link"></i></div><a href="${link}" target="_blank" class="flex-1 text-xs font-bold text-slate-600 truncate hover:text-blue-600 hover:underline" title="${link}">${link}</a><div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/link:opacity-100 transition-opacity"><a href="${link}" target="_blank" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-colors"><i class="fas fa-external-link-alt text-[10px]"></i></a><button onclick="removeMeetingItemDoc('${meeting.id}', ${item.__idx}, ${linkIdx})" class="w-6 h-6 rounded hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-colors" title="Remover Link"><i class="fas fa-times text-[10px]"></i></button></div></div>`).join('')}${(!item.docLinks && !item.docLink) || (item.docLinks && item.docLinks.length === 0) ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${item.__idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); addMeetingItemDoc('${meeting.id}', ${item.__idx}, this.value); this.value=''; }"><button onclick="addMeetingItemDoc('${meeting.id}', ${item.__idx}, document.getElementById('newDoc_${meeting.id}_${item.__idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Registre a decisão, responsáveis e prazos definidos na reunião..." onblur="saveMeetingItemOutcome('${meeting.id}', ${idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${idx}, document.getElementById('outcome_${meeting.id}_${idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
+                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><p class="text-sm text-slate-600 leading-relaxed mb-3 preserve-lines">${(item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : (liveItem.desc || 'Sem descrição detalhada.')}</p><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><p class="text-sm text-red-700 font-medium leading-snug preserve-lines">${liveItem.risks}</p></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${(item.docLinks || (item.docLink ? [item.docLink] : [])).length} Arquivos</span></div><div class="space-y-2 mb-3">${(item.docLinks || (item.docLink ? [item.docLink] : [])).map((link, linkIdx) => `<div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 shadow-sm group/link"><div class="w-6 h-6 rounded bg-blue-50 text-blue-500 flex items-center justify-center text-xs shrink-0"><i class="fas fa-link"></i></div><a href="${link}" target="_blank" class="flex-1 text-xs font-bold text-slate-600 truncate hover:text-blue-600 hover:underline" title="${link}">${link}</a><div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/link:opacity-100 transition-opacity"><a href="${link}" target="_blank" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-colors"><i class="fas fa-external-link-alt text-[10px]"></i></a><button onclick="removeMeetingItemDoc('${meeting.id}', ${item.__idx}, ${linkIdx})" class="w-6 h-6 rounded hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-colors" title="Remover Link"><i class="fas fa-times text-[10px]"></i></button></div></div>`).join('')}${(!item.docLinks && !item.docLink) || (item.docLinks && item.docLinks.length === 0) ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${item.__idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); addMeetingItemDoc('${meeting.id}', ${item.__idx}, this.value); this.value=''; }"><button onclick="addMeetingItemDoc('${meeting.id}', ${item.__idx}, document.getElementById('newDoc_${meeting.id}_${item.__idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${item.__idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${item.__idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Registre a decisão, responsáveis e prazos definidos na reunião..." onblur="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, document.getElementById('outcome_${meeting.id}_${item.__idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
                         mainContent.appendChild(row); }); } }
         };
 
@@ -2695,7 +2824,10 @@ document.getElementById('projRisks').value = '';
                         `<span class="text-xl sm:text-2xl text-slate-400 mr-2 align-middle">R$</span>${rv3Sum.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                 }
             }
+            // Concluídos: ficam ocultos no board e aparecem apenas na caixa/modal
+            if (currentListFilter === 'Concluído') { if (typeof window.openCompletedModal === 'function') window.openCompletedModal(); return; }
             if(currentListFilter !== 'all') filtered = filtered.filter(i => i.status === currentListFilter);
+            filtered = filtered.filter(i => i.status !== 'Concluído');
             // Ordenação de Projetos (PMG + Concluídos no final)
             // Regra:
             // 1) Projetos NÃO concluídos primeiro
@@ -2789,7 +2921,7 @@ document.getElementById('projRisks').value = '';
         // Função auxiliar para criar HTML do card (ATUALIZADA COM RASCI)
         function createCardHtml(item, today) {
             const sortedRoadmap = (item.roadmap || []).sort((a,b) => a.data.localeCompare(b.data));
-            const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-[11px] font-black text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-[5px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const isPast = r.data < today; const dotClass = isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'; const dateClass = isPast ? 'text-slate-400' : 'text-blue-600 font-black'; const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; return `<div class="flex items-start gap-4 relative z-10 pl-1"><div class="w-2.5 h-2.5 rounded-full ${dotClass} mt-1.5 shrink-0"></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR')}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-[11px] font-black text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
+            const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-[11px] font-black text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const isPast = r.data < today; const dotClass = isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'; const dateClass = isPast ? 'text-slate-400' : 'text-blue-600 font-black'; const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR')}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-[11px] font-black text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
             const respectBadge = (activeTab === 'contracts' && item.program === 'Respeito à Vida' && (item.programComponent === '1' || item.programComponent === '3'))
                 ? `<span class=\"ml-2 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-100\">Respeito à Vida — C${item.programComponent}</span>`
                 : '';
@@ -2998,7 +3130,7 @@ document.getElementById('projRisks').value = '';
 
                 const dayEvts = [];
 
-                ['projects', 'contracts', 'operational'].forEach((s) => {
+                ['projects', 'processes', 'contracts', 'operational'].forEach((s) => {
                     dataStore[s]?.forEach((i) => {
                         if (i.prazo === ds && filterItem(i)) dayEvts.push({ ...i, origin: s });
                     });
@@ -3083,7 +3215,7 @@ document.getElementById('projRisks').value = '';
 
         window.getStatusColorBg = s => ({"Backlog":"bg-slate-300","Iniciado":"bg-sky-400","Em Planejamento":"bg-indigo-500","Em Execução (Dentro do Planejado)":"bg-green-500","Em Execução (Atenção)":"bg-amber-400","Em Execução (Em Risco / Atrasado)":"bg-orange-500","Crítico":"bg-red-600","Concluído":"bg-emerald-600","Cancelado":"bg-slate-500"}[s] || "bg-slate-200");
         window.getStatusColor = s => (s === "Cancelado" ? "text-slate-600 bg-slate-100 border-slate-300" : (s === "Concluído" || s.includes("Dentro") ? "text-green-600 bg-green-50 border-green-200" : (s === "Crítico" || s.includes("Risco") ? "text-red-600 bg-red-50 border-red-200" : (s.includes("Atenção") ? "text-amber-600 bg-amber-50 border-amber-200" : "text-slate-600 bg-slate-50 border-slate-200"))));
-        window.setListFilter = f => { currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Iniciado':'cardIniciado','Em Planejamento':'cardPlanejado','Em Execução (Dentro do Planejado)':'cardExecDP','Em Execução (Atenção)':'cardExecEA','Em Execução (Em Risco / Atrasado)':'cardExecRA','Crítico':'cardCritico','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f]) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
+        window.setListFilter = f => { if(f === 'Concluído' && typeof window.openCompletedModal === 'function') { window.openCompletedModal(); return; } currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Iniciado':'cardIniciado','Em Planejamento':'cardPlanejado','Em Execução (Dentro do Planejado)':'cardExecDP','Em Execução (Atenção)':'cardExecEA','Em Execução (Em Risco / Atrasado)':'cardExecRA','Crítico':'cardCritico','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f]) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
         window.setPriorityFilter = p => { currentPriorityFilter = (currentPriorityFilter === p) ? 'all' : p; document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); if(currentPriorityFilter !== 'all') { const map = {'Urgente':'urg', 'Alta':'high', 'Média':'mid', 'Baixa':'low'}; document.getElementById('legend-prio-'+map[currentPriorityFilter]).classList.add('active-legend'); } window.renderData(); };
         window.setFilter = f => { currentFilter = f; const btns = document.querySelectorAll('.coord-btn'); btns.forEach(b => b.classList.remove('active-coord')); if(f !== 'all') { document.getElementById('coordBtnContainer').classList.add('coord-list-active'); const b = document.getElementById('coord-'+f); if(b) b.classList.add('active-coord'); } else document.getElementById('coordBtnContainer').classList.remove('coord-list-active'); window.renderData(); };
         window.updateStatusUI = s => { document.getElementById('sysStatusDot').className = `w-2 h-2 rounded-full ${s === 'online' ? 'bg-emerald-400' : 'bg-amber-400'}`; document.getElementById('sysStatusText').innerText = s === 'online' ? 'Online' : 'Sincronizando...'; };
@@ -3438,6 +3570,215 @@ const filenameBase = (safeTitle || 'pauta')
             }
         };
 
+
+        // ===== Concluídos: confirmação + caixa/modal de consulta =====
+        window.__pendingCompleteSave = null;
+
+        window.showInlineModal = (id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('hidden');
+            el.style.display = 'flex';
+        };
+        window.hideInlineModal = (id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.add('hidden');
+            el.style.display = 'none';
+        };
+
+        window.openConfirmCompleteModal = (existingItem) => {
+            const name = (existingItem && existingItem.name) ? existingItem.name : (document.getElementById('projName')?.value || 'este item');
+            const elName = document.getElementById('confirmCompleteName');
+            if (elName) elName.textContent = name;
+            window.showInlineModal('confirmCompleteModal');
+        };
+
+        window.cancelCompleteSave = () => {
+            window.__pendingCompleteSave = null;
+            window.hideInlineModal('confirmCompleteModal');
+            // Mantém o modal de edição aberto para o usuário ajustar se quiser
+        };
+
+        window.confirmCompleteSave = async () => {
+            if (!window.__pendingCompleteSave || !currentUser) { window.hideInlineModal('confirmCompleteModal'); return; }
+            const { id, data } = window.__pendingCompleteSave;
+            try {
+                const existing = (dataStore[activeTab] || []).find(i => i.id === id);
+                if (existing && existing.onDispatch) data.onDispatch = true;
+                if (existing && existing.onPlanner) data.onPlanner = true;
+                if (existing && existing.dispatchData) data.dispatchData = existing.dispatchData;
+
+                if (!data.concludedAt) data.concludedAt = (existing && existing.concludedAt) ? existing.concludedAt : Date.now();
+
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, { merge: true });
+                window.__pendingCompleteSave = null;
+                window.hideInlineModal('confirmCompleteModal');
+                toggleModal('projectModal');
+            } catch (err) {
+                console.error('Erro ao concluir/salvar:', err);
+                alert('Não foi possível concluir/salvar. Veja o console para detalhes.');
+            }
+        };
+
+        window.openCompletedModal = () => {
+            // Só faz sentido em abas com cards/lista principal
+            const disallowed = ['calendar','portaria','indicators','despachos'];
+            if (disallowed.includes(activeTab)) return;
+
+            window.showInlineModal('completedModal');
+            window.renderCompletedModalList();
+        };
+
+        window.closeCompletedModal = () => {
+            window.hideInlineModal('completedModal');
+        };
+
+        window.renderCompletedModalList = () => {
+            const listEl = document.getElementById('completedCardsContainer');
+            const countEl = document.getElementById('completedCount');
+            if (!listEl) return;
+
+            const q = (document.getElementById('completedSearchInput')?.value || '').toLowerCase().trim();
+            let items = (dataStore[activeTab] || []).slice();
+
+            // Mantém consistência com filtros do painel
+            if (q) items = items.filter(i => (i.name || '').toLowerCase().includes(q));
+            if (currentFilter !== 'all') items = items.filter(i => i.coord === currentFilter);
+            if (activeTab === 'operational') {
+                const serviceFilter = document.getElementById('filterService')?.value || 'all';
+                if (serviceFilter !== 'all') {
+                    items = items.filter(i => {
+                        const s = i.services || (i.service ? [i.service] : []);
+                        return s.includes(serviceFilter);
+                    });
+                }
+            }
+            if (currentPriorityFilter !== 'all') items = items.filter(i => i.priority === currentPriorityFilter);
+
+            // Apenas concluídos
+            items = items.filter(i => i.status === 'Concluído');
+
+            // Ordena: mais recentes primeiro (concludedAt > updatedAt)
+            items.sort((a, b) => {
+                const ta = (a.concludedAt || a.updatedAt || 0);
+                const tb = (b.concludedAt || b.updatedAt || 0);
+                return tb - ta;
+            });
+
+            if (countEl) countEl.textContent = String(items.length);
+
+            listEl.innerHTML = '';
+            if (items.length === 0) {
+                listEl.innerHTML = `<div class="text-sm text-slate-500 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    Nenhum card concluído encontrado com os filtros atuais.
+                </div>`;
+                return;
+            }
+
+            const fmtDate = (ts) => {
+                if (!ts) return '';
+                try {
+                    const d = new Date(ts);
+                    return d.toLocaleDateString('pt-BR');
+                } catch { return ''; }
+            };
+
+            items.forEach(item => {
+                const concluded = fmtDate(item.concludedAt);
+                const prazo = item.prazo ? String(item.prazo) : '';
+                const coord = item.coord ? String(item.coord) : '';
+                const prio = item.priority ? String(item.priority) : '';
+
+                const meta = [
+                    coord ? `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${coord}</span>` : '',
+                    prio ? `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${prio}</span>` : '',
+                    concluded ? `<span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black">Concluído em ${concluded}</span>` : `<span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black">Concluído</span>`,
+                    prazo ? `<span class="px-2 py-1 rounded-full bg-slate-50 text-slate-600 text-[11px] font-bold">Prazo: ${prazo}</span>` : ''
+                ].filter(Boolean).join(' ');
+
+                listEl.insertAdjacentHTML('beforeend', `
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="text-sm font-black text-slate-900 truncate">${(item.name || 'Sem título')}</div>
+                                <div class="mt-2 flex flex-wrap gap-2">${meta}</div>
+                                ${item.desc ? `<div class="mt-2 text-xs text-slate-600 line-clamp-2">${item.desc}</div>` : ''}
+                            </div>
+                            <div class="flex-none">
+                                <button class="bg-slate-900 text-white text-xs font-black px-3 py-2 rounded-xl hover:bg-slate-800"
+                                        onclick="editItem('${item.id}', '${activeTab}')">
+                                    Abrir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        };
+
+
 </script>
+
+    <!-- Modal: Confirmar Conclusão -->
+    <div id="confirmCompleteModal" class="hidden fixed inset-0 z-[9999] items-center justify-center bg-slate-900/60" style="display:none;">
+        <div class="bg-white w-[92vw] max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="p-6">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center flex-none">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-base font-black text-slate-900">Confirmar conclusão</div>
+                        <div class="text-sm text-slate-600 mt-1">
+                            Você confirma que <span id="confirmCompleteName" class="font-black text-slate-800">este item</span> foi concluído?
+                            <div class="text-xs text-slate-500 mt-2">Ele ficará oculto na lista principal e aparecerá na caixa de “Concluídos”.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 pb-6 flex gap-3">
+                <button type="button" onclick="cancelCompleteSave()" class="flex-1 bg-slate-100 text-slate-800 font-black py-3 rounded-2xl hover:bg-slate-200 transition-all uppercase text-xs tracking-widest">
+                    Cancelar
+                </button>
+                <button type="button" onclick="confirmCompleteSave()" class="flex-1 bg-emerald-600 text-white font-black py-3 rounded-2xl hover:bg-emerald-700 transition-all uppercase text-xs tracking-widest">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Caixa de Concluídos -->
+    <div id="completedModal" class="hidden fixed inset-0 z-[9998] items-center justify-center bg-slate-900/60" style="display:none;">
+        <div class="bg-white w-[96vw] max-w-4xl max-h-[88vh] rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                    <div class="text-base font-black text-slate-900 flex items-center gap-2">
+                        Concluídos <span class="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full" id="completedCount">0</span>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">Use a busca e os filtros do painel (coordenação/prioridade) para refinar.</div>
+                </div>
+                <button type="button" onclick="closeCompletedModal()" class="bg-slate-100 text-slate-800 font-black px-4 py-2 rounded-2xl hover:bg-slate-200 transition-all uppercase text-xs tracking-widest">
+                    Fechar
+                </button>
+            </div>
+
+            <div class="p-5 border-b border-slate-200">
+                <div class="flex gap-3 items-center">
+                    <div class="flex-1 relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="completedSearchInput" oninput="renderCompletedModalList()" type="text"
+                               placeholder="Buscar por título..."
+                               class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 bg-white text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 overflow-auto flex-1">
+                <div id="completedCardsContainer" class="grid gap-3"></div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
