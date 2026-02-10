@@ -956,9 +956,16 @@
                     <div id="roadmapSection" class="mt-6 bg-slate-50 p-4 sm:p-6 rounded-3xl border border-slate-100 space-y-5">
                         <div class="flex justify-between items-center border-b border-slate-200 pb-3">
                             <h4 class="form-section-title !mb-0 !border-0 !pb-0"><strong>04. Roadmap</strong></h4>
-                            <button type="button" onclick="addRoadmapRow()" id="addRoadmapBtn" class="text-[10px] font-black bg-blue-600 text-white px-4 py-2 rounded-xl shadow-md uppercase transition-colors hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5">+ Nova Etapa</button>
                         </div>
                         <div id="roadmapContainer" class="space-y-3"></div>
+
+                        <!-- Botão no rodapé (UX: adicionar após preencher etapas) -->
+                        <div class="flex justify-center pt-4">
+                            <button type="button" onclick="addRoadmapRow()" id="addRoadmapBtn"
+                                class="text-[11px] font-black bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md uppercase transition-colors hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <i class="fas fa-plus"></i> Adicionar nova etapa
+                            </button>
+                        </div>
                     </div>
 
                     <!-- SEÇÃO 05: MATRIZ RASCI -->
@@ -1616,6 +1623,26 @@
         const PROJECT_STATUS = [...UNIFIED_STATUS, "Cancelado"];
         const STATUS_COLORS_HEX = { "Backlog": "#cbd5e1", "Iniciado": "#38bdf8", "Em Planejamento": "#6366f1", "Em Execução (Dentro do Planejado)": "#22c55e", "Em Execução (Atenção)": "#fbbf24", "Em Execução (Em Risco / Atrasado)": "#f97316", "Crítico": "#dc2626", "Concluído": "#059669", "Cancelado": "#64748b" };
         const STATUS_COLORS_TW_BG = { "Backlog": "bg-slate-300", "Iniciado": "bg-sky-400", "Em Planejamento": "bg-indigo-500", "Em Execução (Dentro do Planejado)": "bg-green-500", "Em Execução (Atenção)": "bg-amber-400", "Em Execução (Em Risco / Atrasado)": "bg-orange-500", "Crítico": "bg-red-600", "Concluído": "bg-emerald-600", "Cancelado": "bg-slate-500" };
+        // Normalização de status (corrige variações de escrita que quebram a contagem/filters)
+        function normalizeStatus(raw) {
+            let s = (raw ?? '').toString().trim();
+            if (!s) return s;
+            // Colapsa espaços duplicados
+            s = s.replace(/\s+/g, ' ');
+            // Variações comuns (legado)
+            const map = {
+                'Em Execução (Em Risco/Atrasado)': 'Em Execução (Em Risco / Atrasado)',
+                'Em Execução (Em Risco/Atrasado )': 'Em Execução (Em Risco / Atrasado)',
+                'Em Execução (Em Risco /Atrasado)': 'Em Execução (Em Risco / Atrasado)',
+                'Em Execução (Em Risco/ Atrasado)': 'Em Execução (Em Risco / Atrasado)',
+                'Em Execução (Risco/Atr)': 'Em Execução (Em Risco / Atrasado)',
+                'Em Execução (Risco/Atrasado)': 'Em Execução (Em Risco / Atrasado)',
+                'Em Execução (Em risco / atrasado)': 'Em Execução (Em Risco / Atrasado)'
+            };
+            if (map[s]) s = map[s];
+            return s;
+        }
+
 
         let dataStore = { projects: [], processes: [], contracts: [], operational: [], calendarEvents: [], indicators: [], dispatchMeetings: [] };
         
@@ -2343,7 +2370,7 @@ document.getElementById('projRisks').value = '';
         window.switchTab = (tab) => { activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", processes: "bg-blue-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
             if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'processes') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Processo'; document.getElementById('viewTitle').innerText = 'Processos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'operational') { addBtn.classList.add('btn-theme-operational'); addBtnText.innerText = 'Adicionar Atividade'; app.classList.add('operational-theme'); document.getElementById('viewTitle').innerText = 'Atividades Operacionais'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(false, true); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = tab === 'operational' ? 'flex' : 'none'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
             if (coordWrapper) {
-              const showCoord = ['projects','contracts','operational','gantt'].includes(tab);
+              const showCoord = ['projects','processes','contracts','operational','gantt'].includes(tab);
               // Use inline display to avoid any Tailwind utility precedence issues (e.g., flex vs hidden)
               coordWrapper.style.display = showCoord ? '' : 'none';
               coordWrapper.classList.toggle('hidden', !showCoord);
@@ -2769,6 +2796,7 @@ document.getElementById('projRisks').value = '';
             const search = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
             let filtered = dataStore[activeTab] || [];
+            if (activeTab === 'projects') { filtered = filtered.filter(i => !i.type || i.type === 'Projeto'); }
             
             if(search) filtered = filtered.filter(i => i.name && i.name.toLowerCase().includes(search));
             if(currentFilter !== 'all') filtered = filtered.filter(i => i.coord === currentFilter);
@@ -2777,11 +2805,11 @@ document.getElementById('projRisks').value = '';
             
             const statusList = (activeTab === 'projects') ? PROJECT_STATUS : (activeTab === 'contracts' ? CONTRACT_STATUS : UNIFIED_STATUS);
             const counts = {}; statusList.forEach(s => counts[s] = 0);
-            filtered.forEach(item => { if(counts[item.status] !== undefined) counts[item.status]++; });
+            filtered.forEach(item => { const st = normalizeStatus(item.status); if (counts[st] !== undefined) counts[st]++; });
             document.getElementById('statTotal').innerText = filtered.length;
             const map = {'Backlog':'statBacklog','Iniciado':'statIniciado','Em Planejamento':'statPlanejado','Crítico':'statCritico','Concluído':'statConcluido'};
             Object.keys(map).forEach(k => { if(document.getElementById(map[k])) document.getElementById(map[k]).innerText = counts[k]; });
-            document.getElementById('statExecDP').innerText = counts['Em Execução (Dentro do Planejado)']; document.getElementById('statExecEA').innerText = counts['Em Execução (Atenção)']; document.getElementById('statExecRA').innerText = counts['Em Execução (Em Risco / Atrasado)'];
+            if (document.getElementById('statExecDP')) document.getElementById('statExecDP').innerText = counts['Em Execução (Dentro do Planejado)']; if (document.getElementById('statExecEA')) document.getElementById('statExecEA').innerText = counts['Em Execução (Atenção)']; if (document.getElementById('statExecRA')) document.getElementById('statExecRA').innerText = counts['Em Execução (Em Risco / Atrasado)'];
             if (document.getElementById('statCancelado')) document.getElementById('statCancelado').innerText = counts['Cancelado'] || 0;
             if (activeTab === 'contracts') {
                 let totalResource = 0;
@@ -2829,8 +2857,8 @@ document.getElementById('projRisks').value = '';
             }
             // Concluídos: ficam ocultos no board e aparecem apenas na caixa/modal
             if (currentListFilter === 'Concluído') { if (typeof window.openCompletedModal === 'function') window.openCompletedModal(); return; }
-            if(currentListFilter !== 'all') filtered = filtered.filter(i => i.status === currentListFilter);
-            filtered = filtered.filter(i => i.status !== 'Concluído');
+            if(currentListFilter !== 'all') filtered = filtered.filter(i => normalizeStatus(i.status) === currentListFilter);
+            filtered = filtered.filter(i => normalizeStatus(i.status) !== 'Concluído');
             // Ordenação de Projetos (PMG + Concluídos no final)
             // Regra:
             // 1) Projetos NÃO concluídos primeiro
@@ -2838,7 +2866,7 @@ document.getElementById('projRisks').value = '';
             // 3) Desempate por nome
             if (activeTab === 'projects') {
                 const pmgOrder = { 'Alta': 0, 'Média': 1, 'Baixa': 2 };
-                const isDone = (it) => (it && it.status === 'Concluído');
+                const isDone = (it) => (it && normalizeStatus(it.status) === 'Concluído');
                 filtered = [...filtered].sort((a, b) => {
                     const da = isDone(a), db = isDone(b);
                     if (da !== db) return da ? 1 : -1;
@@ -2858,22 +2886,55 @@ document.getElementById('projRisks').value = '';
             const today = new Date().toISOString().split('T')[0];
 
             if (activeTab === 'projects') {
-                container.className = "grid grid-cols-1 lg:grid-cols-3 gap-6";
-                const cols = {
-                    'Alta': { label: 'Alta Complexidade (Estratégico)', class: 'pmg-g', tag: 'tag-g', letter: 'G', items: [] },
-                    'Média': { label: 'Média Complexidade (Tático)', class: 'pmg-m', tag: 'tag-m', letter: 'M', items: [] },
-                    'Baixa': { label: 'Baixa Complexidade (Rotina)', class: 'pmg-p', tag: 'tag-p', letter: 'P', items: [] }
-                };
-                filtered.forEach(item => { const comp = item.complexity || 'Média'; if(cols[comp]) cols[comp].items.push(item); else cols['Média'].items.push(item); });
-                Object.keys(cols).forEach(key => {
-                    const col = cols[key];
-                    const colDiv = document.createElement('div');
-                    colDiv.className = "pmg-column";
-                    const listHtml = col.items.map(item => createCardHtml(item, today)).join('');
-                    colDiv.innerHTML = `<div class="pmg-header ${col.class}"><span>${col.label}</span><span class="w-7 h-7 rounded-lg flex items-center justify-center bg-white border font-black ${col.class}">${col.letter}</span></div><div class="space-y-4">${listHtml || '<p class="text-xs text-slate-400 italic text-center py-4">Nenhum projeto.</p>'}</div>`;
-                    container.appendChild(colDiv);
-                });
-            } else {
+                container.className = "grid grid-cols-1 sm:grid-cols-3 gap-6";
+
+/** Normaliza valores de complexidade para chaves canônicas: 'Alta' | 'Média' | 'Baixa' */
+const normalizeComplexity = (raw) => {
+    if (raw === null || raw === undefined || raw === '') return 'Média';
+    let s = String(raw).trim();
+    // Suporte a valores legados (G/M/P)
+    if (s === 'G') return 'Alta';
+    if (s === 'M') return 'Média';
+    if (s === 'P') return 'Baixa';
+
+    const sl = s.toLowerCase();
+    // Aceita variações com/sem acento e descrições completas
+    if (sl.includes('alta') || sl.includes('grande') || sl.startsWith('g')) return 'Alta';
+    if (sl.includes('baixa') || sl.includes('pequen') || sl.startsWith('p')) return 'Baixa';
+    if (sl.includes('media') || sl.includes('média') || sl.includes('medio') || sl.includes('médio') || sl.startsWith('m')) return 'Média';
+
+    return 'Média';
+};
+
+const cols = {
+    'Alta':  { label: 'Alta Complexidade (Estratégico)',  class: 'pmg-g', tag: 'tag-g', letter: 'G', items: [] },
+    'Média': { label: 'Média Complexidade (Tático)',      class: 'pmg-m', tag: 'tag-m', letter: 'M', items: [] },
+    'Baixa': { label: 'Baixa Complexidade (Rotina)',      class: 'pmg-p', tag: 'tag-p', letter: 'P', items: [] }
+};
+
+filtered.forEach(item => {
+    const comp = normalizeComplexity(item.complexity);
+    cols[comp].items.push(item);
+});
+
+Object.keys(cols).forEach(key => {
+    const col = cols[key];
+    const colDiv = document.createElement('div');
+    colDiv.className = "pmg-column";
+    const listHtml = col.items.map(item => createCardHtml(item, today)).join('');
+    const count = col.items.length;
+    colDiv.innerHTML = `
+        <div class="pmg-header ${col.class}">
+            <span>${col.label} <span class="text-[10px] font-black text-slate-400">(${count})</span></span>
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center bg-white border font-black ${col.class}">${col.letter}</span>
+        </div>
+        <div class="space-y-4">
+            ${listHtml || '<p class="text-xs text-slate-400 italic text-center py-4">Nenhum projeto.</p>'}
+        </div>
+    `;
+    container.appendChild(colDiv);
+});
+} else {
                 container.className = "space-y-6";
                 if (activeTab === 'contracts') {
                     const rv1Items = filtered.filter(i => i.program === 'Respeito à Vida' && i.programComponent === '1');
