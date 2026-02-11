@@ -14,7 +14,7 @@
         .h-dvh { height: 100dvh; }
 
         /* Modal e Scrollbars */
-        #projectModal, #indicatorModal, #newIndicatorModal, #pmgLegendModal, #dispatchModal, #meetingModal, #editMeetingModal, #editDispatchItemModal, #addBacklogItemModal, #calendarModal, #rasciLegendModal { 
+        #projectModal, #indicatorModal, #newIndicatorModal, #pmgLegendModal, #dispatchModal, #meetingModal, #editMeetingModal, #editDispatchItemModal, #addBacklogItemModal, #customDispatchItemModal, #calendarModal, #rasciLegendModal { 
             display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; 
             background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); 
         }
@@ -759,7 +759,12 @@
                         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Selecione para incluir na pauta</p>
                     </div>
                 </div>
-                <button onclick="toggleModal('addBacklogItemModal')" class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-red-500 transition-all flex items-center justify-center"><i class="fas fa-times"></i></button>
+                <div class="flex items-center gap-2">
+                    <button onclick="openCustomDispatchItemModal()" class="h-8 px-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition-all flex items-center justify-center text-[11px] font-black uppercase tracking-wider shadow shadow-indigo-100">
+                        <i class="fas fa-plus mr-2"></i> Item avulso
+                    </button>
+                    <button onclick="toggleModal('addBacklogItemModal')" class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-red-500 transition-all flex items-center justify-center"><i class="fas fa-times"></i></button>
+                </div>
             </div>
             
             <div class="flex-1 overflow-y-auto bg-slate-50/50 p-4 sm:p-6">
@@ -783,7 +788,57 @@
     </div>
 
     <!-- Modal (Universal Project) -->
-    <div id="projectModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
+    
+    <!-- Modal Item Avulso (Despachos) -->
+    <div id="customDispatchItemModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-slate-800 text-white rounded-lg flex items-center justify-center shadow-lg">
+                        <i class="fas fa-file-circle-plus text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-slate-800 uppercase tracking-tight text-base">Novo Item Avulso</h3>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Item independente para incluir na pauta</p>
+                    </div>
+                </div>
+                <button onclick="toggleModal('customDispatchItemModal')" class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-red-500 transition-all flex items-center justify-center"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="p-6 flex-1 overflow-y-auto bg-slate-50/50">
+                <form id="customDispatchItemForm" class="space-y-5">
+                    <div class="flex flex-col">
+                        <label class="field-label">Assunto</label>
+                        <input type="text" id="customDispatchSubject" class="input-style" required placeholder="Ex: Aprovação de material, alinhamento institucional...">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="field-label">Descrição</label>
+                        <textarea id="customDispatchDescription" rows="4" class="input-style resize-none" placeholder="Contexto, decisão esperada, observações..."></textarea>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="field-label">Data</label>
+                        <input type="date" id="customDispatchDate" class="input-style" required>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button type="button" onclick="toggleModal('customDispatchItemModal')" class="h-10 px-4 rounded-xl bg-white border border-slate-200 text-slate-600 font-black uppercase tracking-wider text-[11px] hover:bg-slate-50 transition-all">
+                            Cancelar
+                        </button>
+                        <button type="button" onclick="createCustomDispatchItem()" class="h-10 px-5 rounded-xl bg-slate-900 text-white font-black uppercase tracking-wider text-[11px] hover:bg-slate-800 transition-all shadow">
+                            <i class="fas fa-save mr-2"></i> Salvar item
+                        </button>
+                    </div>
+                </form>
+
+                <p class="text-[11px] text-slate-400 mt-4">
+                    Depois de salvar, o item aparece na lista “Adicionar Itens” como <span class="font-black text-slate-600">AVULSO</span>.
+                </p>
+            </div>
+        </div>
+    </div>
+<div id="projectModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden border border-slate-200 flex flex-col max-h-[95vh] sm:max-h-[90vh]">
             <div class="px-4 sm:px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
                 <div class="flex items-center space-x-3">
@@ -1644,7 +1699,7 @@
         }
 
 
-        let dataStore = { projects: [], processes: [], contracts: [], operational: [], calendarEvents: [], indicators: [], dispatchMeetings: [] };
+        let dataStore = { projects: [], processes: [], contracts: [], operational: [], calendarEvents: [], indicators: [], dispatchMeetings: [], dispatchCustomItems: [] };
         
         // ... (Constantes PORTARIA_DATA e INITIAL_INDICATORS mantidas) ...
         const PORTARIA_DATA = [
@@ -1809,8 +1864,8 @@
         initAuth();
 
         function initListeners() {
-            ['projects', 'processes', 'contracts', 'operational', 'calendar_events', 'indicators', 'dispatch_meetings'].forEach(colName => {
-                const storeKey = colName === 'calendar_events' ? 'calendarEvents' : (colName === 'dispatch_meetings' ? 'dispatchMeetings' : colName);
+            ['projects', 'processes', 'contracts', 'operational', 'calendar_events', 'indicators', 'dispatch_meetings', 'dispatch_custom_items'].forEach(colName => {
+                const storeKey = colName === 'calendar_events' ? 'calendarEvents' : (colName === 'dispatch_meetings' ? 'dispatchMeetings' : (colName === 'dispatch_custom_items' ? 'dispatchCustomItems' : colName));
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', colName), (snapshot) => {
                     // IMPORTANTE: garante que o id do Firestore prevaleça mesmo que exista um campo "id" no documento
                     // (isso evita comportamentos estranhos como cards duplicando/colidindo por id sobrescrito).
@@ -2380,9 +2435,212 @@ document.getElementById('projRisks').value = '';
             // Filtro por coordenação (menu lateral)
             if (currentFilter !== 'all') { items = items.filter(i => (i.coord || '') === currentFilter); }
  items.sort((a,b) => a.prazo.localeCompare(b.prazo)); const yearStart = new Date('2026-01-01').getTime(); const yearEnd = new Date('2026-12-31').getTime(); const yearDuration = yearEnd - yearStart; const today = new Date().getTime(); if(items.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026.</p>'; return; } items.forEach(item => { const deadlineDate = new Date(item.prazo).getTime(); let startDate = yearStart; if (item.roadmap && item.roadmap.length > 0) { const sorted = [...item.roadmap].sort((a,b) => a.data.localeCompare(b.data)); startDate = new Date(sorted[0].data).getTime(); } const safeStart = Math.max(startDate, yearStart); const safeEnd = Math.min(deadlineDate, yearEnd); if (safeEnd < safeStart) return; const left = ((safeStart - yearStart) / yearDuration) * 100; const width = ((safeEnd - safeStart) / yearDuration) * 100; const colorClass = item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'; const row = document.createElement('div'); row.className = 'gantt-row'; let milestonesHtml = ''; if (item.roadmap) { item.roadmap.forEach(r => { const mDate = new Date(r.data).getTime(); if (mDate >= yearStart && mDate <= yearEnd) { const mPos = ((mDate - yearStart) / yearDuration) * 100; const mColor = item.type === 'project' ? 'bg-blue-400' : 'bg-purple-400'; const fmtDate = new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); milestonesHtml += `<div class="gantt-milestone-wrapper" style="left: ${mPos}%"><div class="gantt-milestone-diamond ${mColor}"></div><div class="gantt-milestone-tooltip"><div class="font-bold text-emerald-300 mb-0.5 uppercase tracking-wider">${fmtDate}</div><div class="font-medium text-white text-[11px] leading-tight">${r.etapa}</div></div></div>`; } }); } row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${item.coord || 'N/A'}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${item.name}">${item.name}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${item.type === 'project' ? 'projects' : 'contracts'}')"><span class="gantt-bar-label">${item.status}</span></div>${milestonesHtml}</div>`; container.appendChild(row); }); if (today >= yearStart && today <= yearEnd) { const todayPos = ((today - yearStart) / yearDuration) * 100; const line = document.createElement('div'); line.className = 'gantt-today-line'; line.style.left = `${todayPos}%`; line.innerHTML = `<div class="gantt-today-label">Hoje</div>`; container.appendChild(line); } };
-        window.openAddBacklogItemModal = (meetingId) => { if(meetingId) selectedMeetingId = meetingId; const list = document.getElementById('backlogItemsListForModal'); list.innerHTML = ''; const emptyMsg = document.getElementById('emptyBacklogMsg'); emptyMsg.classList.add('hidden'); const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId); const existingIds = meeting ? new Set(meeting.items.map(i => i.itemId)) : new Set(); let count = 0; ['projects', 'processes', 'contracts', 'operational'].forEach(col => { if(dataStore[col]) { dataStore[col].filter(i => i.onDispatch === true && !existingIds.has(i.id)).forEach(item => { count++; const originColor = { projects: 'bg-blue-100 text-blue-700 border-blue-200', processes: 'bg-blue-100 text-blue-700 border-blue-200', contracts: 'bg-purple-100 text-purple-700 border-purple-200', operational: 'bg-orange-100 text-orange-700 border-orange-200' }[col]; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL' }[col]; const row = document.createElement('label'); row.className = "flex items-start gap-3 cursor-pointer bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all select-none group relative overflow-hidden"; row.innerHTML = `<div class="pt-1"><input type="checkbox" class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 transition-all backlog-add-checkbox" data-id="${item.id}" data-col="${col}" onchange="toggleBacklogItemStyle(this)"></div><div class="flex-1 min-w-0 z-10"><div class="flex items-center gap-2 mb-1.5"><span class="text-[9px] font-black uppercase px-2 py-0.5 rounded border ${originColor}">${originLabel}</span>${item.priority === 'Urgente' ? '<span class="bg-red-50 text-red-600 text-[9px] font-black uppercase px-1.5 py-0.5 rounded border border-red-100">Urgente</span>' : ''}</div><p class="text-sm font-bold text-slate-800 leading-tight group-hover:text-indigo-700 transition-colors">${item.name}</p><p class="text-xs text-slate-400 mt-1 truncate preserve-lines preserve-lines">${item.desc || 'Sem descrição'}</p></div>`; list.appendChild(row); }); } }); if(count === 0) { emptyMsg.classList.remove('hidden'); } toggleModal('addBacklogItemModal'); };
+        
+        // ==========================
+        // DESPACHOS – ITENS AVULSOS
+        // ==========================
+        window.openCustomDispatchItemModal = () => {
+            const form = document.getElementById('customDispatchItemForm');
+            if (form) form.reset();
+            const d = document.getElementById('customDispatchDate');
+            if (d) d.value = new Date().toISOString().slice(0,10);
+            toggleModal('customDispatchItemModal');
+        };
+
+        window.createCustomDispatchItem = async () => {
+            const subject = (document.getElementById('customDispatchSubject')?.value || '').trim();
+            const description = (document.getElementById('customDispatchDescription')?.value || '').trim();
+            const date = document.getElementById('customDispatchDate')?.value;
+
+            if (!subject) {
+                alert('Preencha o assunto.');
+                return;
+            }
+            if (!date) {
+                alert('Selecione uma data.');
+                return;
+            }
+
+            const id = Date.now().toString();
+            const payload = {
+                name: subject,
+                desc: description,
+                date,
+                createdAt: Date.now()
+            };
+
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_custom_items', id), payload);
+                toggleModal('customDispatchItemModal');
+                // reabre a lista de backlog se ela estiver aberta
+                if (document.getElementById('addBacklogItemModal')?.style?.display === 'flex') {
+                    window.openAddBacklogItemModal(selectedMeetingId);
+                }
+            } catch (err) {
+                console.error('Erro ao salvar item avulso:', err);
+                alert('Erro ao salvar no Firebase. Veja o console.');
+            }
+        };
+
+        window.deleteCustomDispatchItem = async (id) => {
+            if (!id) return;
+            if (!confirm('Excluir este item avulso?')) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_custom_items', id));
+                window.renderDespachos?.();
+            } catch (err) {
+                console.error('Erro ao excluir item avulso:', err);
+                alert('Erro ao excluir no Firebase. Veja o console.');
+            }
+        };
+window.openAddBacklogItemModal = (meetingId) => {
+            if (meetingId) selectedMeetingId = meetingId;
+
+            const list = document.getElementById('backlogItemsListForModal');
+            list.innerHTML = '';
+
+            const emptyMsg = document.getElementById('emptyBacklogMsg');
+            emptyMsg.classList.add('hidden');
+
+            const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId);
+            const existingIds = meeting ? new Set(meeting.items.map(i => `${i.collection}::${i.itemId}`)) : new Set();
+
+            let count = 0;
+
+            // 1) Itens vindos dos cards (marcados para despacho)
+            ['projects', 'processes', 'contracts', 'operational'].forEach(col => {
+                if (!dataStore[col]) return;
+
+                dataStore[col]
+                    .filter(i => i.onDispatch === true)
+                    .forEach(item => {
+                        const key = `${col}::${item.id}`;
+                        if (existingIds.has(key)) return;
+
+                        count++;
+
+                        const originColor = {
+                            projects: 'bg-blue-100 text-blue-700 border-blue-200',
+                            processes: 'bg-blue-100 text-blue-700 border-blue-200',
+                            contracts: 'bg-purple-100 text-purple-700 border-purple-200',
+                            operational: 'bg-orange-100 text-orange-700 border-orange-200'
+                        }[col];
+
+                        const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL', dispatchCustomItems: 'AVULSO' }[col] || 'ITEM';
+
+                        const row = document.createElement('label');
+                        row.className = "flex items-start gap-3 cursor-pointer bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all select-none group relative overflow-hidden";
+                        row.innerHTML = `
+                            <div class="pt-1">
+                                <input type="checkbox" class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 transition-all backlog-add-checkbox"
+                                    data-id="${item.id}" data-col="${col}" onchange="toggleBacklogItemStyle(this)">
+                            </div>
+                            <div class="flex-1 min-w-0 z-10">
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded border ${originColor}">${originLabel}</span>
+                                    ${item.priority === 'Urgente' ? '<span class="bg-red-50 text-red-600 text-[9px] font-black uppercase px-1.5 py-0.5 rounded border border-red-100">Urgente</span>' : ''}
+                                </div>
+                                <p class="text-sm font-bold text-slate-800 leading-tight group-hover:text-indigo-700 transition-colors">${item.name}</p>
+                                <p class="text-xs text-slate-400 mt-1 truncate preserve-lines">${item.desc || 'Sem descrição'}</p>
+                            </div>`;
+                        list.appendChild(row);
+                    });
+            });
+
+            // 2) Itens avulsos (independentes)
+            (dataStore.dispatchCustomItems || []).forEach(item => {
+                const key = `dispatchCustomItems::${item.id}`;
+                if (existingIds.has(key)) return;
+
+                count++;
+
+                const row = document.createElement('label');
+                row.className = "flex items-start gap-3 cursor-pointer bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:border-slate-400 hover:shadow-md transition-all select-none group relative overflow-hidden";
+                row.innerHTML = `
+                    <div class="pt-1">
+                        <input type="checkbox" class="w-5 h-5 text-slate-800 rounded border-slate-300 focus:ring-slate-500 transition-all backlog-add-checkbox"
+                            data-id="${item.id}" data-col="dispatchCustomItems" onchange="toggleBacklogItemStyle(this)">
+                    </div>
+                    <div class="flex-1 min-w-0 z-10">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded border bg-slate-100 text-slate-700 border-slate-200">AVULSO</span>
+                            <span class="text-[10px] text-slate-400 font-bold">${item.date || ''}</span>
+                            <button type="button" title="Excluir" onclick="event.preventDefault(); event.stopPropagation(); deleteCustomDispatchItem('${item.id}')" class="ml-auto w-7 h-7 rounded-lg bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <p class="text-sm font-bold text-slate-800 leading-tight group-hover:text-slate-900 transition-colors">${item.name}</p>
+                        <p class="text-xs text-slate-400 mt-1 truncate preserve-lines">${item.desc || 'Sem descrição'}</p>
+                    </div>`;
+                list.appendChild(row);
+            });
+
+            if (count === 0) {
+                emptyMsg.classList.remove('hidden');
+            }
+
+            toggleModal('addBacklogItemModal');
+        };
         window.toggleBacklogItemStyle = (cb) => { const card = cb.parentElement.parentElement; if(cb.checked) { card.classList.add('border-indigo-500', 'bg-indigo-50', 'ring-1', 'ring-indigo-500'); } else { card.classList.remove('border-indigo-500', 'bg-indigo-50', 'ring-1', 'ring-indigo-500'); } };
-        window.addSelectedBacklogItems = async () => { const checkedBoxes = document.querySelectorAll('.backlog-add-checkbox:checked'); if(checkedBoxes.length === 0) { const btn = document.querySelector('#addBacklogItemModal button[onclick="addSelectedBacklogItems()"]'); const originalText = btn.innerHTML; btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Selecione um item'; btn.classList.add('bg-red-500'); setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('bg-red-500'); }, 2000); return; } const meeting = dataStore.dispatchMeetings.find(m => String(m.id) === String(selectedMeetingId)); if(!meeting) return; const newItems = meeting.items ? [...meeting.items] : []; const __maxOrder = newItems.reduce((mx,it)=>Math.max(mx, (parseInt(it.order ?? it.itemNumber ?? 0,10)||0)), 0); let __orderCounter = __maxOrder; checkedBoxes.forEach(cb => { const id = cb.getAttribute('data-id'); const col = cb.getAttribute('data-col'); const realItem = dataStore[col]?.find(i => String(i.id) === String(id)); if(realItem) { const alreadyExists = newItems.some(existing => String(existing.itemId) === String(id)); if (!alreadyExists) { newItems.push({ itemId: id, collection: col, name: realItem.name, status: 'Pendente', outcome: '', order: (++__orderCounter) }); } } }); try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meeting.id), { items: newItems }, { merge: true }); toggleModal('addBacklogItemModal'); window.renderDespachos(); } catch(err) { console.error("Erro ao adicionar itens:", err); } };
+        window.addSelectedBacklogItems = async () => {
+            const checkedBoxes = document.querySelectorAll('.backlog-add-checkbox:checked');
+
+            if (checkedBoxes.length === 0) {
+                const btn = document.querySelector('#addBacklogItemModal button[onclick="addSelectedBacklogItems()"]');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Selecione um item';
+                btn.classList.add('bg-red-500');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-red-500');
+                }, 2000);
+                return;
+            }
+
+            const meeting = dataStore.dispatchMeetings.find(m => String(m.id) === String(selectedMeetingId));
+            if (!meeting) return;
+
+            const newItems = meeting.items ? [...meeting.items] : [];
+            const existingKeys = new Set(newItems.map(it => `${it.collection}::${it.itemId}`));
+
+            const __maxOrder = newItems.reduce((mx, it) => Math.max(mx, (parseInt(it.order ?? it.itemNumber ?? 0, 10) || 0)), 0);
+            let __orderCounter = __maxOrder;
+
+            checkedBoxes.forEach(cb => {
+                const id = cb.getAttribute('data-id');
+                const col = cb.getAttribute('data-col');
+
+                const realItem = dataStore[col]?.find(i => String(i.id) === String(id));
+                if (!realItem) return;
+
+                const key = `${col}::${id}`;
+                if (existingKeys.has(key)) return;
+
+                existingKeys.add(key);
+
+                newItems.push({
+                    itemId: id,
+                    collection: col,
+                    name: realItem.name,
+                    status: 'Pendente',
+                    outcome: '',
+                    order: (++__orderCounter)
+                });
+            });
+
+            try {
+                await setDoc(
+                    doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meeting.id),
+                    { items: newItems },
+                    { merge: true }
+                );
+                toggleModal('addBacklogItemModal');
+                window.renderDespachos();
+            } catch (err) {
+                console.error("Erro ao adicionar itens:", err);
+                alert('Erro ao salvar no Firebase. Veja o console.');
+            }
+        };
         window.renderDespachos = () => { /* ... Render Despachos (igual ao anterior) ... */ 
             // Para manter concisão, mantendo a função que você já tem, ela não foi alterada, 
             // mas o createCardHtml abaixo É A ALTERAÇÃO PRINCIPAL.
@@ -2405,7 +2663,7 @@ document.getElementById('projRisks').value = '';
                     return ra - rb;
                 });
             }
- if(backlogItems.length === 0) { mainContent.innerHTML = '<div class="flex flex-col items-center justify-center py-20 opacity-50"><i class="fas fa-inbox text-5xl mb-4 text-slate-300"></i><p class="text-slate-400 italic font-medium">Nenhum item marcado para despacho.</p></div>'; return; } backlogItems.forEach(item => { const originLabel = { projects: 'Projeto', contracts: 'Contrato', operational: 'Operacional' }[item.originCollection]; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700' }[item.originCollection]; const jsonVal = JSON.stringify({id: item.id, collection: item.originCollection}); const isChecked = selectedBacklogItems.has(JSON.stringify({id: item.id, collection: item.originCollection})); const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-3 flex items-start gap-4 dispatch-item-row"; if(isChecked) row.classList.add('bg-blue-50', 'border-blue-200'); row.innerHTML = `<div class="flex items-start gap-3 pt-1"><span class="drag-handle cursor-move text-slate-300 hover:text-slate-500 transition-colors" title="Arraste para reordenar"><i class="fas fa-grip-vertical text-lg"></i></span><input type="checkbox" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 dispatch-checkbox cursor-pointer" value='${jsonVal}' onchange="toggleBacklogSelection(this)" ${isChecked ? 'checked' : ''}></div><div class="flex-1"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${originColor}">${originLabel}</span><div class="w-1.5 h-3 rounded-full ${window.getStatusColorBg(item.status)}"></div>${item.priority === 'Urgente' ? '<span class="bg-red-100 text-red-600 text-[10px] font-black uppercase px-2 py-0.5 rounded">Urgente</span>' : ''}</div><h4 class="font-bold text-slate-800 text-base">${(item.pautaTitle && item.pautaTitle.trim()) ? item.pautaTitle : item.name}</h4><p class="text-xs text-slate-500 mt-1 line-clamp-2 preserve-lines">${item.desc || 'Sem descrição.'}</p></div><button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${item.originCollection}')" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover do Backlog"><i class="fas fa-times-circle text-lg"></i></button>`;
+ if(backlogItems.length === 0) { mainContent.innerHTML = '<div class="flex flex-col items-center justify-center py-20 opacity-50"><i class="fas fa-inbox text-5xl mb-4 text-slate-300"></i><p class="text-slate-400 italic font-medium">Nenhum item marcado para despacho.</p></div>'; return; } backlogItems.forEach(item => { const originLabel = { projects: 'Projeto', contracts: 'Contrato', operational: 'Operacional' }[item.originCollection]; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700', dispatchCustomItems: 'bg-slate-100 text-slate-700' }[item.originCollection]; const jsonVal = JSON.stringify({id: item.id, collection: item.originCollection}); const isChecked = selectedBacklogItems.has(JSON.stringify({id: item.id, collection: item.originCollection})); const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-3 flex items-start gap-4 dispatch-item-row"; if(isChecked) row.classList.add('bg-blue-50', 'border-blue-200'); row.innerHTML = `<div class="flex items-start gap-3 pt-1"><span class="drag-handle cursor-move text-slate-300 hover:text-slate-500 transition-colors" title="Arraste para reordenar"><i class="fas fa-grip-vertical text-lg"></i></span><input type="checkbox" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 dispatch-checkbox cursor-pointer" value='${jsonVal}' onchange="toggleBacklogSelection(this)" ${isChecked ? 'checked' : ''}></div><div class="flex-1"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${originColor}">${originLabel}</span><div class="w-1.5 h-3 rounded-full ${window.getStatusColorBg(item.status)}"></div>${item.priority === 'Urgente' ? '<span class="bg-red-100 text-red-600 text-[10px] font-black uppercase px-2 py-0.5 rounded">Urgente</span>' : ''}</div><h4 class="font-bold text-slate-800 text-base">${(item.pautaTitle && item.pautaTitle.trim()) ? item.pautaTitle : item.name}</h4><p class="text-xs text-slate-500 mt-1 line-clamp-2 preserve-lines">${item.desc || 'Sem descrição.'}</p></div><button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${item.originCollection}')" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover do Backlog"><i class="fas fa-times-circle text-lg"></i></button>`;
                             row.setAttribute('draggable','true');
                             row.dataset.key = jsonVal;
                             row.addEventListener('dragstart', (e) => {
@@ -2439,7 +2697,7 @@ document.getElementById('projRisks').value = '';
                             mainContent.appendChild(row); }); } else { const meeting = dataStore.dispatchMeetings.find(m => m.id === selectedMeetingId); if(!meeting) { selectedMeetingId = null; window.renderDespachos(); return; } headerTitle.innerText = meeting.title || 'Reunião de Pauta'; const [y, m, d] = meeting.date.split('-'); headerSub.innerText = `${d}/${m}/${y} • ${meeting.items ? meeting.items.length : 0} Itens`; headerSub.className = 'text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider text-slate-600'; actionArea.innerHTML = `<div class="flex items-center gap-2"><button onclick="openAddBacklogItemModal('${meeting.id}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold uppercase bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-sm"><i class="fas fa-plus-circle"></i> Adicionar Itens</button><div class="w-px h-6 bg-slate-200 mx-1"></div><button onclick="openEditMeetingModal('${meeting.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold uppercase bg-blue-50 border border-blue-200 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-edit mr-1"></i> Editar</button><button onclick="exportSelectedMeetingPdf()" class="text-slate-900 hover:text-slate-950 text-xs font-bold uppercase bg-slate-100 border border-slate-200 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1"><i class=\"fas fa-file-pdf\"></i> PDF</button><button onclick="deleteMeeting('${meeting.id}', this)" class="text-red-400 hover:text-red-600 text-xs font-bold uppercase border border-red-200 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-trash mr-1"></i> Excluir</button><button onclick="closeMeetingDetails()" class="text-slate-400 hover:text-slate-600 text-xs font-bold uppercase px-3 py-1.5"><i class="fas fa-arrow-left mr-1"></i> Voltar</button></div>`;
                 if(!meeting.items || meeting.items.length === 0) { mainContent.innerHTML = `<p class="text-slate-400 italic text-center mt-10">Nenhum item nesta pauta.</p>`; } else {
                     const __orderedItems = (meeting.items || []).map((it,i)=>({ ...it, __idx: i, order: (it.order ?? it.itemNumber ?? (i+1)) })).sort((a,b)=>(a.order||0)-(b.order||0));
-                    __orderedItems.forEach((item, idx) => { const liveItem = dataStore[item.collection]?.find(i => i.id === item.itemId) || {}; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL' }[item.collection] || item.collection; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700' }[item.collection] || 'bg-slate-100';
+                    __orderedItems.forEach((item, idx) => { const liveItem = dataStore[item.collection]?.find(i => i.id === item.itemId) || {}; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL', dispatchCustomItems: 'AVULSO' }[item.collection] || item.collection; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700', dispatchCustomItems: 'bg-slate-100 text-slate-700' }[item.collection] || 'bg-slate-100';
                         const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4 relative group dispatch-detail-card";
                         row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><p class="text-sm text-slate-600 leading-relaxed mb-3 preserve-lines">${(item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : (liveItem.desc || 'Sem descrição detalhada.')}</p><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><p class="text-sm text-red-700 font-medium leading-snug preserve-lines">${liveItem.risks}</p></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${(item.docLinks || (item.docLink ? [item.docLink] : [])).length} Arquivos</span></div><div class="space-y-2 mb-3">${(item.docLinks || (item.docLink ? [item.docLink] : [])).map((link, linkIdx) => `<div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 shadow-sm group/link"><div class="w-6 h-6 rounded bg-blue-50 text-blue-500 flex items-center justify-center text-xs shrink-0"><i class="fas fa-link"></i></div><a href="${link}" target="_blank" class="flex-1 text-xs font-bold text-slate-600 truncate hover:text-blue-600 hover:underline" title="${link}">${link}</a><div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/link:opacity-100 transition-opacity"><a href="${link}" target="_blank" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-colors"><i class="fas fa-external-link-alt text-[10px]"></i></a><button onclick="removeMeetingItemDoc('${meeting.id}', ${item.__idx}, ${linkIdx})" class="w-6 h-6 rounded hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-colors" title="Remover Link"><i class="fas fa-times text-[10px]"></i></button></div></div>`).join('')}${(!item.docLinks && !item.docLink) || (item.docLinks && item.docLinks.length === 0) ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${item.__idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); addMeetingItemDoc('${meeting.id}', ${item.__idx}, this.value); this.value=''; }"><button onclick="addMeetingItemDoc('${meeting.id}', ${item.__idx}, document.getElementById('newDoc_${meeting.id}_${item.__idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${item.__idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${item.__idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Registre a decisão, responsáveis e prazos definidos na reunião..." onblur="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, document.getElementById('outcome_${meeting.id}_${item.__idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
                         mainContent.appendChild(row); }); } }
