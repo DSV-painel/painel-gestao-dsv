@@ -488,6 +488,56 @@
 </style>
 </head>
 <body id="mainBody" class="bg-slate-50 text-slate-900 text-sm overflow-hidden">
+    <!-- Login Gate (Firebase Auth: Email/Senha) -->
+    <div id="loginGate" style="
+        position: fixed;
+        inset: 0;
+        background: rgba(248,250,252,0.98);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999999;
+        padding: 24px;
+    ">
+        <div style="
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 18px 60px rgba(0,0,0,0.12);
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+        ">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                <h2 style="margin:0; font-size: 18px; font-weight: 900; letter-spacing: -0.02em;">Acesso ao Painel</h2>
+                <span style="font-size:12px; font-weight:800; color:#64748b;">DSV</span>
+            </div>
+            <p style="margin:10px 0 14px; font-size: 13px; color:#475569;">
+                Entre com seu <b>e-mail</b> e <b>senha</b> cadastrados.
+            </p>
+
+            <label style="display:block; font-size:12px; font-weight:800; margin-top:10px; color:#0f172a;">E-mail</label>
+            <input id="loginEmail" type="email" autocomplete="username" placeholder="nome@dominio"
+                style="width:100%; padding:10px 12px; margin-top:6px; border-radius:12px; border:1px solid #cbd5e1; outline:none;" />
+
+            <label style="display:block; font-size:12px; font-weight:800; margin-top:12px; color:#0f172a;">Senha</label>
+            <input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••"
+                style="width:100%; padding:10px 12px; margin-top:6px; border-radius:12px; border:1px solid #cbd5e1; outline:none;" />
+
+            <button id="loginBtn" type="button"
+                style="width:100%; margin-top:14px; padding:10px 12px; border-radius:12px; font-weight:900; border:1px solid #0f172a; background:#0f172a; color:#fff;">
+                Entrar
+            </button>
+
+            <p id="loginError" style="margin:10px 0 0; font-size:12px; color:#dc2626; display:none;"></p>
+
+            <p style="margin:14px 0 0; font-size:11px; color:#64748b;">
+                Se você não tem acesso, peça para um administrador cadastrar seu usuário no Firebase Authentication.
+            </p>
+        </div>
+    </div>
+
     <!-- ... (Modais e Sidebar iguais, sem alterações) ... -->
     <!-- Modal Novo Indicador -->
     <div id="newIndicatorModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
@@ -1629,7 +1679,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, getDoc, writeBatch } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
         // --- CONFIGURAÇÃO FIREBASE ---
@@ -1836,32 +1886,63 @@
             }
         ];
 
-        async function initAuth() {
+        // --- AUTH (Email/Senha) ---
+        const loginGate = document.getElementById('loginGate');
+        const loginEmailEl = document.getElementById('loginEmail');
+        const loginPassEl = document.getElementById('loginPass');
+        const loginBtnEl = document.getElementById('loginBtn');
+        const loginErrEl = document.getElementById('loginError');
+
+        function showLogin(message = '') {
+            if (loginErrEl) {
+                loginErrEl.style.display = message ? 'block' : 'none';
+                loginErrEl.textContent = message || '';
+            }
+            if (loginGate) loginGate.style.display = 'flex';
+        }
+
+        function hideLogin() {
+            if (loginErrEl) {
+                loginErrEl.style.display = 'none';
+                loginErrEl.textContent = '';
+            }
+            if (loginGate) loginGate.style.display = 'none';
+        }
+
+        async function doEmailPasswordLogin() {
+            const email = (loginEmailEl?.value || '').trim();
+            const password = (loginPassEl?.value || '');
+
+            if (!email || !password) {
+                showLogin('Preencha e-mail e senha.');
+                return;
+            }
+
             try {
-                await signInAnonymously(auth);
-            } catch (error) {
-                console.error("Firebase Auth Error:", error);
-                const statusDiv = document.getElementById('sysStatus');
-                const statusText = document.getElementById('sysStatusText');
-                const statusDot = document.getElementById('sysStatusDot');
-
-                if(statusDiv) {
-                    statusDiv.className = "md:mt-5 flex items-center gap-2 text-[10px] font-black uppercase tracking-wider py-1 md:py-2 px-2 md:px-3 rounded-lg w-auto md:w-full transition-all border border-red-900/50 bg-red-50 cursor-pointer animate-pulse";
-                    statusDiv.onclick = () => window.open('https://console.firebase.google.com/project/painel-gestao-d674d/authentication/providers', '_blank');
-                    statusDiv.title = "Clique para ativar a Autenticação Anônima no console";
-                }
-                
-                if(statusDot) {
-                    statusDot.className = "w-2 h-2 rounded-full bg-red-600";
-                }
-
-                if(statusText) {
-                    statusText.className = "text-red-600 hidden sm:inline font-bold";
-                    statusText.innerText = "Erro Auth (Ativar)";
-                }
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (err) {
+                console.error('Auth Error:', err);
+                // Mensagem amigável
+                showLogin('E-mail ou senha inválidos (ou usuário não cadastrado).');
             }
         }
-        initAuth();
+
+        if (loginBtnEl) {
+            loginBtnEl.addEventListener('click', doEmailPasswordLogin);
+        }
+        // Enter para entrar
+        if (loginPassEl) {
+            loginPassEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') doEmailPasswordLogin();
+            });
+        }
+
+        // Logout opcional (chame window.logoutPainel() de um botão/menu)
+        window.logoutPainel = async () => {
+            try { await signOut(auth); } catch (e) { console.error(e); }
+        };
+
+
 
         function initListeners() {
             ['projects', 'processes', 'contracts', 'operational', 'calendar_events', 'indicators', 'dispatch_meetings', 'dispatch_custom_items'].forEach(colName => {
@@ -3551,7 +3632,16 @@ window.setListFilter = f => { if(f === 'Concluído' && typeof window.openComplet
         window.setFilter = f => { currentFilter = f; const btns = document.querySelectorAll('.coord-btn'); btns.forEach(b => b.classList.remove('active-coord')); if(f !== 'all') { document.getElementById('coordBtnContainer').classList.add('coord-list-active'); const b = document.getElementById('coord-'+f); if(b) b.classList.add('active-coord'); } else document.getElementById('coordBtnContainer').classList.remove('coord-list-active'); if (activeTab === 'gantt') window.renderGantt(); else window.renderData(); };
         window.updateStatusUI = s => { document.getElementById('sysStatusDot').className = `w-2 h-2 rounded-full ${s === 'online' ? 'bg-emerald-400' : 'bg-amber-400'}`; document.getElementById('sysStatusText').innerText = s === 'online' ? 'Online' : 'Sincronizando...'; };
         
-        onAuthStateChanged(auth, (user) => { currentUser = user; if (user) { initListeners(); setTimeout(() => window.switchTab('projects'), 500); setupTagInput('rasciInputR', 'rasciContainerR', 'tag-blue'); setupTagInput('rasciInputA', 'rasciContainerA', 'tag-red'); setupTagInput('rasciInputS', 'rasciContainerS', 'tag-orange'); setupTagInput('rasciInputC', 'rasciContainerC', 'tag-purple'); setupTagInput('rasciInputI', 'rasciContainerI', 'tag-green');
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (!user) {
+                showLogin();
+                return;
+            }
+            hideLogin();
+            if (window.__dsvListenersStarted) return;
+            window.__dsvListenersStarted = true;
+ initListeners(); setTimeout(() => window.switchTab('projects'), 500); setupTagInput('rasciInputR', 'rasciContainerR', 'tag-blue'); setupTagInput('rasciInputA', 'rasciContainerA', 'tag-red'); setupTagInput('rasciInputS', 'rasciContainerS', 'tag-orange'); setupTagInput('rasciInputC', 'rasciContainerC', 'tag-purple'); setupTagInput('rasciInputI', 'rasciContainerI', 'tag-green');
 
                     // Indicadores: listeners de busca/filtro
                     const s = document.getElementById('indicatorSearch');
@@ -3575,7 +3665,8 @@ window.setListFilter = f => { if(f === 'Concluído' && typeof window.openComplet
                     if (so) {
                         so.addEventListener('change', (e) => { indicatorSort = e.target.value; if (activeTab === 'indicators') window.renderIndicators(); });
                     }
- } });
+ 
+        });
     
 
 /* =================== CORRECAO: FUNCOES PARA NOVO INDICADOR =================== */
