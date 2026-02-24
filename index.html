@@ -2330,27 +2330,139 @@ document.getElementById('projRisks').value = '';
             }
         };
 
-        window.toggleDispatch = async (id, collectionName) => { if(!collectionName) collectionName = activeTab; const item = dataStore[collectionName].find(i => i.id === id); if(!item) return; const newVal = !item.onDispatch; try { item.onDispatch = newVal; await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), { onDispatch: newVal }, { merge: true }); if(activeTab === 'despachos') window.renderDespachos(); else window.renderData(); } catch (err) { console.error("Erro ao atualizar despacho:", err); } };
+// Elegant confirm modal (replaces window.confirm for key actions)
+window.confirmModal = ({ title = 'Confirmar', message = '', okText = 'Confirmar', cancelText = 'Cancelar', variant = 'neutral' } = {}) => {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('confirmModal');
+        const backdrop = document.getElementById('confirmModalBackdrop');
+        const titleEl = document.getElementById('confirmModalTitle');
+        const msgEl = document.getElementById('confirmModalMessage');
+        const okBtn = document.getElementById('confirmModalOk');
+        const cancelBtn = document.getElementById('confirmModalCancel');
+        const icon = document.getElementById('confirmModalIcon');
 
+        if (!modal || !backdrop || !titleEl || !msgEl || !okBtn || !cancelBtn) {
+            resolve(confirm(`${title}\n\n${message}`));
+            return;
+        }
 
-        window.togglePlanner = async (id, collectionName) => {
-            if(!collectionName) collectionName = activeTab;
-            const item = dataStore[collectionName]?.find(i => i.id === id);
-            if(!item) return;
-            const newVal = !item.onPlanner;
-            try {
-                item.onPlanner = newVal;
-                await setDoc(
-                    doc(db, 'artifacts', appId, 'public', 'data', collectionName, id),
-                    { onPlanner: newVal },
-                    { merge: true }
-                );
-                if(activeTab === 'despachos') window.renderDespachos();
-                else window.renderData();
-            } catch (err) {
-                console.error("Erro ao atualizar Planner:", err);
-            }
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        okBtn.textContent = okText;
+        cancelBtn.textContent = cancelText;
+
+        // Variant styling: neutral | danger | success
+        icon.className = 'mt-0.5 flex h-10 w-10 items-center justify-center rounded-full';
+        const baseOk = 'rounded-xl px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-slate-400/40';
+        if (variant === 'danger') {
+            icon.className += ' bg-red-50 text-red-700';
+            okBtn.className = baseOk + ' bg-red-600';
+        } else if (variant === 'success') {
+            icon.className += ' bg-emerald-50 text-emerald-700';
+            okBtn.className = baseOk + ' bg-emerald-600';
+        } else {
+            icon.className += ' bg-slate-100 text-slate-700';
+            okBtn.className = baseOk + ' bg-slate-900';
+        }
+
+        let done = false;
+        const cleanup = () => {
+            if (done) return;
+            done = true;
+            modal.classList.add('hidden');
+            document.removeEventListener('keydown', onKeyDown);
+            okBtn.removeEventListener('click', onOk);
+            cancelBtn.removeEventListener('click', onCancel);
+            backdrop.removeEventListener('click', onCancel);
         };
+
+        const onOk = () => { cleanup(); resolve(true); };
+        const onCancel = () => { cleanup(); resolve(false); };
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape') onCancel();
+            if (e.key === 'Enter') onOk();
+        };
+
+        modal.classList.remove('hidden');
+        setTimeout(() => okBtn.focus(), 0);
+
+        okBtn.addEventListener('click', onOk);
+        cancelBtn.addEventListener('click', onCancel);
+        backdrop.addEventListener('click', onCancel);
+        document.addEventListener('keydown', onKeyDown);
+    });
+};
+
+
+window.toggleDispatch = async (id, collectionName) => {
+    if (!collectionName) collectionName = activeTab;
+    const item = dataStore[collectionName]?.find(i => i.id === id);
+    if (!item) return;
+
+    const newVal = !item.onDispatch;
+
+    const itemLabel = (item.pautaTitle || item.name || 'este item').toString();
+    const actionMsg = newVal ? `Adicionar ao Despacho?` : `Remover do Despacho?`;
+
+    const ok = await window.confirmModal({
+        title: newVal ? 'Confirmar envio' : 'Confirmar remoção',
+        message: `${actionMsg}\n\nItem: ${itemLabel}`,
+        okText: 'Sim, confirmar',
+        cancelText: 'Cancelar',
+        variant: newVal ? 'success' : 'danger'
+    });
+    if (!ok) return;
+
+
+
+    try {
+        item.onDispatch = newVal;
+        await setDoc(
+            doc(db, 'artifacts', appId, 'public', 'data', collectionName, id),
+            { onDispatch: newVal },
+            { merge: true }
+        );
+        if (activeTab === 'despachos') window.renderDespachos();
+        else window.renderData();
+    } catch (err) {
+        console.error("Erro ao atualizar despacho:", err);
+    }
+};
+
+window.togglePlanner = async (id, collectionName) => {
+    if (!collectionName) collectionName = activeTab;
+    const item = dataStore[collectionName]?.find(i => i.id === id);
+    if (!item) return;
+
+    const newVal = !item.onPlanner;
+
+    const itemLabel = (item.pautaTitle || item.name || 'este item').toString();
+    const actionMsg = newVal ? `Sinalizar no Planner da Presidência?` : `Remover do Planner da Presidência?`;
+
+    const ok = await window.confirmModal({
+        title: newVal ? 'Confirmar sinalização' : 'Confirmar remoção',
+        message: `${actionMsg}\n\nItem: ${itemLabel}`,
+        okText: 'Sim, confirmar',
+        cancelText: 'Cancelar',
+        variant: newVal ? 'success' : 'danger'
+    });
+    if (!ok) return;
+
+
+
+    try {
+        item.onPlanner = newVal;
+        await setDoc(
+            doc(db, 'artifacts', appId, 'public', 'data', collectionName, id),
+            { onPlanner: newVal },
+            { merge: true }
+        );
+        if (activeTab === 'despachos') window.renderDespachos();
+        else window.renderData();
+    } catch (err) {
+        console.error("Erro ao atualizar Planner:", err);
+    }
+};
 
         window.toggleBacklogSelection = (checkbox) => { const val = JSON.parse(checkbox.value); if (checkbox.checked) { selectedBacklogItems.add(checkbox.value); } else { selectedBacklogItems.delete(checkbox.value); } const btn = document.getElementById('createMeetingBtn'); const count = selectedBacklogItems.size; if(btn) { if(count > 0) { btn.classList.remove('opacity-50', 'cursor-not-allowed'); btn.innerText = `Gerar Pauta (${count} itens)`; btn.disabled = false; } else { btn.classList.add('opacity-50', 'cursor-not-allowed'); btn.innerText = `Gerar Pauta`; btn.disabled = true; } } document.getElementById('selectedCountBadge').innerText = count; };
         window.openCreateMeetingModal = () => { document.getElementById('meetingForm').reset(); document.getElementById('newMeetingDate').valueAsDate = new Date(); document.getElementById('selectedCountBadge').innerText = selectedBacklogItems.size; toggleModal('meetingModal'); };
@@ -4270,6 +4382,40 @@ const filenameBase = (safeTitle || 'pauta')
             </div>
         </div>
     </div>
+
+
+<!-- Confirm Modal -->
+<div id="confirmModal" class="fixed inset-0 z-[9999] hidden">
+  <div id="confirmModalBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
+  <div class="relative flex h-full w-full items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 overflow-hidden">
+      <div class="px-6 pt-6 pb-4">
+        <div class="flex items-start gap-3">
+          <div id="confirmModalIcon" class="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 9v4m0 4h.01"></path>
+              <path d="M10.29 3.86l-8.02 14A2 2 0 0 0 4 20h16a2 2 0 0 0 1.73-3.03l-8.02-14a2 2 0 0 0-3.42-.08z"></path>
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <h3 id="confirmModalTitle" class="text-lg font-semibold text-slate-900">Confirmar</h3>
+            <p id="confirmModalMessage" class="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-600"></p>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 bg-slate-50 px-6 py-4">
+        <button id="confirmModalCancel" type="button"
+          class="rounded-xl px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200/60 focus:outline-none focus:ring-2 focus:ring-slate-400/40">
+          Cancelar
+        </button>
+        <button id="confirmModalOk" type="button"
+          class="rounded-xl px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-slate-400/40 bg-slate-900">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
