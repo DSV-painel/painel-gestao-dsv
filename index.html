@@ -542,9 +542,11 @@
     <!-- Indicador de autenticação (mostra quando usuário estiver logado) -->
     <div id="authStatusBadge" style="
         position: fixed;
-        top: 14px;
+        bottom: 14px;
+        top: auto;
         right: 14px;
         z-index: 999998;
+        max-width: calc(100vw - 28px);
         display: none;
         align-items: center;
         gap: 10px;
