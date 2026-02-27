@@ -612,7 +612,7 @@
 
                     <!-- PPA SIMPLIFICADO -->
                     <div id="newIndPpaSimpleWrapper" class="mt-2 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                        <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">
+                        <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">
                             Indicador – PPA 2024 a 2027
                         </h5>
                         <div class="grid grid-cols-2 gap-4">
@@ -672,7 +672,7 @@
                         </summary>
                         <div class="pt-4 space-y-6">
                             <div id="newIndPpaOptionalWrapper">
-                                <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">PPA (opcional)</h5>
+                                <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">PPA (opcional)</h5>
                                 <div class="grid grid-cols-3 gap-4">
                                     <div class="flex flex-col">
                                         <label class="field-label">Meta PPA 2025</label>
@@ -690,12 +690,12 @@
                             </div>
 
                             <div>
-                                <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Lançamento mensal 2025 (histórico)</h5>
+                                <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Lançamento mensal 2025 (histórico)</h5>
                                 <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="newIndMonthsGrid2025"></div>
                             </div>
 
                             <div>
-                                <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Lançamento mensal 2026 (realizado)</h5>
+                                <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Lançamento mensal 2026 (realizado)</h5>
                                 <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="newIndMonthsGrid2026"></div>
                             </div>
                         </div>
@@ -850,7 +850,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="openCustomDispatchItemModal()" class="h-8 px-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition-all flex items-center justify-center text-[11px] font-black uppercase tracking-wider shadow shadow-indigo-100">
+                    <button onclick="openCustomDispatchItemModal()" class="h-8 px-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition-all flex items-center justify-center text-xs font-semibold text-slate-500 uppercase tracking-wider shadow shadow-indigo-100">
                         <i class="fas fa-plus mr-2"></i> Item avulso
                     </button>
                     <button onclick="toggleModal('addBacklogItemModal')" class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-red-500 transition-all flex items-center justify-center"><i class="fas fa-times"></i></button>
@@ -1107,7 +1107,7 @@
                         <!-- Botão no rodapé (UX: adicionar após preencher etapas) -->
                         <div class="flex justify-center pt-4">
                             <button type="button" onclick="addRoadmapRow()" id="addRoadmapBtn"
-                                class="text-[11px] font-black bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md uppercase transition-colors hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
+                                class="text-xs font-semibold text-slate-500 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md uppercase transition-colors hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
                                 <i class="fas fa-plus"></i> Adicionar nova etapa
                             </button>
                         </div>
@@ -1271,19 +1271,19 @@
 
                     <!-- Seção PPA Dinâmica (Preenchida via JS) -->
                     <div id="indPpaSection" class="hidden mb-8 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                        <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Histórico PPA (2024-2027)</h5>
+                        <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Histórico PPA (2024-2027)</h5>
                         <div id="indPpaGrid" class="grid grid-cols-2 gap-4"></div>
                     </div>
                     
                     <!-- NOVA SEÇÃO: Lançamento Mensal 2025 -->
                     <div id="indMonths2025Wrapper" class="hidden mb-8 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                        <h5 class="text-[11px] font-black text-indigo-400 uppercase tracking-widest mb-4 border-b border-indigo-200 pb-2">Lançamento Mensal 2025 (Histórico)</h5>
+                        <h5 class="text-xs font-semibold text-slate-500 text-indigo-400 uppercase tracking-widest mb-4 border-b border-indigo-200 pb-2">Lançamento Mensal 2025 (Histórico)</h5>
                         <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="indMonthsGrid2025">
                             <!-- Gerado via JS -->
                         </div>
                     </div>
                     
-                    <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Lançamento Mensal 2026 (Realizado)</h5>
+                    <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Lançamento Mensal 2026 (Realizado)</h5>
                     <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="indMonthsGrid">
                         <!-- Gerado via JS -->
                     </div>
@@ -1464,7 +1464,7 @@
 </div>
 <div id="operationalFilters" class="px-4 md:px-6 pt-5 flex flex-col sm:flex-row gap-4 hidden">
                     <div class="flex-1">
-                        <label class="text-[11px] font-black text-slate-400 uppercase ml-2 mb-1 block">Filtrar por Serviço</label>
+                        <label class="text-xs font-semibold text-slate-500 text-slate-400 uppercase ml-2 mb-1 block">Filtrar por Serviço</label>
                         <select id="filterService" onchange="renderData()" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none font-medium">
                             <option value="all">Todos os Serviços</option><option value="SCCE">SCCE</option><option value="SDCG">SDCG</option><option value="SFP">SFP</option><option value="SIEDU">SIEDU</option><option value="SOPED">SOPED</option><option value="SETEF">SETEF</option><option value="SDMP">SDMP</option><option value="SDAP">SDAP</option><option value="SAST">SAST</option><option value="RENAEST">RENAEST</option><option value="SESV">SESV</option><option value="SMO">SMO</option><option value="SEP">SEP</option><option value="STSV">STSV</option><option value="SISV">SISV</option><option value="SIM">SIM</option><option value="SGR">SGR</option><option value="SAT">SAT</option><option value="SENT">SENT</option><option value="SFI">SFI</option>
                         </select>
@@ -1535,7 +1535,7 @@
                     </div>
                     <div class="flex items-center gap-3">
                         <div class="bg-pink-50 px-4 py-2 rounded-lg border border-pink-100 hidden sm:block">
-                            <span class="text-[11px] font-black text-pink-600 uppercase tracking-wider">Exercício 2026</span>
+                            <span class="text-xs font-semibold text-slate-500 text-pink-600 uppercase tracking-wider">Exercício 2026</span>
                         </div>
                     </div>
                 </div>
@@ -1571,8 +1571,8 @@
                             <span class="text-slate-500">Clique em um card para atualizar valores</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="openNewIndicatorModal('ppa')" class="text-[11px] font-black uppercase tracking-wider bg-pink-50 text-pink-700 border border-pink-200 hover:bg-pink-100 px-3 py-2 rounded-xl transition-colors flex items-center gap-2"><i class="fas fa-plus"></i> Novo PPA</button>
-                            <button onclick="openNewIndicatorModal('other')" class="text-[11px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 px-3 py-2 rounded-xl transition-colors flex items-center gap-2"><i class="fas fa-plus"></i> Novo Outro</button>
+                            <button onclick="openNewIndicatorModal('ppa')" class="text-xs font-semibold text-slate-500 uppercase tracking-wider bg-pink-50 text-pink-700 border border-pink-200 hover:bg-pink-100 px-3 py-2 rounded-xl transition-colors flex items-center gap-2"><i class="fas fa-plus"></i> Novo PPA</button>
+                            <button onclick="openNewIndicatorModal('other')" class="text-xs font-semibold text-slate-500 uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 px-3 py-2 rounded-xl transition-colors flex items-center gap-2"><i class="fas fa-plus"></i> Novo Outro</button>
                         </div>
                     </div>
                 </div>
@@ -1618,10 +1618,10 @@
                 <!-- Conteúdo Calendário -->
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-5 rounded-2xl border border-slate-200 shadow-sm gap-4">
                      <div class="flex flex-wrap items-center gap-4 pl-2">
-                        <div class="flex items-center gap-2 select-none opacity-100"><span class="w-3 h-3 rounded-full bg-blue-500"></span><span class="text-[11px] font-black text-slate-500 uppercase">Projetos</span></div>
-                        <div class="flex items-center gap-2 select-none opacity-100"><span class="w-3 h-3 rounded-full bg-purple-500"></span><span class="text-[11px] font-black text-slate-500 uppercase">Contratos</span></div>
-                        <div class="flex items-center gap-2 select-none opacity-100"><span class="w-3 h-3 rounded-full bg-orange-500"></span><span class="text-[11px] font-black text-slate-500 uppercase">Operacional</span></div>
-                        <div class="flex items-center gap-2 select-none opacity-100"><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="text-[11px] font-black text-slate-500 uppercase">Eventos</span></div>
+                        <div class="flex items-center gap-2 select-none opacity-100"><span class="w-3 h-3 rounded-full bg-blue-500"></span><span class="text-xs font-semibold text-slate-500 text-slate-500 uppercase">Projetos</span></div>
+                        <div class="flex items-center gap-2 select-none opacity-100"><span class="w-3 h-3 rounded-full bg-purple-500"></span><span class="text-xs font-semibold text-slate-500 text-slate-500 uppercase">Contratos</span></div>
+                        <div class="flex items-center gap-2 select-none opacity-100"><span class="w-3 h-3 rounded-full bg-orange-500"></span><span class="text-xs font-semibold text-slate-500 text-slate-500 uppercase">Operacional</span></div>
+                        <div class="flex items-center gap-2 select-none opacity-100"><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="text-xs font-semibold text-slate-500 text-slate-500 uppercase">Eventos</span></div>
                     </div>
                     <button onclick="openCalendarModal()" class="w-full md:w-auto bg-green-600 text-white px-6 py-3 rounded-xl text-[11px] font-bold uppercase hover:bg-green-700 transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2"><i class="fas fa-plus"></i> Novo Evento</button>
                 </div>
@@ -2202,10 +2202,20 @@ document.getElementById('projRisks').value = '';
                 return;
             }
 
-            const sorted = [...obsLog].sort((a,b) => (b.ts||0) - (a.ts||0));
+            // preserva índice original para permitir exclusão mesmo com ordenação
+            const indexed = obsLog.map((o, idx) => ({ ...o, __idx: idx }));
+            const sorted = [...indexed].sort((a,b) => (b.ts||0) - (a.ts||0));
+
             el.innerHTML = sorted.map(o => `
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
-                    <div class="flex items-center justify-between gap-3">
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 relative">
+                    <button
+                        type="button"
+                        title="Excluir observação"
+                        class="absolute top-2 right-2 w-6 h-6 rounded-md flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-white transition-all"
+                        onclick="window.deleteObsEntry(${o.__idx})"
+                    >&times;</button>
+
+                    <div class="flex items-center justify-between gap-3 pr-7">
                         <div class="text-[10px] font-black uppercase tracking-wider text-slate-500">
                             ${formatDateTime(o.ts || Date.now())}
                         </div>
@@ -2214,6 +2224,57 @@ document.getElementById('projRisks').value = '';
                 </div>
             `).join('');
         };
+
+        // Excluir uma observação do histórico (por índice original do obsLog)
+        window.deleteObsEntry = async function(idx) {
+            if (!currentUser) return;
+
+            const editIdEl = document.getElementById('editId');
+            let id = editIdEl?.value;
+            if (!id) {
+                // não há como excluir sem um registro associado — cria um ID local para persistir
+                id = Date.now().toString();
+                if (editIdEl) editIdEl.value = id;
+            }
+
+            const existing = dataStore[activeTab]?.find(i => i.id === id);
+            let obsLog = [];
+
+            // migração simples: se era legado (obs string) e ainda não tem obsLog
+            if (existing?.obsLog && Array.isArray(existing.obsLog)) obsLog = [...existing.obsLog];
+            else if (existing?.obs && String(existing.obs).trim()) obsLog = [{ ts: Date.now(), text: String(existing.obs).trim() }];
+
+            if (!Array.isArray(obsLog) || obsLog.length === 0) {
+                window.renderObsHistory([]);
+                return;
+            }
+
+            if (typeof idx !== 'number' || idx < 0 || idx >= obsLog.length) return;
+
+            obsLog.splice(idx, 1);
+
+            // obs (string) mantém o último texto como "status" (compatibilidade)
+            const lastText = obsLog.length ? String(obsLog[obsLog.length - 1]?.text || '').trim() : '';
+
+            try {
+                await setDoc(
+                    doc(db, 'artifacts', appId, 'public', 'data', activeTab, id),
+                    { obsLog, obs: lastText, updatedAt: Date.now() },
+                    { merge: true }
+                );
+
+                if (existing) {
+                    existing.obsLog = obsLog;
+                    existing.obs = lastText;
+                }
+
+                window.renderObsHistory(obsLog);
+            } catch (err) {
+                console.error('Erro ao excluir observação:', err);
+                alert('Erro ao excluir observação no Firebase. Veja o console.');
+            }
+        };
+
 
         window.addObsEntry = async function() {
             if (!currentUser) return;
@@ -2683,7 +2744,7 @@ window.togglePlanner = async (id, collectionName) => {
 
         // ... (Render Portaria, Switch Tab, Render Gantt, Backlog Items functions... mantidas) ...
         window.setPortariaFilter = (type) => { currentPortariaFilter = type; document.querySelectorAll('.portaria-filter-btn').forEach(btn => btn.classList.remove('active')); const activeBtn = document.getElementById('pf-' + type); if(activeBtn) activeBtn.classList.add('active'); window.renderPortaria(); };
-        window.renderPortaria = () => { const container = document.getElementById('portariaList'); const search = document.getElementById('searchInput').value.toLowerCase(); container.innerHTML = ''; let filtered = PORTARIA_DATA.filter(item => item.title.toLowerCase().includes(search) || item.items.some(sub => sub.toLowerCase().includes(search)) || item.art.toLowerCase().includes(search)); if (currentPortariaFilter !== 'all') filtered = filtered.filter(item => item.type === currentPortariaFilter); if(filtered.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center mt-10">Nenhum item encontrado.</p>'; return; } filtered.forEach(item => { let bc = '', tc = ''; if(item.type === 'Diretoria') { bc = 'badge-diretoria'; tc = 'type-diretoria'; } else if(item.type === 'Coordenadoria') { bc = 'badge-coordenadoria'; tc = 'type-coordenadoria'; } else if(item.type === 'Divisão') { bc = 'badge-divisao'; tc = 'type-divisao'; } else { bc = 'badge-servico'; tc = 'type-servico'; } const itemsHtml = item.items.map((sub, idx) => `<li class="flex items-start gap-3 relative pl-2 group/item"><span class="text-[10px] font-bold text-slate-400 mt-0.5 w-5 shrink-0 text-right">${['I','II','III','IV','V','VI','VII','VIII','IX','X'][idx] || '-'}</span><span class="text-sm text-slate-700 leading-snug border-l border-slate-200 pl-3">${sub}</span></li>`).join(''); container.innerHTML += `<div class="portaria-card ${tc}"><div class="flex items-start justify-between mb-4"><div><span class="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-1">${item.art}</span><h4 class="font-bold text-slate-800 text-lg leading-tight mb-2">${item.title}</h4><p class="text-xs text-slate-500 italic border-l-2 border-slate-200 pl-2 leading-relaxed max-w-2xl">${item.preamble}</p></div><span class="portaria-badge ${bc} ml-2 shrink-0">${item.type}</span></div><ul class="space-y-3 pt-2">${itemsHtml}</ul></div>`; }); };
+        window.renderPortaria = () => { const container = document.getElementById('portariaList'); const search = document.getElementById('searchInput').value.toLowerCase(); container.innerHTML = ''; let filtered = PORTARIA_DATA.filter(item => item.title.toLowerCase().includes(search) || item.items.some(sub => sub.toLowerCase().includes(search)) || item.art.toLowerCase().includes(search)); if (currentPortariaFilter !== 'all') filtered = filtered.filter(item => item.type === currentPortariaFilter); if(filtered.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center mt-10">Nenhum item encontrado.</p>'; return; } filtered.forEach(item => { let bc = '', tc = ''; if(item.type === 'Diretoria') { bc = 'badge-diretoria'; tc = 'type-diretoria'; } else if(item.type === 'Coordenadoria') { bc = 'badge-coordenadoria'; tc = 'type-coordenadoria'; } else if(item.type === 'Divisão') { bc = 'badge-divisao'; tc = 'type-divisao'; } else { bc = 'badge-servico'; tc = 'type-servico'; } const itemsHtml = item.items.map((sub, idx) => `<li class="flex items-start gap-3 relative pl-2 group/item"><span class="text-[10px] font-bold text-slate-400 mt-0.5 w-5 shrink-0 text-right">${['I','II','III','IV','V','VI','VII','VIII','IX','X'][idx] || '-'}</span><span class="text-sm text-slate-700 leading-snug border-l border-slate-200 pl-3">${sub}</span></li>`).join(''); container.innerHTML += `<div class="portaria-card ${tc}"><div class="flex items-start justify-between mb-4"><div><span class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest block mb-1">${item.art}</span><h4 class="font-bold text-slate-800 text-lg leading-tight mb-2">${item.title}</h4><p class="text-xs text-slate-500 italic border-l-2 border-slate-200 pl-2 leading-relaxed max-w-2xl">${item.preamble}</p></div><span class="portaria-badge ${bc} ml-2 shrink-0">${item.type}</span></div><ul class="space-y-3 pt-2">${itemsHtml}</ul></div>`; }); };
         window.switchTab = (tab) => { activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", processes: "bg-blue-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
             if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'processes') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Processo'; document.getElementById('viewTitle').innerText = 'Processos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'operational') { addBtn.classList.add('btn-theme-operational'); addBtnText.innerText = 'Adicionar Atividade'; app.classList.add('operational-theme'); document.getElementById('viewTitle').innerText = 'Atividades Operacionais'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(false, true); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = tab === 'operational' ? 'flex' : 'none'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
             if (coordWrapper) {
@@ -3058,7 +3119,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                 let ppaHtml = '';
                 if (ind.ppa && Object.keys(ind.ppa).length > 0) {
                     const years = Object.keys(ind.ppa).sort();
-                    ppaHtml = `<div class="mt-5 pt-4 border-t border-slate-100"><p class="text-[11px] font-black text-slate-400 uppercase mb-2 tracking-widest">Evolução Anual</p><div class="grid grid-cols-4 gap-2">${years.map(year => {
+                    ppaHtml = `<div class="mt-5 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2 tracking-widest">Evolução Anual</p><div class="grid grid-cols-4 gap-2">${years.map(year => {
                         const isCurrent = year === '2026';
                         const metaVal = Number(ind.ppa?.[year] ?? 0);
                         const realVal = (ind.ppaRealized && ind.ppaRealized[year] != null) ? Number(ind.ppaRealized[year]) : null;
@@ -3073,20 +3134,20 @@ window.openAddBacklogItemModal = (meetingId) => {
                 }
 
                 const badge = ind.type === 'ppa'
-                    ? `<span class="text-[11px] font-black text-pink-500 uppercase tracking-widest block mb-1">PPA</span>`
-                    : `<span class="text-[11px] font-black text-indigo-500 uppercase tracking-widest block mb-1">OUTRO</span>`;
+                    ? `<span class="text-xs font-semibold text-slate-500 text-pink-500 uppercase tracking-widest block mb-1">PPA</span>`
+                    : `<span class="text-xs font-semibold text-slate-500 text-indigo-500 uppercase tracking-widest block mb-1">OUTRO</span>`;
 
-                const productLine = `<span class="text-[11px] font-black ${ind.type === 'ppa' ? 'text-pink-500' : 'text-indigo-500'} uppercase tracking-widest block mb-1">Produto ${ind.code || ''} <span class="text-slate-400">|</span> ${(ind.product || '').toString()}</span>`;
+                const macroLine = `<span class="text-xs font-semibold text-slate-500 ${ind.type === 'ppa' ? 'text-pink-500' : 'text-indigo-500'} uppercase tracking-widest block mt-1">${(ind.product || '').toString()}</span>`;
 
                 const cardHtml = `
                     <div class="indicator-card" onclick="openIndicatorModal('${ind.id}')">
                         <div class="flex justify-between items-start mb-4">
                             <div>
-                                ${productLine}
                                 <h4 class="font-bold text-slate-800 text-lg leading-tight">${ind.name || 'Indicador'}</h4>
+                                ${macroLine}
                             </div>
                             <div class="text-right">
-                                <span class="text-[11px] font-black text-slate-400 uppercase">${ind.rule === 'Soma' ? 'Acumulado' : 'Último'}</span>
+                                <span class="text-xs font-semibold text-slate-500 text-slate-400 uppercase">${ind.rule === 'Soma' ? 'Acumulado' : 'Último'}</span>
                                 <p class="text-2xl font-black ${ind.type === 'ppa' ? 'text-pink-700' : 'text-indigo-700'} leading-none">${formattedTotal} <span class="text-sm text-slate-400">${ind.unit || ''}</span></p>
                             </div>
                         </div>
@@ -3505,7 +3566,7 @@ Object.keys(cols).forEach(key => {
         // Função auxiliar para criar HTML do card (ATUALIZADA COM RASCI)
         function createCardHtml(item, today) {
             const sortedRoadmap = (item.roadmap || []).sort((a,b) => a.data.localeCompare(b.data));
-            const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-[11px] font-black text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const isPast = r.data < today; const dotClass = isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'; const dateClass = isPast ? 'text-slate-400' : 'text-blue-600 font-black'; const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR')}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-[11px] font-black text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
+            const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const isPast = r.data < today; const dotClass = isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'; const dateClass = isPast ? 'text-slate-400' : 'text-blue-600 font-black'; const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR')}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
             const respectBadge = (activeTab === 'contracts' && item.program === 'Respeito à Vida' && (item.programComponent === '1' || item.programComponent === '3'))
                 ? `<span class=\"ml-2 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-100\">Respeito à Vida — C${item.programComponent}</span>`
                 : '';
@@ -3556,7 +3617,7 @@ Object.keys(cols).forEach(key => {
                         <div class="mt-4 pt-4 border-t border-slate-100">
                             <div class="flex items-center gap-2 mb-3">
                                 <i class="fas fa-users-cog text-slate-400 text-xs"></i>
-                                <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Matriz de Responsabilidades (RASCI)</p>
+                                <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest">Matriz de Responsabilidades (RASCI)</p>
                             </div>
                             <div class="grid grid-cols-1 gap-1">
                                 ${innerRasci}
@@ -3615,11 +3676,11 @@ Object.keys(cols).forEach(key => {
                 <div class="accordion-content px-5 bg-slate-50/50">
                     <div class="py-5 space-y-5">
                         <div class="space-y-5">
-                            <div><p class="text-[11px] font-black text-slate-400 uppercase mb-2">Descrição / Escopo</p><p class="text-sm text-slate-700 leading-relaxed font-medium preserve-lines preserve-lines preserve-lines">${item.desc || 'Sem descrição.'}</p></div>
-                            ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-[11px] font-black text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><p class="text-sm text-red-700 leading-relaxed font-bold preserve-lines preserve-lines">${item.risks}</p></div>` : ''}
-                            ${item.obs ? `<div class="pt-2"><p class="text-[11px] font-black text-slate-400 uppercase mb-2">Observações Gerais</p><p class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 preserve-lines preserve-lines">${item.obs}</p></div>` : ''}
+                            <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><p class="text-sm text-slate-700 leading-relaxed font-medium preserve-lines preserve-lines preserve-lines">${item.desc || 'Sem descrição.'}</p></div>
+                            ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><p class="text-sm text-red-700 leading-relaxed font-bold preserve-lines preserve-lines">${item.risks}</p></div>` : ''}
+                            ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><p class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 preserve-lines preserve-lines">${item.obs}</p></div>` : ''}
                             ${((item.docLinks || (item.docLink ? [item.docLink] : [])).filter(Boolean)).length ? `<div class="pt-2">
-                                <p class="text-[11px] font-black text-slate-400 uppercase mb-2"><i class="fas fa-paperclip mr-1"></i> Documentos</p>
+                                <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2"><i class="fas fa-paperclip mr-1"></i> Documentos</p>
                                 <div class="space-y-2">
                                     ${(item.docLinks || (item.docLink ? [item.docLink] : [])).filter(Boolean).map(link => `
                                         <a href="${link}" target="_blank" class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2 hover:border-blue-300 hover:bg-blue-50/50 transition-colors">
@@ -4298,7 +4359,7 @@ const filenameBase = (safeTitle || 'pauta')
                 const meta = [
                     coord ? `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${coord}</span>` : '',
                     prio ? `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${prio}</span>` : '',
-                    concluded ? `<span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black">Concluído em ${concluded}</span>` : `<span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black">Concluído</span>`,
+                    concluded ? `<span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold text-slate-500">Concluído em ${concluded}</span>` : `<span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold text-slate-500">Concluído</span>`,
                     prazo ? `<span class="px-2 py-1 rounded-full bg-slate-50 text-slate-600 text-[11px] font-bold">Prazo: ${prazo}</span>` : ''
                 ].filter(Boolean).join(' ');
 
