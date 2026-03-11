@@ -1387,25 +1387,16 @@
                         <div id="cardBacklog" onclick="setListFilter('Backlog')" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm stat-card">
                             <p class="text-[10px] text-slate-500 uppercase font-black mb-1">Backlog</p><div id="statBacklog" class="text-2xl font-black text-slate-700">0</div>
                         </div>
-                        <div id="cardIniciado" onclick="setListFilter('Iniciado')" class="bg-white p-4 rounded-xl border border-sky-200 shadow-sm stat-card">
-                            <p class="text-[10px] text-sky-600 uppercase font-black mb-1">Iniciado</p><div id="statIniciado" class="text-2xl font-black text-slate-800">0</div>
-                        </div>
                         <div id="cardPlanejado" onclick="setListFilter('Em Planejamento')" class="bg-white p-4 rounded-xl border border-indigo-200 shadow-sm stat-card">
                             <p class="text-[10px] text-indigo-600 uppercase font-black mb-1 truncate">Em Planejamento</p><div id="statPlanejado" class="text-2xl font-black text-slate-800">0</div>
                         </div>
-                        <div id="cardExecDP" onclick="setListFilter('Em Execução (Dentro do Planejado)')" class="bg-white p-4 rounded-xl border border-green-200 shadow-sm stat-card">
-                            <p class="text-[10px] text-green-600 uppercase font-black mb-1 leading-tight">Execução<br>(Dentro)</p><div id="statExecDP" class="text-2xl font-black text-slate-800">0</div>
+                        <div id="cardExecucao" onclick="setListFilter('Em Execução')" class="bg-white p-4 rounded-xl border border-green-200 shadow-sm stat-card">
+                            <p class="text-[10px] text-green-600 uppercase font-black mb-1">Em Execução</p><div id="statExecucao" class="text-2xl font-black text-slate-800">0</div>
                         </div>
-                        <div id="cardExecEA" onclick="setListFilter('Em Execução (Atenção)')" class="bg-white p-4 rounded-xl border border-yellow-200 shadow-sm stat-card">
-                            <p class="text-[10px] text-yellow-600 uppercase font-black mb-1 leading-tight">Execução<br>(Atenção)</p><div id="statExecEA" class="text-2xl font-black text-slate-800">0</div>
+                        <div id="cardExecucaoRisco" onclick="setListFilter('Em Execução (com risco)')" class="bg-white p-4 rounded-xl border border-orange-200 shadow-sm stat-card">
+                            <p class="text-[10px] text-orange-600 uppercase font-black mb-1 leading-tight">Execução<br>(com risco)</p><div id="statExecucaoRisco" class="text-2xl font-black text-slate-800">0</div>
                         </div>
-                        <div id="cardExecRA" onclick="setListFilter('Em Execução (Em Risco / Atrasado)')" class="bg-white p-4 rounded-xl border border-orange-200 shadow-sm stat-card">
-                            <p class="text-[10px] text-orange-600 uppercase font-black mb-1 leading-tight">Execução<br>(Risco/Atr)</p><div id="statExecRA" class="text-2xl font-black text-slate-800">0</div>
-                        </div>
-                        <div id="cardCritico" onclick="setListFilter('Crítico')" class="bg-white p-4 rounded-xl border border-red-300 shadow-sm stat-card">
-                            <p class="text-[10px] text-red-600 uppercase font-black mb-1">Crítico</p><div id="statCritico" class="text-2xl font-black text-slate-800">0</div>
-                        </div>
-                        <div id="cardCancelado" onclick="setListFilter('Cancelado')" class="bg-white p-4 rounded-xl border border-slate-300 shadow-sm stat-card hidden">
+                        <div id="cardCancelado" onclick="setListFilter('Cancelado')" class="bg-white p-4 rounded-xl border border-slate-300 shadow-sm stat-card">
                             <p class="text-[10px] text-slate-500 uppercase font-black mb-1">Cancelado</p><div id="statCancelado" class="text-2xl font-black text-slate-800">0</div>
                         </div>
                         <div id="cardConcluido" onclick="setListFilter('Concluído')" class="bg-white p-4 rounded-xl border border-emerald-200 shadow-sm stat-card">
@@ -1760,11 +1751,11 @@
         let selectedBacklogItems = new Set();
         
         const areasList = ["DSV", "EPT", "CEC", "CET", "CGSV", "COST", "CIST", "SCCE", "SDCG", "SFP", "SIEDU", "SOPED", "SETEF", "SDMP", "SDAP", "SAST", "RENAEST", "SESV", "SMO", "SEP", "STSV", "SISV", "SIM", "SGR", "SAT", "SENT", "SFI"];
-        const UNIFIED_STATUS = ["Backlog", "Iniciado", "Em Planejamento", "Em Execução (Dentro do Planejado)", "Em Execução (Atenção)", "Em Execução (Em Risco / Atrasado)", "Crítico", "Concluído"];
-        const CONTRACT_STATUS = [...UNIFIED_STATUS, "Cancelado"];
-        const PROJECT_STATUS = [...UNIFIED_STATUS, "Cancelado"];
-        const STATUS_COLORS_HEX = { "Backlog": "#cbd5e1", "Iniciado": "#38bdf8", "Em Planejamento": "#6366f1", "Em Execução (Dentro do Planejado)": "#22c55e", "Em Execução (Atenção)": "#fbbf24", "Em Execução (Em Risco / Atrasado)": "#f97316", "Crítico": "#dc2626", "Concluído": "#059669", "Cancelado": "#64748b" };
-        const STATUS_COLORS_TW_BG = { "Backlog": "bg-slate-300", "Iniciado": "bg-sky-400", "Em Planejamento": "bg-indigo-500", "Em Execução (Dentro do Planejado)": "bg-green-500", "Em Execução (Atenção)": "bg-amber-400", "Em Execução (Em Risco / Atrasado)": "bg-orange-500", "Crítico": "bg-red-600", "Concluído": "bg-emerald-600", "Cancelado": "bg-slate-500" };
+        const UNIFIED_STATUS = ["Backlog", "Em Planejamento", "Em Execução", "Em Execução (com risco)", "Cancelado", "Concluído"];
+        const CONTRACT_STATUS = [...UNIFIED_STATUS];
+        const PROJECT_STATUS = [...UNIFIED_STATUS];
+        const STATUS_COLORS_HEX = { "Backlog": "#cbd5e1", "Em Planejamento": "#6366f1", "Em Execução": "#22c55e", "Em Execução (com risco)": "#f97316", "Cancelado": "#64748b", "Concluído": "#059669" };
+        const STATUS_COLORS_TW_BG = { "Backlog": "bg-slate-300", "Em Planejamento": "bg-indigo-500", "Em Execução": "bg-green-500", "Em Execução (com risco)": "bg-orange-500", "Concluído": "bg-emerald-600", "Cancelado": "bg-slate-500" };
         // Normalização de status (corrige variações de escrita que quebram a contagem/filters)
         function normalizeStatus(raw) {
             let s = (raw ?? '').toString().trim();
@@ -1773,13 +1764,18 @@
             s = s.replace(/\s+/g, ' ');
             // Variações comuns (legado)
             const map = {
-                'Em Execução (Em Risco/Atrasado)': 'Em Execução (Em Risco / Atrasado)',
-                'Em Execução (Em Risco/Atrasado )': 'Em Execução (Em Risco / Atrasado)',
-                'Em Execução (Em Risco /Atrasado)': 'Em Execução (Em Risco / Atrasado)',
-                'Em Execução (Em Risco/ Atrasado)': 'Em Execução (Em Risco / Atrasado)',
-                'Em Execução (Risco/Atr)': 'Em Execução (Em Risco / Atrasado)',
-                'Em Execução (Risco/Atrasado)': 'Em Execução (Em Risco / Atrasado)',
-                'Em Execução (Em risco / atrasado)': 'Em Execução (Em Risco / Atrasado)'
+                'Iniciado': 'Em Planejamento',
+                'Em Execução (Dentro do Planejado)': 'Em Execução',
+                'Em Execução (Atenção)': 'Em Execução',
+                'Em Execução (Em Risco / Atrasado)': 'Em Execução (com risco)',
+                'Em Execução (Em Risco/Atrasado)': 'Em Execução (com risco)',
+                'Em Execução (Em Risco/Atrasado )': 'Em Execução (com risco)',
+                'Em Execução (Em Risco /Atrasado)': 'Em Execução (com risco)',
+                'Em Execução (Em Risco/ Atrasado)': 'Em Execução (com risco)',
+                'Em Execução (Risco/Atr)': 'Em Execução (com risco)',
+                'Em Execução (Risco/Atrasado)': 'Em Execução (com risco)',
+                'Em Execução (Em risco / atrasado)': 'Em Execução (com risco)',
+                'Crítico': 'Em Execução (com risco)'
             };
             if (map[s]) s = map[s];
             return s;
@@ -2171,7 +2167,7 @@ document.getElementById('projRisks').value = '';
         window.toggleContractProgramFields = toggleContractProgramFields;
 
         window.toggleOriginInput = () => { const originType = document.querySelector('input[name="originType"]:checked').value; const wrapper = document.getElementById('projectSelectWrapper'); const select = document.getElementById('projRelation'); const label = wrapper.querySelector('label'); if (originType === 'pontual') { wrapper.classList.add('hidden-field'); select.innerHTML = ''; } else { wrapper.classList.remove('hidden-field'); if (originType === 'projeto') { label.innerText = "Vincular a qual Projeto?"; select.innerHTML = '<option value="">Selecione o Projeto...</option>' + dataStore.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join(''); } else if (originType === 'contrato') { label.innerText = "Vincular a qual Contrato?"; select.innerHTML = '<option value="">Selecione o Contrato...</option>' + dataStore.contracts.map(c => `<option value="${c.id}">${c.name}</option>`).join(''); } } };
-        window.toggleRiskInput = () => { const status = document.getElementById('projStatus').value; const riskField = document.getElementById('riskField'); const show = ["Em Execução (Atenção)", "Em Execução (Em Risco / Atrasado)", "Crítico"].includes(status); riskField.classList.toggle('hidden-field', !show); };
+        window.toggleRiskInput = () => { const status = document.getElementById('projStatus').value; const riskField = document.getElementById('riskField'); const show = ["Em Execução (com risco)"].includes(status); riskField.classList.toggle('hidden-field', !show); };
 
         // ... (Funções de Tag e RASCI - mantidas) ...
         const getTagsFromContainer = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); };
@@ -3380,10 +3376,8 @@ window.openAddBacklogItemModal = (meetingId) => {
             const counts = {}; statusList.forEach(s => counts[s] = 0);
             filtered.forEach(item => { const st = normalizeStatus(item.status); if (counts[st] !== undefined) counts[st]++; });
             document.getElementById('statTotal').innerText = filtered.length;
-            const map = {'Backlog':'statBacklog','Iniciado':'statIniciado','Em Planejamento':'statPlanejado','Crítico':'statCritico','Concluído':'statConcluido'};
-            Object.keys(map).forEach(k => { if(document.getElementById(map[k])) document.getElementById(map[k]).innerText = counts[k]; });
-            if (document.getElementById('statExecDP')) document.getElementById('statExecDP').innerText = counts['Em Execução (Dentro do Planejado)']; if (document.getElementById('statExecEA')) document.getElementById('statExecEA').innerText = counts['Em Execução (Atenção)']; if (document.getElementById('statExecRA')) document.getElementById('statExecRA').innerText = counts['Em Execução (Em Risco / Atrasado)'];
-            if (document.getElementById('statCancelado')) document.getElementById('statCancelado').innerText = counts['Cancelado'] || 0;
+            const map = {'Backlog':'statBacklog','Em Planejamento':'statPlanejado','Em Execução':'statExecucao','Em Execução (com risco)':'statExecucaoRisco','Cancelado':'statCancelado','Concluído':'statConcluido'};
+            Object.keys(map).forEach(k => { if(document.getElementById(map[k])) document.getElementById(map[k]).innerText = counts[k] || 0; });
             if (activeTab === 'contracts') {
                 let totalResource = 0;
                 let rv1Sum = 0;
@@ -3850,18 +3844,16 @@ Object.keys(cols).forEach(key => {
             }
         };
 
-        window.getStatusColorBg = s => ({"Backlog":"bg-slate-300","Iniciado":"bg-sky-400","Em Planejamento":"bg-indigo-500","Em Execução (Dentro do Planejado)":"bg-green-500","Em Execução (Atenção)":"bg-amber-400","Em Execução (Em Risco / Atrasado)":"bg-orange-500","Crítico":"bg-red-600","Concluído":"bg-emerald-600","Cancelado":"bg-slate-500"}[s] || "bg-slate-200");
+        window.getStatusColorBg = s => ({"Backlog":"bg-slate-300","Em Planejamento":"bg-indigo-500","Em Execução":"bg-green-500","Em Execução (com risco)":"bg-orange-500","Concluído":"bg-emerald-600","Cancelado":"bg-slate-500"}[s] || "bg-slate-200");
         window.getStatusColor = (s) => {
         const status = String(s ?? "");
         if (status === "Cancelado") return "text-slate-600 bg-slate-100 border-slate-300";
-        if (status === "Concluído" || status.includes("Dentro")) return "text-green-600 bg-green-50 border-green-200";
-        if (status === "Crítico" || status.includes("Risco")) return "text-red-600 bg-red-50 border-red-200";
-        if (status.includes("Atenção")) return "text-amber-700 bg-amber-50 border-amber-200";
-        if (status === "Iniciado") return "text-sky-700 bg-sky-50 border-sky-200";
+        if (status === "Concluído" || status === "Em Execução") return "text-green-600 bg-green-50 border-green-200";
+        if (status === "Em Execução (com risco)") return "text-orange-700 bg-orange-50 border-orange-200";
         if (status === "Backlog") return "text-slate-600 bg-slate-50 border-slate-200";
         return "text-slate-600 bg-slate-50 border-slate-200";
       };
-window.setListFilter = f => { if(f === 'Concluído' && typeof window.openCompletedModal === 'function') { window.openCompletedModal(); return; } currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Iniciado':'cardIniciado','Em Planejamento':'cardPlanejado','Em Execução (Dentro do Planejado)':'cardExecDP','Em Execução (Atenção)':'cardExecEA','Em Execução (Em Risco / Atrasado)':'cardExecRA','Crítico':'cardCritico','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f]) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
+window.setListFilter = f => { if(f === 'Concluído' && typeof window.openCompletedModal === 'function') { window.openCompletedModal(); return; } currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Em Planejamento':'cardPlanejado','Em Execução':'cardExecucao','Em Execução (com risco)':'cardExecucaoRisco','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f]) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
         window.setPriorityFilter = p => { currentPriorityFilter = (currentPriorityFilter === p) ? 'all' : p; document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); if(currentPriorityFilter !== 'all') { const map = {'Urgente':'urg', 'Alta':'high', 'Média':'mid', 'Baixa':'low'}; document.getElementById('legend-prio-'+map[currentPriorityFilter]).classList.add('active-legend'); } window.renderData(); };
         window.setFilter = f => { currentFilter = f; const btns = document.querySelectorAll('.coord-btn'); btns.forEach(b => b.classList.remove('active-coord')); if(f !== 'all') { document.getElementById('coordBtnContainer').classList.add('coord-list-active'); const b = document.getElementById('coord-'+f); if(b) b.classList.add('active-coord'); } else document.getElementById('coordBtnContainer').classList.remove('coord-list-active'); if (activeTab === 'gantt') window.renderGantt(); else window.renderData(); };
         window.updateStatusUI = s => { document.getElementById('sysStatusDot').className = `w-2 h-2 rounded-full ${s === 'online' ? 'bg-emerald-400' : 'bg-amber-400'}`; document.getElementById('sysStatusText').innerText = s === 'online' ? 'Online' : 'Sincronizando...'; };
