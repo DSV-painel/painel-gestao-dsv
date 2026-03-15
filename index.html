@@ -150,6 +150,14 @@
         .calendar-new-day-empty { min-height: 120px; background-color: #f8fafc; border: 1px solid transparent; border-radius: 0.5rem; }
 
         .chart-pie { width: 100px; height: 100px; border-radius: 50%; transition: all 0.5s ease; }
+
+        .coord-progress-card { background: white; border: 1px solid #e2e8f0; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .coord-progress-card.hidden { display: none !important; }
+        .coord-progress-chart { width: 112px; height: 112px; border-radius: 50%; position: relative; flex-shrink: 0; transition: all 0.4s ease; }
+        .coord-progress-chart::after { content: ''; position: absolute; inset: 16px; border-radius: 999px; background: white; box-shadow: inset 0 0 0 1px #e2e8f0; }
+        .coord-progress-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; text-align: center; }
+        .coord-progress-legend-item { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.65rem 0.8rem; border-radius: 0.9rem; background: #f8fafc; border: 1px solid #e2e8f0; }
+        .coord-progress-dot { width: 0.7rem; height: 0.7rem; border-radius: 999px; flex-shrink: 0; }
         
         .stat-card { cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; min-height: 90px; display: flex; flex-direction: column; justify-content: center; }
         .stat-card:hover { transform: translateY(-4px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
@@ -1421,6 +1429,56 @@
                     </div>
                 </div>
 
+                <div id="coordProgressSection" class="px-4 md:px-6 pt-5 hidden">
+                    <div class="coord-progress-card p-5 md:p-6 flex flex-col lg:flex-row gap-5 lg:items-center lg:justify-between">
+                        <div class="flex items-center gap-4">
+                            <div id="coordProgressChart" class="coord-progress-chart" style="background:#e2e8f0;">
+                                <div class="coord-progress-center">
+                                    <span id="coordProgressTotal" class="text-2xl font-black text-slate-800">0</span>
+                                    <span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Projetos</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-black uppercase tracking-[0.18em] text-blue-600 mb-1">Progresso da coordenação</p>
+                                <h3 id="coordProgressTitle" class="text-lg md:text-xl font-black text-slate-800 uppercase tracking-tight">Selecione uma coordenação</h3>
+                                <p id="coordProgressSubtitle" class="text-sm text-slate-500">Ao filtrar uma coordenação, o painel mostra a distribuição percentual dos projetos por status.</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:max-w-3xl">
+                            <div class="coord-progress-legend-item">
+                                <div class="flex items-center gap-3">
+                                    <span class="coord-progress-dot bg-emerald-500"></span>
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Concluído</p>
+                                        <p id="coordProgressCountDone" class="text-sm font-bold text-slate-700">0 projeto</p>
+                                    </div>
+                                </div>
+                                <span id="coordProgressPctDone" class="text-xl font-black text-emerald-600">0%</span>
+                            </div>
+                            <div class="coord-progress-legend-item">
+                                <div class="flex items-center gap-3">
+                                    <span class="coord-progress-dot bg-red-500"></span>
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Em andamento</p>
+                                        <p id="coordProgressCountInProgress" class="text-sm font-bold text-slate-700">0 projeto</p>
+                                    </div>
+                                </div>
+                                <span id="coordProgressPctInProgress" class="text-xl font-black text-red-500">0%</span>
+                            </div>
+                            <div class="coord-progress-legend-item">
+                                <div class="flex items-center gap-3">
+                                    <span class="coord-progress-dot bg-slate-400"></span>
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Backlog</p>
+                                        <p id="coordProgressCountBacklog" class="text-sm font-bold text-slate-700">0 projeto</p>
+                                    </div>
+                                </div>
+                                <span id="coordProgressPctBacklog" class="text-xl font-black text-slate-600">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ... (Demais Filtros e Botão Adicionar mantidos) ... -->
                 
 <div id="statsRow2" class="px-4 md:px-6 pt-5 hidden">
@@ -1786,9 +1844,11 @@
         
         // ... (Constantes PORTARIA_DATA e INITIAL_INDICATORS mantidas) ...
         const PORTARIA_DATA = [
-            { art: 'Art. 256', title: 'Diretoria de Segurança Viária', type: 'Diretoria', preamble: 'Compete dirigir, planejar, coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Segurança viária e educação para o trânsito', 'Educação corporativa e governança da aprendizagem', 'Aplicação e repasse de valores arrecadados para segurança viária', 'Estatística, estudos, pesquisas e integração de informações para segurança viária', 'Diretrizes para a fiscalização de trânsito e policiamento ostensivo', 'Integração e atuação em rede com os órgãos do Sistema Estadual de Trânsito (SISTRAN)'] },
-            { art: 'Art. 257', title: 'Escola Pública de Trânsito', type: 'Coordenadoria', preamble: 'Compete coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Educação de crianças, adolescentes, jovens e adultos sobre legislação', 'Promoção da Política Nacional de Trânsito (PNT) e cidadania', 'Campanhas de conscientização para o trânsito seguro', 'Ações de educação para condutores profissionais', 'Gestão da educação corporativa, formação e desenvolvimento contínuo'] },
-            { art: 'Art. 258', title: 'Coordenadoria de Educação Corporativa', type: 'Coordenadoria', preamble: 'Compete coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Programas de capacitação e desenvolvimento profissional', 'Gestão do conhecimento organizacional', 'Avaliação de desempenho e competências', 'Programas de educação corporativa e gamificação', 'Monitoramento e avaliação de resultados de capacitação', 'Articulação com instituições de ensino e parceiros', 'Gestão das plataformas tecnológicas de ensino', 'Desenvolvimento de lideranças e gestão estratégica'] },
+            { art: 'Art. 256', title: 'Diretoria de Segurança Viária', type: 'Diretoria', preamble: 'Compete dirigir, planejar, coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Segurança viária e educação para o trânsito', 'Educação corporativa e governança da aprendizagem', 'Aplicação e repasse de valores arrecadados para segurança viária', 'Estatística, estudos, pesquisas e integração de informações para segurança viária', 'Diretrizes para  a fiscalização de trânsito e, em conjunto com a Polícia Militar, para o policiamento ostensivo de trânsito', 'Integração e atuação em rede com os órgãos do Sistema Estadual de Trânsito (SISTRAN)'] },
+            { art: 'Art. 257', title: 'Escola Pública de Trânsito', type: 'Coordenadoria', preamble: 'Compete coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Educação de crianças, adolescentes, jovens e adultos, sobre legislação, sinalização e comportamento no trânsito, nos termos do inciso XVII do art. 22 da Lei federal nº 9.503, de 1997', 'Promoção da Política Nacional de Trânsito (PNT) e de cursos voltados para o exercício da cidadania, mobilidade e segurança no trânsito', 'Campanhas de conscientização para o trânsito seguro', 'Ações de educação para condutores profissionais', 'Gestão da educação corporativa, formação, desenvolvimento contínuo e especialização dos empregados e servidores do DETRAN-S'] },
+            { art: 'Art. 258', title: 'Coordenadoria de Educação Corporativa', type: 'Coordenadoria', preamble: 'Compete coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Desenvolvimento de programas de capacitação, formação e desenvolvimento profissional para os empregados e servidores do DETRAN-SP', 'Gestão do conhecimento organizacional', 'Avaliação de desempenho e competências', 'Promoção de programas de educação corporativa, trilhas de conhecimento, gamificação e aprendizado contínuo', 'Monitoramento e avaliação dos resultados das ações de capacitação, formação e
+desenvolvimento profissional', 'Articulação com instituições de ensino, entidades parceiras e especialistas para desenvolvimento de programas de formação avançada e especialização', 'Gestão das plataformas tecnológicas de ensino', 'Desenvolvimento de lideranças, com foco em gestão estratégica, ética, inovação e
+habilidades interpessoais'] },
             { art: 'Art. 259', title: 'Serviço de Desenvolvimento de Competências Específicas', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Mapeamento de competências técnicas', 'Elaboração de programas de treinamento específicos', 'Avaliação de aprendizagem'] },
             { art: 'Art. 260', title: 'Serviço de Desenvolvimento de Competências Gerais', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Desenvolvimento de habilidades comportamentais', 'Implementação de programas de liderança', 'Promoção de cultura organizacional'] },
             { art: 'Art. 261', title: 'Serviço de Formação Profissional', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Desenvolvimento de programas de formação inicial', 'Gestão de estágios e trainee', 'Implementação de programas de certificação'] },
@@ -1798,9 +1858,11 @@
             { art: 'Art. 265', title: 'Serviço de Promoção de Educação no Ensino Fundamental', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Desenvolvimento de material didático', 'Capacitação de educadores', 'Implementação de projetos escolares'] },
             { art: 'Art. 266', title: 'Serviço de Desenvolvimento de Motoristas Profissionais', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Elaboração de programas de capacitação para motoristas profissionais', 'Avaliação de competências de condutores', 'Promoção de práticas de direção segura'] },
             { art: 'Art. 267', title: 'Serviço de Desenvolvimento de Agentes Públicos', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Capacitação de agentes de trânsito', 'Atualização em legislação e procedimentos', 'Desenvolvimento de habilidades de fiscalização'] },
-            { art: 'Art. 268', title: 'Coordenadoria Geral de Segurança Viária', type: 'Coordenadoria', preamble: 'Compete coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Implementação e monitoramento dos Planos de Redução de Mortes e Lesões', 'Execução de programas e acordos de cooperação', 'Coleta e gestão de dados estatísticos sobre sinistros', 'Aplicação, transparência e prestação de contas dos investimentos'] },
-            { art: 'Art. 269', title: 'Coordenadoria do Observatório de Segurança no Trânsito', type: 'Coordenadoria', preamble: 'Compete coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Elaboração e implantação do Plano Estadual de Segurança Viária', 'Desdobramento do Pnatrans e compartilhamento de dados', 'Análise de dados estatísticos de segurança viária', 'Produção de relatórios estatísticos', 'Desenvolvimento de indicadores de desempenho', 'Estudo de padrões e tendências em sinistros', 'Articulação com órgãos do SNT e instituições acadêmicas', 'Gestão das plataformas tecnológicas e painéis de dados'] },
-            { art: 'Art. 270', title: 'Divisão de Estatísticas de Trânsito', type: 'Divisão', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Gestão de banco de dados de trânsito', 'Análise estatística avançada', 'Elaboração de relatórios técnicos'] },
+            { art: 'Art. 268', title: 'Coordenadoria Geral de Segurança Viária', type: 'Coordenadoria', preamble: 'Compete coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Implementação e monitoramento dos Planos Nacional e Estadual de Redução de Mortes e Lesões no Trânsito, nos termos do art. 326-A da Lei federal nº 9.503, de 1997', 'Execução de programas, projetos, ações e acordos de cooperação voltados para a
+segurança no trânsito', 'Coleta e gestão  de dados estatísticos e a realização de estudos sobre sinistros de trânsito e suas causa', 'Aplicação, transparência e prestação de contas dos investimentos em segurança viária advindos da receita arrecadada com a cobrança das multas de trânsito, nos termos do § 2º e caput do art. 320 da Lei federal nº 9.503, de 1997.'] },
+            { art: 'Art. 269', title: 'Coordenadoria do Observatório de Segurança no Trânsito', type: 'Coordenadoria', preamble: 'Compete coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Elaboração e implantação do Plano Estadual de Segurança Viária', 'Desdobramento do Plano Nacional de Redução de Mortes e Lesões no Trânsito (Pnatrans) e compartilhamento dos dados estatísticos coletados, ações realizadas, metas e índices, nos termos do art. 326-A da Lei federal nº 9.503, de 1997', 'Análise de dados estatísticos de segurança viária e sinistros de trânsito', 'Produção de relatórios estatísticos sobre segurança viária e sinistros de trânsito', 'Desenvolvimento de indicadores de desempenho', 'Estudo de padrões e tendências em sinistros de trânsito, fatores de risco e estratégias de mitigação para reduzir acidentes e salvar vidas', 'Articulação com órgãos do Sistema Nacional de Trânsito, instituições acadêmicas,
+organizações não governamentais e outros parceiros estratégicos para compartilhar dados, boas práticas e desenvolver projetos integrados de segurança no trânsito', ' Implementação e gestão das plataformas tecnológicas e painéis de visualização de dados para monitoramento contínuo, consultas e análises dos dados e indicadores de segurança viária'] },
+            { art: 'Art. 270', title: 'Divisão de Estatísticas de Trânsito', type: 'Divisão', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Gestão de banco de dados de trânsito', 'Análise estatística avançada sobre estatística de trânsito', 'Elaboração de relatórios técnicos'] },
             { art: 'Art. 271', title: 'Serviço de Análise de Sinistro de Trânsito', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Investigação de acidentes de trânsito', 'Análise de fatores de risco', 'Elaboração de relatórios técnicos'] },
             { art: 'Art. 272', title: 'Serviço de Integração da Informação', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Gestão de sistemas de informação', 'Integração de bases de dados', 'Desenvolvimento de ferramentas de análise'] },
             { art: 'Art. 273', title: 'Divisão de Redução de Mortes e Lesões no Trânsito', type: 'Divisão', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Planejamento de ações de segurança viária', 'Monitoramento de indicadores de segurança', 'Articulação intersetorial'] },
@@ -1818,7 +1880,7 @@
             { art: 'Art. 285', title: 'Serviço de Análise Técnica', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Avaliação técnica de projetos', 'Elaboração de pareceres técnicos', 'Suporte à tomada de decisões'] },
             { art: 'Art. 286', title: 'Divisão de Engenharia de Trânsito', type: 'Divisão', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Planejamento de infraestrutura viária', 'Análise de projetos de engenharia de tráfego', 'Proposição de melhorias viárias'] },
             { art: 'Art. 287', title: 'Serviço de Engenharia de Trânsito', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Elaboração de projetos de sinalização', 'Análise de segurança viária', 'Proposição de intervenções físicas'] },
-            { art: 'Art. 288', title: 'Serviço de Fiscalização de Intervenções', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Gestão de contratos e fiscalização de obras', 'Avaliação de conformidade técnica e jurídica', 'Elaboração de relatórios de inspeção'] }
+            { art: 'Art. 288', title: 'Serviço de Fiscalização de Intervenções', type: 'Serviço', preamble: 'Compete controlar, executar e avaliar as atividades referentes a:', items: ['Gestão de contratos e fiscalização de obras de intervenções viárias', 'Avaliação de conformidade técnica, contratual e jurídica', 'Elaboração de relatórios de inspeção'] }
         ];
 
         const INITIAL_INDICATORS = [
@@ -2747,7 +2809,7 @@ window.togglePlanner = async (id, collectionName) => {
         window.renderGantt = () => { const container = document.getElementById('ganttBodyContainer'); container.innerHTML = ''; let items = []; if (currentGanttFilter === 'all' || currentGanttFilter === 'projects') { items = [...items, ...dataStore.projects.map(i => ({...i, type: 'project'}))]; } if (currentGanttFilter === 'all' || currentGanttFilter === 'contracts') { items = [...items, ...dataStore.contracts.map(i => ({...i, type: 'contract'}))]; } items = items.filter(i => i.prazo);
             // Filtro por coordenação (menu lateral)
             if (currentFilter !== 'all') { items = items.filter(i => (i.coord || '') === currentFilter); }
- items.sort((a,b) => a.prazo.localeCompare(b.prazo)); const yearStart = new Date('2026-01-01').getTime(); const yearEnd = new Date('2026-12-31').getTime(); const yearDuration = yearEnd - yearStart; const today = new Date().getTime(); if(items.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026.</p>'; return; } items.forEach(item => { const deadlineDate = new Date(item.prazo).getTime(); let startDate = yearStart; if (item.roadmap && item.roadmap.length > 0) { const sorted = [...item.roadmap].sort((a,b) => a.data.localeCompare(b.data)); startDate = new Date(sorted[0].data).getTime(); } const safeStart = Math.max(startDate, yearStart); const safeEnd = Math.min(deadlineDate, yearEnd); if (safeEnd < safeStart) return; const left = ((safeStart - yearStart) / yearDuration) * 100; const width = ((safeEnd - safeStart) / yearDuration) * 100; const colorClass = item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'; const row = document.createElement('div'); row.className = 'gantt-row'; let milestonesHtml = ''; if (item.roadmap) { item.roadmap.forEach(r => { const mDate = new Date(r.data).getTime(); if (mDate >= yearStart && mDate <= yearEnd) { const mPos = ((mDate - yearStart) / yearDuration) * 100; const mColor = item.type === 'project' ? 'bg-blue-400' : 'bg-purple-400'; const fmtDate = new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); milestonesHtml += `<div class="gantt-milestone-wrapper" style="left: ${mPos}%"><div class="gantt-milestone-diamond ${mColor}"></div><div class="gantt-milestone-tooltip"><div class="font-bold text-emerald-300 mb-0.5 uppercase tracking-wider">${fmtDate}</div><div class="font-medium text-white text-[11px] leading-tight">${r.etapa}</div></div></div>`; } }); } row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${item.coord || 'N/A'}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${item.name}">${item.name}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${item.type === 'project' ? 'projects' : 'contracts'}')"><span class="gantt-bar-label">${item.status}</span></div>${milestonesHtml}</div>`; container.appendChild(row); }); if (today >= yearStart && today <= yearEnd) { const todayPos = ((today - yearStart) / yearDuration) * 100; const line = document.createElement('div'); line.className = 'gantt-today-line'; line.style.left = `${todayPos}%`; line.innerHTML = `<div class="gantt-today-label">Hoje</div>`; container.appendChild(line); } };
+ items.sort((a,b) => a.prazo.localeCompare(b.prazo)); const ganttYear = 2026; const yearStart = new Date(ganttYear, 0, 1).getTime(); const yearEnd = new Date(ganttYear, 11, 31, 23, 59, 59, 999).getTime(); const yearDuration = yearEnd - yearStart; const todayDate = new Date(); const today = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 12, 0, 0, 0).getTime(); const timelineOffsetPx = 250; const timelineWidthPx = 1200; if(items.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026.</p>'; return; } items.forEach(item => { const deadlineDate = new Date(item.prazo + 'T12:00:00').getTime(); let startDate = yearStart; if (item.roadmap && item.roadmap.length > 0) { const sorted = [...item.roadmap].sort((a,b) => a.data.localeCompare(b.data)); startDate = new Date(sorted[0].data + 'T12:00:00').getTime(); } const safeStart = Math.max(startDate, yearStart); const safeEnd = Math.min(deadlineDate, yearEnd); if (safeEnd < safeStart) return; const left = ((safeStart - yearStart) / yearDuration) * 100; const width = ((safeEnd - safeStart) / yearDuration) * 100; const colorClass = item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'; const row = document.createElement('div'); row.className = 'gantt-row'; let milestonesHtml = ''; if (item.roadmap) { item.roadmap.forEach(r => { const mDate = new Date(r.data + 'T12:00:00').getTime(); if (mDate >= yearStart && mDate <= yearEnd) { const mPos = ((mDate - yearStart) / yearDuration) * 100; const mColor = item.type === 'project' ? 'bg-blue-400' : 'bg-purple-400'; const fmtDate = new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); milestonesHtml += `<div class="gantt-milestone-wrapper" style="left: ${mPos}%"><div class="gantt-milestone-diamond ${mColor}"></div><div class="gantt-milestone-tooltip"><div class="font-bold text-emerald-300 mb-0.5 uppercase tracking-wider">${fmtDate}</div><div class="font-medium text-white text-[11px] leading-tight">${r.etapa}</div></div></div>`; } }); } row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${item.coord || 'N/A'}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${item.name}">${item.name}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${item.type === 'project' ? 'projects' : 'contracts'}')"><span class="gantt-bar-label">${item.status}</span></div>${milestonesHtml}</div>`; container.appendChild(row); }); if (today >= yearStart && today <= yearEnd) { const todayRatio = (today - yearStart) / yearDuration; const todayLeftPx = timelineOffsetPx + (timelineWidthPx * todayRatio); const line = document.createElement('div'); line.className = 'gantt-today-line'; line.style.left = `${todayLeftPx}px`; line.innerHTML = `<div class="gantt-today-label">Hoje</div>`; container.appendChild(line); } };
         
         // ==========================
         // DESPACHOS – ITENS AVULSOS
@@ -3355,6 +3417,65 @@ window.openAddBacklogItemModal = (meetingId) => {
             const statsRow1 = document.getElementById('statsRow1'); const chartsSection = document.getElementById('chartsSection'); const statusChartWrapper = document.getElementById('statusChartWrapper'); const priorityChartWrapper = document.getElementById('priorityChartWrapper'); const statusLegend = document.getElementById('statusLegendContainer'); if(showCards) { statsRow1.classList.remove('hidden'); chartsSection.classList.remove('hidden'); chartsSection.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-all duration-500 gap-4 chart-legend-container flex-col sm:flex-row w-full xl:w-auto xl:min-w-[320px] xl:max-w-[420px] shrink-0 flex"; statusChartWrapper.classList.add('hidden'); priorityChartWrapper.classList.remove('hidden', 'sm:pl-3'); statusLegend.className = "grid grid-cols-2 gap-x-2 gap-y-1 justify-center w-full"; } else { statsRow1.classList.add('hidden'); chartsSection.classList.remove('hidden'); chartsSection.className = "flex w-full bg-white p-5 rounded-2xl border border-slate-200 shadow-sm gap-4 chart-legend-container flex-col sm:flex-row"; statusChartWrapper.classList.remove('hidden'); priorityChartWrapper.classList.remove('hidden'); priorityChartWrapper.classList.add('sm:pl-3'); statusLegend.className = "flex flex-wrap justify-center gap-3 w-full mt-2"; }
         }
 
+        function updateCoordProgressSection(itemsBase) {
+            const section = document.getElementById('coordProgressSection');
+            if (!section) return;
+
+            const isProjectsView = activeTab === 'projects';
+            if (!isProjectsView || currentFilter === 'all') {
+                section.classList.add('hidden');
+                return;
+            }
+
+            const baseItems = (itemsBase || []).filter(item => {
+                if (!item) return false;
+                if (item.type && item.type !== 'Projeto') return false;
+                return item.coord === currentFilter && normalizeStatus(item.status) !== 'Cancelado';
+            });
+
+            const total = baseItems.length;
+            const counts = { done: 0, inProgress: 0, backlog: 0 };
+
+            baseItems.forEach(item => {
+                const st = normalizeStatus(item.status);
+                if (st === 'Concluído') counts.done += 1;
+                else if (st === 'Backlog') counts.backlog += 1;
+                else counts.inProgress += 1;
+            });
+
+            const pct = (value) => total ? Math.round((value / total) * 100) : 0;
+            const pctDone = pct(counts.done);
+            const pctInProgress = pct(counts.inProgress);
+            const pctBacklog = pct(counts.backlog);
+
+            const chart = document.getElementById('coordProgressChart');
+            const title = document.getElementById('coordProgressTitle');
+            const subtitle = document.getElementById('coordProgressSubtitle');
+            const totalEl = document.getElementById('coordProgressTotal');
+
+            const doneRange = pctDone;
+            const inProgressRange = pctDone + pctInProgress;
+            chart.style.background = total
+                ? `conic-gradient(#10b981 0% ${doneRange}%, #ef4444 ${doneRange}% ${inProgressRange}%, #94a3b8 ${inProgressRange}% 100%)`
+                : '#e2e8f0';
+
+            title.textContent = currentFilter;
+            subtitle.textContent = total
+                ? `Distribuição dos ${total} projetos da coordenação filtrada.`
+                : 'Nenhum projeto encontrado para a coordenação filtrada.';
+            totalEl.textContent = total;
+
+            document.getElementById('coordProgressPctDone').textContent = `${pctDone}%`;
+            document.getElementById('coordProgressPctInProgress').textContent = `${pctInProgress}%`;
+            document.getElementById('coordProgressPctBacklog').textContent = `${pctBacklog}%`;
+
+            document.getElementById('coordProgressCountDone').textContent = `${counts.done} ${counts.done === 1 ? 'projeto' : 'projetos'}`;
+            document.getElementById('coordProgressCountInProgress').textContent = `${counts.inProgress} ${counts.inProgress === 1 ? 'projeto' : 'projetos'}`;
+            document.getElementById('coordProgressCountBacklog').textContent = `${counts.backlog} ${counts.backlog === 1 ? 'projeto' : 'projetos'}`;
+
+            section.classList.remove('hidden');
+        }
+
         window.renderData = () => {
             if (activeTab === 'calendar') { window.renderCalendar(); return; }
             if (activeTab === 'portaria') { window.renderPortaria(); return; }
@@ -3371,6 +3492,8 @@ window.openAddBacklogItemModal = (meetingId) => {
             if(currentFilter !== 'all') filtered = filtered.filter(i => i.coord === currentFilter);
             if(activeTab === 'operational') { const serviceFilter = document.getElementById('filterService').value; if(serviceFilter !== 'all') { filtered = filtered.filter(i => { const s = i.services || (i.service ? [i.service] : []); return s.includes(serviceFilter); }); } }
             if(currentPriorityFilter !== 'all') filtered = filtered.filter(i => i.priority === currentPriorityFilter);
+
+            updateCoordProgressSection(dataStore.projects || []);
             
             const statusList = (activeTab === 'projects') ? PROJECT_STATUS : (activeTab === 'contracts' ? CONTRACT_STATUS : UNIFIED_STATUS);
             const counts = {}; statusList.forEach(s => counts[s] = 0);
@@ -3422,10 +3545,14 @@ window.openAddBacklogItemModal = (meetingId) => {
                         `<span class="text-xl sm:text-2xl text-slate-400 mr-2 align-middle">R$</span>${rv3Sum.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                 }
             }
-            // Concluídos: ficam ocultos no board e aparecem apenas na caixa/modal
+            // Concluídos e cancelados: ficam ocultos no board e aparecem apenas em caixas/modais próprias
             if (currentListFilter === 'Concluído') { if (typeof window.openCompletedModal === 'function') window.openCompletedModal(); return; }
+            if (currentListFilter === 'Cancelado') { if (typeof window.openCanceledModal === 'function') window.openCanceledModal(); return; }
             if(currentListFilter !== 'all') filtered = filtered.filter(i => normalizeStatus(i.status) === currentListFilter);
-            filtered = filtered.filter(i => normalizeStatus(i.status) !== 'Concluído');
+            filtered = filtered.filter(i => {
+                const status = normalizeStatus(i.status);
+                return status !== 'Concluído' && status !== 'Cancelado';
+            });
             // Ordenação de Projetos (PMG + Concluídos no final)
             // Regra:
             // 1) Projetos NÃO concluídos primeiro
@@ -3853,10 +3980,10 @@ Object.keys(cols).forEach(key => {
         if (status === "Backlog") return "text-slate-600 bg-slate-50 border-slate-200";
         return "text-slate-600 bg-slate-50 border-slate-200";
       };
-window.setListFilter = f => { if(f === 'Concluído' && typeof window.openCompletedModal === 'function') { window.openCompletedModal(); return; } currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Em Planejamento':'cardPlanejado','Em Execução':'cardExecucao','Em Execução (com risco)':'cardExecucaoRisco','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f]) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
+window.setListFilter = f => { if(f === 'Concluído' && typeof window.openCompletedModal === 'function') { window.openCompletedModal(); return; } if(f === 'Cancelado' && typeof window.openCanceledModal === 'function') { window.openCanceledModal(); return; } currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Em Planejamento':'cardPlanejado','Em Execução':'cardExecucao','Em Execução (com risco)':'cardExecucaoRisco','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f]) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
         window.setPriorityFilter = p => { currentPriorityFilter = (currentPriorityFilter === p) ? 'all' : p; document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); if(currentPriorityFilter !== 'all') { const map = {'Urgente':'urg', 'Alta':'high', 'Média':'mid', 'Baixa':'low'}; document.getElementById('legend-prio-'+map[currentPriorityFilter]).classList.add('active-legend'); } window.renderData(); };
         window.setFilter = f => { currentFilter = f; const btns = document.querySelectorAll('.coord-btn'); btns.forEach(b => b.classList.remove('active-coord')); if(f !== 'all') { document.getElementById('coordBtnContainer').classList.add('coord-list-active'); const b = document.getElementById('coord-'+f); if(b) b.classList.add('active-coord'); } else document.getElementById('coordBtnContainer').classList.remove('coord-list-active'); if (activeTab === 'gantt') window.renderGantt(); else window.renderData(); };
-        window.updateStatusUI = s => { document.getElementById('sysStatusDot').className = `w-2 h-2 rounded-full ${s === 'online' ? 'bg-emerald-400' : 'bg-amber-400'}`; document.getElementById('sysStatusText').innerText = s === 'online' ? 'Online' : 'Sincronizando...'; };
+        window.updateStatusUI = s => { document.getElementById('sysStatusDot').className = `w-2 h-2 rounded-full ${s === 'online' ? 'bg-emerald-400' : 'bg-red-500'}`; document.getElementById('sysStatusText').innerText = s === 'online' ? 'Online' : 'Sincronizando...'; };
         
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -4307,7 +4434,7 @@ const filenameBase = (safeTitle || 'pauta')
             if (currentPriorityFilter !== 'all') items = items.filter(i => i.priority === currentPriorityFilter);
 
             // Apenas concluídos
-            items = items.filter(i => i.status === 'Concluído');
+            items = items.filter(i => normalizeStatus(i.status) === 'Concluído');
 
             // Ordena: mais recentes primeiro (concludedAt > updatedAt)
             items.sort((a, b) => {
@@ -4344,6 +4471,89 @@ const filenameBase = (safeTitle || 'pauta')
                     coord ? `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${coord}</span>` : '',
                     prio ? `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${prio}</span>` : '',
                     concluded ? `<span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold text-slate-500">Concluído em ${concluded}</span>` : `<span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold text-slate-500">Concluído</span>`,
+                    prazo ? `<span class="px-2 py-1 rounded-full bg-slate-50 text-slate-600 text-[11px] font-bold">Prazo: ${prazo}</span>` : ''
+                ].filter(Boolean).join(' ');
+
+                listEl.insertAdjacentHTML('beforeend', `
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="text-sm font-black text-slate-900 truncate">${(item.name || 'Sem título')}</div>
+                                <div class="mt-2 flex flex-wrap gap-2">${meta}</div>
+                                ${item.desc ? `<div class="mt-2 text-xs text-slate-600 line-clamp-2">${item.desc}</div>` : ''}
+                            </div>
+                            <div class="flex-none">
+                                <button class="bg-slate-900 text-white text-xs font-black px-3 py-2 rounded-xl hover:bg-slate-800"
+                                        onclick="editItem('${item.id}', '${activeTab}')">
+                                    Abrir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        };
+
+        window.openCanceledModal = () => {
+            const disallowed = ['calendar','portaria','indicators','despachos'];
+            if (disallowed.includes(activeTab)) return;
+
+            window.showInlineModal('canceledModal');
+            window.renderCanceledModalList();
+        };
+
+        window.closeCanceledModal = () => {
+            window.hideInlineModal('canceledModal');
+        };
+
+        window.renderCanceledModalList = () => {
+            const listEl = document.getElementById('canceledCardsContainer');
+            const countEl = document.getElementById('canceledCount');
+            if (!listEl) return;
+
+            const q = (document.getElementById('canceledSearchInput')?.value || '').toLowerCase().trim();
+            let items = (dataStore[activeTab] || []).slice();
+
+            if (q) items = items.filter(i => (i.name || '').toLowerCase().includes(q));
+            if (currentFilter !== 'all') items = items.filter(i => i.coord === currentFilter);
+            if (activeTab === 'operational') {
+                const serviceFilter = document.getElementById('filterService')?.value || 'all';
+                if (serviceFilter !== 'all') {
+                    items = items.filter(i => {
+                        const s = i.services || (i.service ? [i.service] : []);
+                        return s.includes(serviceFilter);
+                    });
+                }
+            }
+            if (currentPriorityFilter !== 'all') items = items.filter(i => i.priority === currentPriorityFilter);
+
+            items = items.filter(i => normalizeStatus(i.status) === 'Cancelado');
+
+            items.sort((a, b) => {
+                const ta = (a.updatedAt || a.createdAt || 0);
+                const tb = (b.updatedAt || b.createdAt || 0);
+                return tb - ta;
+            });
+
+            if (countEl) countEl.textContent = String(items.length);
+
+            listEl.innerHTML = '';
+            if (items.length === 0) {
+                listEl.innerHTML = `<div class="text-sm text-slate-500 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    Nenhum card cancelado encontrado com os filtros atuais.
+                </div>`;
+                return;
+            }
+
+            items.forEach(item => {
+                const prazo = item.prazo ? String(item.prazo) : '';
+                const coord = item.coord ? String(item.coord) : '';
+                const prio = item.priority ? String(item.priority) : '';
+
+                const meta = [
+                    coord ? `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${coord}</span>` : '',
+                    prio ? `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${prio}</span>` : '',
+                    `<span class="px-2 py-1 rounded-full bg-red-50 text-red-700 text-xs font-semibold">Cancelado</span>`,
                     prazo ? `<span class="px-2 py-1 rounded-full bg-slate-50 text-slate-600 text-[11px] font-bold">Prazo: ${prazo}</span>` : ''
                 ].filter(Boolean).join(' ');
 
@@ -4426,6 +4636,38 @@ const filenameBase = (safeTitle || 'pauta')
 
             <div class="p-5 overflow-auto flex-1">
                 <div id="completedCardsContainer" class="grid gap-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Caixa de Cancelados -->
+    <div id="canceledModal" class="hidden fixed inset-0 z-[9998] items-center justify-center bg-slate-900/60" style="display:none;">
+        <div class="bg-white w-[96vw] max-w-4xl max-h-[88vh] rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                    <div class="text-base font-black text-slate-900 flex items-center gap-2">
+                        Cancelados <span class="text-xs font-black text-red-700 bg-red-50 px-2 py-1 rounded-full" id="canceledCount">0</span>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">Use a busca e os filtros do painel (coordenação/prioridade) para refinar.</div>
+                </div>
+                <button type="button" onclick="closeCanceledModal()" class="bg-slate-100 text-slate-800 font-black px-4 py-2 rounded-2xl hover:bg-slate-200 transition-all uppercase text-xs tracking-widest">
+                    Fechar
+                </button>
+            </div>
+
+            <div class="p-5 border-b border-slate-200">
+                <div class="flex gap-3 items-center">
+                    <div class="flex-1 relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="canceledSearchInput" oninput="renderCanceledModalList()" type="text"
+                               placeholder="Buscar por título..."
+                               class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 bg-white text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 overflow-auto flex-1">
+                <div id="canceledCardsContainer" class="grid gap-3"></div>
             </div>
         </div>
     </div>
