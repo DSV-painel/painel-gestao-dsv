@@ -791,6 +791,8 @@
                         <textarea id="editMeetingAttendees" rows="3" class="input-style resize-none"></textarea>
                     </div>
                     
+                    <div id="meetingAuditInfo" class="hidden rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 text-[11px] text-slate-400"></div>
+
                     <div class="flex justify-end pt-2 gap-3">
                         <button type="button" onclick="toggleModal('editMeetingModal')" class="bg-slate-100 text-slate-500 font-bold py-3 px-6 rounded-xl hover:bg-slate-200 transition-all uppercase text-xs tracking-widest">Cancelar</button>
                         <button type="button" onclick="saveMeetingEdit()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-blue-700 transition-all uppercase text-xs tracking-widest flex items-center gap-2">
@@ -1169,7 +1171,9 @@
                         </div>
                     </div>
 
-                    <div class="mt-12 flex gap-4 pb-8">
+                    <div id="projectAuditInfo" class="mt-8 hidden rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 text-[11px] text-slate-400"></div>
+
+                    <div class="mt-6 flex gap-4 pb-8">
                         <button type="button" id="deleteBtn" onclick="deleteProject()" class="bg-red-50 text-red-600 font-bold px-6 rounded-2xl shadow-sm hover:bg-red-100 transition-all uppercase text-xs tracking-widest hidden"><i class="fas fa-trash mr-2"></i> Excluir</button>
                         <button type="button" id="saveBtn" onclick="saveProject()" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-blue-700 transition-all uppercase text-xs tracking-[0.2em]">Gravar Dados</button>
                     </div>
@@ -1296,7 +1300,9 @@
                         <!-- Gerado via JS -->
                     </div>
                     
-                    <div class="mt-8 flex justify-between items-center gap-4">
+                    <div id="indicatorAuditInfo" class="mt-8 hidden rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 text-[11px] text-slate-400"></div>
+
+                    <div class="mt-6 flex justify-between items-center gap-4">
                         <button type="button" id="btnDeleteIndicator" onclick="deleteIndicator()" class="bg-red-50 text-red-600 font-bold py-3 px-6 rounded-xl shadow-sm hover:bg-red-100 transition-all uppercase text-xs tracking-widest flex items-center"><i class="fas fa-trash mr-2"></i> Excluir</button>
                         <button type="button" onclick="saveIndicator()" class="bg-pink-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-pink-200 hover:bg-pink-700 transition-all uppercase text-xs tracking-widest">Salvar Lançamentos</button>
                     </div>
@@ -1751,6 +1757,7 @@
                                 <div class="flex flex-col"><label class="field-label">Área</label><select id="calEventArea" class="input-style"></select></div>
                             </div>
                             <div class="flex flex-col"><label class="field-label">Observações</label><textarea id="calEventObs" rows="3" class="input-style resize-none"></textarea></div>
+                            <div id="calendarAuditInfo" class="hidden rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 text-[11px] text-slate-400"></div>
                             <div class="flex gap-3 pt-4">
                                 <button type="button" id="btnDeleteEvent" onclick="deleteCalendarEvent()" class="px-4 py-3 bg-red-50 text-red-600 rounded-xl font-bold text-xs uppercase hover:bg-red-100 hidden"><i class="fas fa-trash"></i></button>
                                 <button type="button" onclick="saveCalendarEvent()" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all uppercase text-xs tracking-widest">Salvar Evento</button>
@@ -1837,6 +1844,94 @@
             };
             if (map[s]) s = map[s];
             return s;
+        }
+
+        // --- Auditoria de cadastro/atualização (Firebase Auth) ---
+        function getCurrentUserAudit() {
+            const email = (currentUser && currentUser.email) ? currentUser.email : '';
+            const uid = (currentUser && currentUser.uid) ? currentUser.uid : '';
+            const label = email || uid || 'Usuário autenticado';
+            return { uid, email, label };
+        }
+
+        function formatAuditDate(value) {
+            if (!value) return '';
+            try {
+                const date = (typeof value === 'number') ? new Date(value) : new Date(value);
+                if (Number.isNaN(date.getTime())) return '';
+                return date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+            } catch (e) { return ''; }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function buildAuditFields(existingItem = null) {
+            const now = Date.now();
+            const user = getCurrentUserAudit();
+            const fields = {
+                updatedAt: now,
+                updatedBy: user.label,
+                updatedByEmail: user.email,
+                updatedByUid: user.uid
+            };
+            if (!existingItem || !existingItem.createdAt) fields.createdAt = now;
+            if (!existingItem || !existingItem.createdBy) {
+                fields.createdBy = user.label;
+                fields.createdByEmail = user.email;
+                fields.createdByUid = user.uid;
+            }
+            return fields;
+        }
+
+        function renderAuditHtml(item = {}) {
+            const createdBy = item.createdBy || item.createdByEmail || '';
+            const updatedBy = item.updatedBy || item.updatedByEmail || '';
+            if (!createdBy && !updatedBy) return '';
+            const createdAt = formatAuditDate(item.createdAt);
+            const updatedAt = formatAuditDate(item.updatedAt);
+            const createdTitle = createdBy ? `Cadastrado por ${createdBy}${createdAt ? ' em ' + createdAt : ''}` : '';
+            const updatedTitle = updatedBy ? `Atualizado por ${updatedBy}${updatedAt ? ' em ' + updatedAt : ''}` : '';
+            return `
+                <div class="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    ${createdBy ? `<span class="inline-flex items-center gap-1 bg-slate-50 border border-slate-100 rounded-lg px-2 py-1" title="${escapeHtml(createdTitle)}"><i class="fas fa-user-plus text-slate-300"></i> Cadastro: ${escapeHtml(createdBy)}</span>` : ''}
+                    ${updatedBy ? `<span class="inline-flex items-center gap-1 bg-blue-50 border border-blue-100 rounded-lg px-2 py-1 text-blue-500" title="${escapeHtml(updatedTitle)}"><i class="fas fa-user-pen text-blue-300"></i> Atualizado: ${escapeHtml(updatedBy)}</span>` : ''}
+                </div>
+            `;
+        }
+
+        function renderAuditDetailHtml(item = {}) {
+            const createdBy = item.createdByEmail || item.createdBy || '';
+            const updatedBy = item.updatedByEmail || item.updatedBy || '';
+            const createdAt = formatAuditDate(item.createdAt);
+            const updatedAt = formatAuditDate(item.updatedAt);
+            if (!createdBy && !updatedBy && !createdAt && !updatedAt) return '';
+            return `
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+                        <i class="fas fa-clock-rotate-left text-slate-300"></i>
+                        <span>Informações do registro</span>
+                    </div>
+                    <div class="flex flex-wrap gap-x-5 gap-y-1 text-[11px] font-semibold text-slate-500 normal-case">
+                        ${createdBy ? `<span><span class="text-slate-400">Cadastrado por:</span> ${escapeHtml(createdBy)}${createdAt ? ` <span class="text-slate-300">• ${escapeHtml(createdAt)}</span>` : ''}</span>` : ''}
+                        ${updatedBy ? `<span><span class="text-slate-400">Atualizado por:</span> ${escapeHtml(updatedBy)}${updatedAt ? ` <span class="text-slate-300">• ${escapeHtml(updatedAt)}</span>` : ''}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function setAuditInfo(containerId, item = null) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            const html = item ? renderAuditDetailHtml(item) : '';
+            el.innerHTML = html;
+            el.classList.toggle('hidden', !html);
         }
 
 
@@ -2144,6 +2239,7 @@ document.getElementById('projRisks').value = '';
             document.getElementById('rasciInputI').value = '';
 
             document.getElementById('deleteBtn').classList.add('hidden');
+            setAuditInfo('projectAuditInfo', null);
 
             const statusSelect = document.getElementById('projStatus');
             statusSelect.innerHTML = ((activeTab === 'projects') ? PROJECT_STATUS : (activeTab === 'contracts' ? CONTRACT_STATUS : UNIFIED_STATUS)).map(s => `<option value="${s}">${s}</option>`).join('');
@@ -2307,7 +2403,7 @@ document.getElementById('projRisks').value = '';
             try {
                 await setDoc(
                     doc(db, 'artifacts', appId, 'public', 'data', activeTab, id),
-                    { obsLog, obs: lastText, updatedAt: Date.now() },
+                    { obsLog, obs: lastText, ...buildAuditFields(existing) },
                     { merge: true }
                 );
 
@@ -2355,7 +2451,7 @@ document.getElementById('projRisks').value = '';
             try {
                 await setDoc(
                     doc(db, 'artifacts', appId, 'public', 'data', activeTab, id),
-                    { obsLog, obs: text, updatedAt: Date.now() },
+                    { obsLog, obs: text, ...buildAuditFields(existing) },
                     { merge: true }
                 );
 
@@ -2401,13 +2497,14 @@ document.getElementById('projRisks').value = '';
             const roadmap = [];
             document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date').value; const e = row.querySelector('.roadmap-step').value; if (d && e) roadmap.push({ data: d, etapa: e }); });
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
+            const existingForAudit = (dataStore[activeTab] || []).find(i => i.id === id) || null;
             const data = {
                 name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap,
-                rasci: { r: getTagsFromContainer('rasciContainerR'), a: getTagsFromContainer('rasciContainerA'), s: getTagsFromContainer('rasciContainerS'), c: getTagsFromContainer('rasciContainerC'), i: getTagsFromContainer('rasciContainerI') }, updatedAt: Date.now()
+                rasci: { r: getTagsFromContainer('rasciContainerR'), a: getTagsFromContainer('rasciContainerA'), s: getTagsFromContainer('rasciContainerS'), c: getTagsFromContainer('rasciContainerC'), i: getTagsFromContainer('rasciContainerI') }, ...buildAuditFields(existingForAudit)
             };
             if (activeTab === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (activeTab === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
             // Confirmação ao marcar como Concluído
-            const __existingItem = (document.getElementById('editId').value && (dataStore[activeTab] || []).find(i => i.id === id)) || null;
+            const __existingItem = existingForAudit;
             const __oldStatus = (__existingItem && __existingItem.status) ? __existingItem.status : '';
             const __newStatus = data.status || '';
             if (__newStatus === 'Concluído' && __oldStatus !== 'Concluído') {
@@ -2577,7 +2674,7 @@ window.togglePlanner = async (id, collectionName) => {
 
         window.toggleBacklogSelection = (checkbox) => { const val = JSON.parse(checkbox.value); if (checkbox.checked) { selectedBacklogItems.add(checkbox.value); } else { selectedBacklogItems.delete(checkbox.value); } const btn = document.getElementById('createMeetingBtn'); const count = selectedBacklogItems.size; if(btn) { if(count > 0) { btn.classList.remove('opacity-50', 'cursor-not-allowed'); btn.innerText = `Gerar Pauta (${count} itens)`; btn.disabled = false; } else { btn.classList.add('opacity-50', 'cursor-not-allowed'); btn.innerText = `Gerar Pauta`; btn.disabled = true; } } document.getElementById('selectedCountBadge').innerText = count; };
         window.openCreateMeetingModal = () => { document.getElementById('meetingForm').reset(); document.getElementById('newMeetingDate').valueAsDate = new Date(); document.getElementById('selectedCountBadge').innerText = selectedBacklogItems.size; toggleModal('meetingModal'); };
-        window.createNewMeeting = async () => { const title = document.getElementById('newMeetingTitle').value; const date = document.getElementById('newMeetingDate').value; const attendees = document.getElementById('newMeetingAttendees').value; const items = []; selectedBacklogItems.forEach(jsonStr => { const obj = JSON.parse(jsonStr); const realItem = dataStore[obj.collection]?.find(i => i.id === obj.id); if(realItem) { items.push({ itemId: obj.id, collection: obj.collection, name: realItem.name, pautaTitle: realItem.name || '', pautaDesc: realItem.desc || '', status: 'Pendente', outcome: '', order: (items.length + 1) }); } }); const meetingData = { title, date, attendees, items, status: 'Agendada', createdAt: Date.now() }; try { const newId = Date.now().toString(); await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', newId), meetingData); selectedBacklogItems.clear(); toggleModal('meetingModal'); selectedMeetingId = newId; window.renderDespachos(); } catch(err) { console.error("Erro ao criar pauta:", err); } };
+        window.createNewMeeting = async () => { const title = document.getElementById('newMeetingTitle').value; const date = document.getElementById('newMeetingDate').value; const attendees = document.getElementById('newMeetingAttendees').value; const items = []; selectedBacklogItems.forEach(jsonStr => { const obj = JSON.parse(jsonStr); const realItem = dataStore[obj.collection]?.find(i => i.id === obj.id); if(realItem) { items.push({ itemId: obj.id, collection: obj.collection, name: realItem.name, pautaTitle: realItem.name || '', pautaDesc: realItem.desc || '', status: 'Pendente', outcome: '', order: (items.length + 1) }); } }); const meetingData = { title, date, attendees, items, status: 'Agendada', ...buildAuditFields(null) }; try { const newId = Date.now().toString(); await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', newId), meetingData); selectedBacklogItems.clear(); toggleModal('meetingModal'); selectedMeetingId = newId; window.renderDespachos(); } catch(err) { console.error("Erro ao criar pauta:", err); } };
         window.selectMeeting = (id) => { selectedMeetingId = id; window.renderDespachos(); };
         window.closeMeetingDetails = () => { selectedMeetingId = null; window.renderDespachos(); };
         window.deleteMeeting = async (id, btn) => {
@@ -2624,8 +2721,8 @@ window.togglePlanner = async (id, collectionName) => {
             }
         };
 
-        window.openEditMeetingModal = (meetingId) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; document.getElementById('editMeetingId').value = meeting.id; document.getElementById('editMeetingTitle').value = meeting.title || ''; document.getElementById('editMeetingDate').value = meeting.date; document.getElementById('editMeetingAttendees').value = meeting.attendees || ''; toggleModal('editMeetingModal'); };
-        window.saveMeetingEdit = async () => { const id = document.getElementById('editMeetingId').value; const updates = { title: document.getElementById('editMeetingTitle').value, date: document.getElementById('editMeetingDate').value, attendees: document.getElementById('editMeetingAttendees').value }; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', id), updates, { merge: true }); toggleModal('editMeetingModal'); window.renderDespachos(); } catch(err) { console.error("Erro ao editar reunião:", err); } };
+        window.openEditMeetingModal = (meetingId) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; document.getElementById('editMeetingId').value = meeting.id; document.getElementById('editMeetingTitle').value = meeting.title || ''; document.getElementById('editMeetingDate').value = meeting.date; document.getElementById('editMeetingAttendees').value = meeting.attendees || ''; setAuditInfo('meetingAuditInfo', meeting); toggleModal('editMeetingModal'); };
+        window.saveMeetingEdit = async () => { const id = document.getElementById('editMeetingId').value; const meetingExisting = dataStore.dispatchMeetings.find(m => m.id === id) || null; const updates = { title: document.getElementById('editMeetingTitle').value, date: document.getElementById('editMeetingDate').value, attendees: document.getElementById('editMeetingAttendees').value, ...buildAuditFields(meetingExisting) }; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', id), updates, { merge: true }); toggleModal('editMeetingModal'); window.renderDespachos(); } catch(err) { console.error("Erro ao editar reunião:", err); } };
         window.saveMeetingItemOutcome = async (meetingId, itemIndex, val, btnElement) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; if(btnElement) { var originalHtml = btnElement.innerHTML; btnElement.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Salvando...'; btnElement.classList.add('opacity-75', 'cursor-not-allowed'); } const updatedItems = [...meeting.items]; updatedItems[itemIndex].outcome = val; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); if(btnElement) { btnElement.innerHTML = '<i class="fas fa-check mr-1"></i> Salvo!'; btnElement.classList.remove('bg-blue-100', 'text-blue-600'); btnElement.classList.add('bg-green-100', 'text-green-600'); setTimeout(() => { btnElement.innerHTML = originalHtml; btnElement.classList.remove('bg-green-100', 'text-green-600', 'opacity-75', 'cursor-not-allowed'); btnElement.classList.add('bg-blue-100', 'text-blue-600'); }, 2000); } } catch(err) { console.error("Erro ao salvar deliberação:", err); if(btnElement) btnElement.innerHTML = '<i class="fas fa-times mr-1"></i> Erro'; } };
         window.saveMeetingItemStatus = async (meetingId, itemIndex, newStatus) => { const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; updatedItems[itemIndex].status = newStatus; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); window.renderDespachos(); } catch(err) { console.error("Erro ao salvar status:", err); } };
         window.addMeetingItemDoc = async (meetingId, itemIndex, url) => { if(!url || !url.trim()) return; const meeting = dataStore.dispatchMeetings.find(m => m.id === meetingId); if(!meeting) return; const updatedItems = [...meeting.items]; const item = updatedItems[itemIndex]; let currentLinks = item.docLinks || []; if (!item.docLinks && item.docLink) currentLinks.push(item.docLink); currentLinks.push(url.trim()); item.docLinks = currentLinks; if(item.docLink) delete item.docLink; try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dispatch_meetings', meetingId), { items: updatedItems }, { merge: true }); } catch(err) { console.error("Erro ao adicionar documento:", err); } };
@@ -2748,6 +2845,7 @@ window.togglePlanner = async (id, collectionName) => {
             }
 
             document.getElementById('editId').value = item.id;
+            setAuditInfo('projectAuditInfo', item);
             const delBtn = document.getElementById('deleteBtn');
             delBtn.classList.remove('hidden');
             delBtn.innerHTML = '<i class="fas fa-trash mr-2"></i> Excluir';
@@ -3185,7 +3283,6 @@ window.openAddBacklogItemModal = (meetingId) => {
                     : `<span class="text-xs font-semibold text-slate-500 text-indigo-500 uppercase tracking-widest block mb-1">OUTRO</span>`;
 
                 const macroLine = `<span class="text-xs font-semibold text-slate-500 ${ind.type === 'ppa' ? 'text-pink-500' : 'text-indigo-500'} uppercase tracking-widest block mt-1">${(ind.product || '').toString()}</span>`;
-
                 const cardHtml = `
                     <div class="indicator-card" onclick="openIndicatorModal('${ind.id}')">
                         <div class="flex justify-between items-start mb-4">
@@ -3256,6 +3353,7 @@ window.openAddBacklogItemModal = (meetingId) => {
 
             const ind = normalizeIndicator(found);
             selectedIndicatorId = ind.id;
+            setAuditInfo('indicatorAuditInfo', ind);
 
             // Cabeçalho
             document.getElementById('indId').value = ind.id;
@@ -3384,7 +3482,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                     {
                         ...ind,
                         id,
-                        updatedAt: new Date().toISOString()},
+                        ...buildAuditFields(ind)},
                     { merge: true }
                 );
                 toggleModal('indicatorModal');
@@ -3950,8 +4048,8 @@ Object.keys(cols).forEach(key => {
             if (!evt) return;
             window.openCalendarModal(evt);
         };
-        window.openCalendarModal = (e = null) => { const sel = document.getElementById('calEventArea'); if(sel.options.length === 0) sel.innerHTML = areasList.map(a => `<option value="${a}">${a}</option>`).join(''); if(e) { document.getElementById('calEventId').value = e.id; document.getElementById('calEventName').value = e.name; document.getElementById('calEventArea').value = e.area; document.getElementById('calEventDate').value = e.prazo; document.getElementById('calEventObs').value = e.obs || ''; document.getElementById('btnDeleteEvent').classList.remove('hidden'); } else { document.getElementById('calendarForm').reset(); document.getElementById('calEventId').value = ''; document.getElementById('calEventDate').valueAsDate = new Date(); document.getElementById('btnDeleteEvent').classList.add('hidden'); } toggleModal('calendarModal'); };
-        window.saveCalendarEvent = async () => { const id = document.getElementById('calEventId').value || Date.now().toString(); await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'calendar_events', id), { name: document.getElementById('calEventName').value, area: document.getElementById('calEventArea').value, prazo: document.getElementById('calEventDate').value, obs: document.getElementById('calEventObs').value }); toggleModal('calendarModal'); };
+        window.openCalendarModal = (e = null) => { const sel = document.getElementById('calEventArea'); if(sel.options.length === 0) sel.innerHTML = areasList.map(a => `<option value="${a}">${a}</option>`).join(''); if(e) { document.getElementById('calEventId').value = e.id; document.getElementById('calEventName').value = e.name; document.getElementById('calEventArea').value = e.area; document.getElementById('calEventDate').value = e.prazo; document.getElementById('calEventObs').value = e.obs || ''; document.getElementById('btnDeleteEvent').classList.remove('hidden'); setAuditInfo('calendarAuditInfo', e); } else { document.getElementById('calendarForm').reset(); document.getElementById('calEventId').value = ''; document.getElementById('calEventDate').valueAsDate = new Date(); document.getElementById('btnDeleteEvent').classList.add('hidden'); setAuditInfo('calendarAuditInfo', null); } toggleModal('calendarModal'); };
+        window.saveCalendarEvent = async () => { const id = document.getElementById('calEventId').value || Date.now().toString(); const existingEvent = (dataStore.calendarEvents || []).find(e => e.id === id) || null; await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'calendar_events', id), { name: document.getElementById('calEventName').value, area: document.getElementById('calEventArea').value, prazo: document.getElementById('calEventDate').value, obs: document.getElementById('calEventObs').value, ...buildAuditFields(existingEvent) }, { merge: true }); toggleModal('calendarModal'); };
         window.deleteCalendarEvent = async () => {
             const id = document.getElementById('calEventId').value;
             if (!id) return;
@@ -4178,7 +4276,7 @@ window.createIndicator = async function createIndicator() {
     ppaRealized,
     monthly,
     monthly_2025,
-    createdAt: new Date().toISOString()
+    ...buildAuditFields(null)
   };
 
   try {
@@ -4383,6 +4481,7 @@ const filenameBase = (safeTitle || 'pauta')
                 if (existing && existing.dispatchData) data.dispatchData = existing.dispatchData;
 
                 if (!data.concludedAt) data.concludedAt = (existing && existing.concludedAt) ? existing.concludedAt : Date.now();
+                Object.assign(data, buildAuditFields(existing));
 
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, { merge: true });
                 window.__pendingCompleteSave = null;
