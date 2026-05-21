@@ -1102,6 +1102,11 @@
                                         <label class="field-label text-red-600"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos e Pontos de Atenção</label>
                                         <textarea id="projRisks" rows="3" class="input-style resize-none border-red-200 bg-red-50 focus:ring-red-200 placeholder-red-300 text-red-900" placeholder="Descreva os riscos, impedimentos ou motivos do atraso..."></textarea>
                                     </div>
+                                    <div id="encaminhamentosField" class="flex flex-col animate-fade-in">
+                                        <label class="field-label text-slate-700"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</label>
+                                        <textarea id="projEncaminhamentos" rows="4" class="input-style resize-none preserve-lines" placeholder="Registre encaminhamentos, responsáveis e próximos passos..."></textarea>
+                                        <p class="text-[11px] text-slate-400 font-medium mt-1">Este campo aparece no resumo dos cards de projetos e contratos.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1362,6 +1367,7 @@
                     <div class="w-full">
                         <p class="text-[11px] font-normal text-slate-500 uppercase tracking-widest mb-1 px-2 hidden md:block">Coordenações</p>
                         <div id="coordBtnContainer" class="flex md:grid md:grid-cols-2 gap-2 px-1">
+                            <button id="coord-DSV" onclick="setFilter('DSV')" class="coord-btn md:col-span-2 bg-slate-800 p-2 rounded-lg text-xs font-bold text-white hover:bg-slate-700 min-w-[50px] uppercase whitespace-nowrap">DSV</button>
                             <button id="coord-EPT" onclick="setFilter('EPT')" class="coord-btn bg-slate-800 p-2 rounded-lg text-xs font-bold text-white hover:bg-slate-700 min-w-[50px]">EPT</button>
                             <button id="coord-CEC" onclick="setFilter('CEC')" class="coord-btn bg-slate-800 p-2 rounded-lg text-xs font-bold text-white hover:bg-slate-700 min-w-[50px]">CEC</button>
                             <button id="coord-CET" onclick="setFilter('CET')" class="coord-btn bg-slate-800 p-2 rounded-lg text-xs font-bold text-white hover:bg-slate-700 min-w-[50px]">CET</button>
@@ -2230,6 +2236,9 @@ typeField.classList.add('hidden-field');
                         programField.classList.add('hidden-field');
             componentField.classList.add('hidden-field');
 document.getElementById('projRisks').value = '';
+            const encaminhamentosField = document.getElementById('encaminhamentosField');
+            if (document.getElementById('projEncaminhamentos')) document.getElementById('projEncaminhamentos').value = '';
+            if (encaminhamentosField) encaminhamentosField.classList.toggle('hidden-field', activeTab === 'operational');
             document.getElementById('riskField').classList.add('hidden-field');
             
             document.getElementById('rasciInputR').value = '';
@@ -2499,7 +2508,7 @@ document.getElementById('projRisks').value = '';
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const existingForAudit = (dataStore[activeTab] || []).find(i => i.id === id) || null;
             const data = {
-                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap,
+                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap,
                 rasci: { r: getTagsFromContainer('rasciContainerR'), a: getTagsFromContainer('rasciContainerA'), s: getTagsFromContainer('rasciContainerS'), c: getTagsFromContainer('rasciContainerC'), i: getTagsFromContainer('rasciContainerI') }, ...buildAuditFields(existingForAudit)
             };
             if (activeTab === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (activeTab === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
@@ -2871,6 +2880,9 @@ window.togglePlanner = async (id, collectionName) => {
             if (links.length === 0) links.push('');
             links.forEach(l => window.addDocLinkRow(l));
             document.getElementById('projRisks').value = item.risks || ''; 
+            if (document.getElementById('projEncaminhamentos')) document.getElementById('projEncaminhamentos').value = item.encaminhamentos || '';
+            const encaminhamentosFieldEdit = document.getElementById('encaminhamentosField');
+            if (encaminhamentosFieldEdit) encaminhamentosFieldEdit.classList.toggle('hidden-field', t === 'operational');
             document.getElementById('projDuration').value = item.duration || ''; 
             document.getElementById('projComplexity').value = item.complexity || 'Média';
 
@@ -3834,6 +3846,21 @@ Object.keys(cols).forEach(key => {
                 }
             }
 
+            let encaminhamentosResumoHtml = '';
+            if ((activeTab === 'projects' || activeTab === 'contracts') && item.encaminhamentos && String(item.encaminhamentos).trim()) {
+                encaminhamentosResumoHtml = `
+                    <div class="mt-3 rounded-xl border border-blue-100 bg-blue-50/70 px-3 py-2">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-list-check text-blue-500 text-xs mt-0.5 shrink-0"></i>
+                            <div class="min-w-0">
+                                <p class="text-[10px] font-black text-blue-700 uppercase tracking-wider mb-0.5">Encaminhamentos</p>
+                                <p class="text-xs font-semibold text-slate-700 leading-snug preserve-lines clamp-2">${item.encaminhamentos}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             let servicesBadgeHtml = '';
             if (activeTab === 'operational') {
                 const sList = item.services || (item.service ? [item.service] : ['N/A']);
@@ -3855,6 +3882,7 @@ Object.keys(cols).forEach(key => {
                                     ${complexityTag}${respectBadge}
                                 </div>
                                 <h4 class="font-bold text-slate-900 text-base leading-tight clamp-2 title-fixed">${item.name}</h4>
+                                ${encaminhamentosResumoHtml}
                                 ${servicesBadgeHtml}
                             </div>
                         </div>
@@ -3884,6 +3912,7 @@ Object.keys(cols).forEach(key => {
                     <div class="py-5 space-y-5">
                         <div class="space-y-5">
                             <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><p class="text-sm text-slate-700 leading-relaxed font-medium preserve-lines preserve-lines preserve-lines">${item.desc || 'Sem descrição.'}</p></div>
+                            ${(activeTab === 'projects' || activeTab === 'contracts') && item.encaminhamentos ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${item.encaminhamentos}</p></div>` : ''}
                             ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><p class="text-sm text-red-700 leading-relaxed font-bold preserve-lines preserve-lines">${item.risks}</p></div>` : ''}
                             ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><p class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 preserve-lines preserve-lines">${item.obs}</p></div>` : ''}
                             ${((item.docLinks || (item.docLink ? [item.docLink] : [])).filter(Boolean)).length ? `<div class="pt-2">
