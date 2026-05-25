@@ -871,6 +871,73 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   }
 }
 
+
+
+/* ===============================
+   MARKDOWN – renderização dos campos textuais
+   =============================== */
+.markdown-content {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.markdown-content > *:first-child { margin-top: 0 !important; }
+.markdown-content > *:last-child { margin-bottom: 0 !important; }
+.markdown-content p { margin: 0.35rem 0; }
+.markdown-content strong { font-weight: 900; }
+.markdown-content em { font-style: italic; }
+.markdown-content a { color: #2563eb; font-weight: 800; text-decoration: underline; text-underline-offset: 2px; }
+.markdown-content ul, .markdown-content ol { margin: 0.4rem 0 0.4rem 1.2rem; padding-left: 0.65rem; }
+.markdown-content ul { list-style: disc; }
+.markdown-content ol { list-style: decimal; }
+.markdown-content li { margin: 0.2rem 0; }
+.markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4 {
+  margin: 0.55rem 0 0.35rem;
+  font-weight: 900;
+  line-height: 1.25;
+  color: #0f172a;
+}
+.markdown-content h1 { font-size: 1.05rem; }
+.markdown-content h2 { font-size: 1rem; }
+.markdown-content h3, .markdown-content h4 { font-size: 0.95rem; }
+.markdown-content blockquote {
+  margin: 0.55rem 0;
+  padding: 0.45rem 0.7rem;
+  border-left: 3px solid #93c5fd;
+  background: rgba(239, 246, 255, 0.75);
+  border-radius: 0.45rem;
+}
+.markdown-content code {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  border-radius: 0.35rem;
+  padding: 0.08rem 0.28rem;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+.markdown-content pre {
+  margin: 0.5rem 0;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+}
+.markdown-content pre code {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 0;
+}
+.markdown-content hr { border: 0; border-top: 1px solid #e2e8f0; margin: 0.65rem 0; }
+.markdown-content input[type="checkbox"] { margin-right: 0.45rem; transform: translateY(1px); accent-color: #2563eb; }
+.markdown-content.markdown-compact p,
+.markdown-content.markdown-compact ul,
+.markdown-content.markdown-compact ol,
+.markdown-content.markdown-compact blockquote { margin-top: 0.2rem; margin-bottom: 0.2rem; }
+.markdown-content.markdown-compact ul,
+.markdown-content.markdown-compact ol { padding-left: 0.25rem; }
+
 </style>
 </head>
 <body id="mainBody" class="bg-slate-50 text-slate-900 text-sm overflow-hidden">
@@ -1211,7 +1278,9 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
                     <div class="flex flex-col">
                         <label class="field-label">Descrição do Item (na pauta)</label>
-                        <textarea id="editDispatchItemDesc" rows="6" class="input-style preserve-lines" placeholder="Descreva o item para orientar o despacho..."></textarea>
+                        <textarea id="editDispatchItemDesc" rows="6" class="input-style preserve-lines" placeholder="Use Markdown. Ex: **Contexto:** ...
+- ponto 1
+- ponto 2"></textarea>
                         <p class="text-xs text-slate-400 mt-1">Essa descrição substitui a descrição original apenas dentro da pauta.</p>
                     </div>
                 </div>
@@ -1505,7 +1574,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                             <div class="sm:col-span-3 flex flex-col">
                                                 <label class="field-label text-blue-700"><i class="fas fa-forward-step mr-1"></i> Próxima ação</label>
-                                                <textarea id="projNextAction" rows="3" class="input-style resize-none preserve-lines" placeholder="Ex: Validar minuta com CGSV; consolidar retorno dos municípios; submeter à Diretoria..."></textarea>
+                                                <textarea id="projNextAction" rows="3" class="input-style resize-none preserve-lines" placeholder="Use Markdown. Ex: **Validar minuta** com CGSV; - consolidar retorno; [link](https://...)"></textarea>
                                             </div>
                                             <div class="flex flex-col">
                                                 <label class="field-label">Responsável pela próxima ação</label>
@@ -1536,7 +1605,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                                             </div>
                                             <div class="sm:col-span-2 flex flex-col">
                                                 <label class="field-label text-amber-700">Qual decisão precisa ser tomada?</label>
-                                                <textarea id="projDecisionDesc" rows="3" class="input-style resize-none preserve-lines border-amber-200 bg-amber-50/40 focus:ring-amber-200" placeholder="Descreva a decisão pendente e o impacto para o andamento do projeto..."></textarea>
+                                                <textarea id="projDecisionDesc" rows="3" class="input-style resize-none preserve-lines border-amber-200 bg-amber-50/40 focus:ring-amber-200" placeholder="Use Markdown. Ex: **Decisão pendente:** aprovar escopo; - impacto; [documento](https://...)"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -1552,7 +1621,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                                     </div>
                                     <div id="encaminhamentosField" class="flex flex-col animate-fade-in">
                                         <label class="field-label text-slate-700"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</label>
-                                        <textarea id="projEncaminhamentos" rows="4" class="input-style resize-none preserve-lines" placeholder="Registre encaminhamentos, responsáveis e próximos passos..."></textarea>
+                                        <textarea id="projEncaminhamentos" rows="4" class="input-style resize-none preserve-lines" placeholder="Use Markdown. Ex: - [ ] Responsável — ação — prazo; **prioridade:** alta"></textarea>
                                         <p class="text-[11px] text-slate-400 font-medium mt-1">Este campo aparece no resumo dos cards de projetos e contratos.</p>
                                     </div>
                                 </div>
@@ -2261,6 +2330,112 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                 .replace(/'/g, '&#039;');
         }
 
+        function sanitizeMarkdownUrl(url) {
+            const raw = String(url || '').trim();
+            try {
+                const parsed = new URL(raw, window.location.href);
+                const allowed = ['http:', 'https:', 'mailto:'];
+                if (allowed.includes(parsed.protocol) || raw.startsWith('#')) return escapeHtml(raw);
+            } catch (e) {
+                if (raw.startsWith('#')) return escapeHtml(raw);
+            }
+            return '#';
+        }
+
+        function renderInlineMarkdown(rawText) {
+            let source = String(rawText ?? '');
+            const placeholders = [];
+            source = source.replace(/`([^`]+)`/g, (_, code) => {
+                const token = `%%MDTOKEN${placeholders.length}%%`;
+                placeholders.push(`<code>${escapeHtml(code)}</code>`);
+                return token;
+            });
+            source = source.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_, label, url) => {
+                const token = `%%MDTOKEN${placeholders.length}%%`;
+                placeholders.push(`<a href="${sanitizeMarkdownUrl(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`);
+                return token;
+            });
+            let html = escapeHtml(source)
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+                .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+                .replace(/_([^_]+)_/g, '<em>$1</em>');
+            placeholders.forEach((value, idx) => { html = html.replaceAll(`%%MDTOKEN${idx}%%`, value); });
+            return html;
+        }
+
+        function markdownToHtml(value, fallback = '') {
+            const text = String(value ?? '').replace(/\r\n?/g, '\n').trim();
+            if (!text) return fallback ? escapeHtml(fallback) : '';
+
+            const lines = text.split('\n');
+            const out = [];
+            let paragraph = [];
+            let listType = null;
+            let inCode = false;
+            let codeLines = [];
+
+            const flushParagraph = () => {
+                if (paragraph.length) {
+                    out.push(`<p>${renderInlineMarkdown(paragraph.join(' '))}</p>`);
+                    paragraph = [];
+                }
+            };
+            const closeList = () => {
+                if (listType) { out.push(`</${listType}>`); listType = null; }
+            };
+            const openList = (type) => {
+                if (listType !== type) { closeList(); out.push(`<${type}>`); listType = type; }
+            };
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('```')) {
+                    if (inCode) {
+                        out.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+                        inCode = false;
+                        codeLines = [];
+                    } else {
+                        flushParagraph();
+                        closeList();
+                        inCode = true;
+                    }
+                    continue;
+                }
+                if (inCode) { codeLines.push(line); continue; }
+                if (!trimmed) { flushParagraph(); closeList(); continue; }
+                if (/^---+$/.test(trimmed)) { flushParagraph(); closeList(); out.push('<hr>'); continue; }
+                const heading = trimmed.match(/^(#{1,4})\s+(.+)$/);
+                if (heading) {
+                    flushParagraph(); closeList();
+                    const level = heading[1].length;
+                    out.push(`<h${level}>${renderInlineMarkdown(heading[2])}</h${level}>`);
+                    continue;
+                }
+                const quote = trimmed.match(/^>\s?(.+)$/);
+                if (quote) { flushParagraph(); closeList(); out.push(`<blockquote>${renderInlineMarkdown(quote[1])}</blockquote>`); continue; }
+                const task = trimmed.match(/^[-*]\s+\[([ xX])\]\s+(.+)$/);
+                if (task) {
+                    flushParagraph(); openList('ul');
+                    const checked = task[1].toLowerCase() === 'x' ? ' checked' : '';
+                    out.push(`<li><input type="checkbox" disabled${checked}>${renderInlineMarkdown(task[2])}</li>`);
+                    continue;
+                }
+                const unordered = trimmed.match(/^[-*]\s+(.+)$/);
+                if (unordered) { flushParagraph(); openList('ul'); out.push(`<li>${renderInlineMarkdown(unordered[1])}</li>`); continue; }
+                const ordered = trimmed.match(/^\d+[.)]\s+(.+)$/);
+                if (ordered) { flushParagraph(); openList('ol'); out.push(`<li>${renderInlineMarkdown(ordered[1])}</li>`); continue; }
+                paragraph.push(trimmed);
+            }
+            if (inCode) out.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+            flushParagraph(); closeList();
+            return out.join('');
+        }
+
+        function md(value, fallback = '') {
+            return markdownToHtml(value, fallback);
+        }
+
         function normalizeDocLink(value) {
             if (!value) return null;
             if (typeof value === 'string') {
@@ -2919,7 +3094,7 @@ document.getElementById('projRisks').value = '';
                             ${formatDateTime(o.ts || Date.now())}
                         </div>
                     </div>
-                    <div class="text-sm text-slate-700 preserve-lines mt-1">${String(o.text || '').replace(/</g,'&lt;')}</div>
+                    <div class="text-sm text-slate-700 markdown-content mt-1">${md(o.text)}</div>
                 </div>
             `).join('');
         };
@@ -3606,7 +3781,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                                     ${item.priority === 'Urgente' ? '<span class="bg-red-50 text-red-600 text-[9px] font-black uppercase px-1.5 py-0.5 rounded border border-red-100">Urgente</span>' : ''}
                                 </div>
                                 <p class="text-sm font-bold text-slate-800 leading-tight group-hover:text-indigo-700 transition-colors">${item.name}</p>
-                                <p class="text-xs text-slate-400 mt-1 truncate preserve-lines">${item.desc || 'Sem descrição'}</p>
+                                <div class="text-xs text-slate-400 mt-1 truncate markdown-content markdown-compact">${md(item.desc, 'Sem descrição')}</div>
                             </div>`;
                         list.appendChild(row);
                     });
@@ -3635,7 +3810,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                             </button>
                         </div>
                         <p class="text-sm font-bold text-slate-800 leading-tight group-hover:text-slate-900 transition-colors">${item.name}</p>
-                        <p class="text-xs text-slate-400 mt-1 truncate preserve-lines">${item.desc || 'Sem descrição'}</p>
+                        <div class="text-xs text-slate-400 mt-1 truncate markdown-content markdown-compact">${md(item.desc, 'Sem descrição')}</div>
                     </div>`;
                 list.appendChild(row);
             });
@@ -3728,7 +3903,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                     return ra - rb;
                 });
             }
- if(backlogItems.length === 0) { mainContent.innerHTML = '<div class="flex flex-col items-center justify-center py-20 opacity-50"><i class="fas fa-inbox text-5xl mb-4 text-slate-300"></i><p class="text-slate-400 italic font-medium">Nenhum item marcado para despacho.</p></div>'; return; } backlogItems.forEach(item => { const originLabel = { projects: 'Projeto', contracts: 'Contrato', operational: 'Operacional' }[item.originCollection]; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700', dispatchCustomItems: 'bg-slate-100 text-slate-700' }[item.originCollection]; const jsonVal = JSON.stringify({id: item.id, collection: item.originCollection}); const isChecked = selectedBacklogItems.has(JSON.stringify({id: item.id, collection: item.originCollection})); const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-3 flex items-start gap-4 dispatch-item-row"; if(isChecked) row.classList.add('bg-blue-50', 'border-blue-200'); row.innerHTML = `<div class="flex items-start gap-3 pt-1"><span class="drag-handle cursor-move text-slate-300 hover:text-slate-500 transition-colors" title="Arraste para reordenar"><i class="fas fa-grip-vertical text-lg"></i></span><input type="checkbox" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 dispatch-checkbox cursor-pointer" value='${jsonVal}' onchange="toggleBacklogSelection(this)" ${isChecked ? 'checked' : ''}></div><div class="flex-1"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${originColor}">${originLabel}</span><div class="w-1.5 h-3 rounded-full ${window.getStatusColorBg(item.status)}"></div>${item.priority === 'Urgente' ? '<span class="bg-red-100 text-red-600 text-[10px] font-black uppercase px-2 py-0.5 rounded">Urgente</span>' : ''}</div><h4 class="font-bold text-slate-800 text-base">${(item.pautaTitle && item.pautaTitle.trim()) ? item.pautaTitle : item.name}</h4><p class="text-xs text-slate-500 mt-1 line-clamp-2 preserve-lines">${item.desc || 'Sem descrição.'}</p></div><button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${item.originCollection}')" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover do Backlog"><i class="fas fa-times-circle text-lg"></i></button>`;
+ if(backlogItems.length === 0) { mainContent.innerHTML = '<div class="flex flex-col items-center justify-center py-20 opacity-50"><i class="fas fa-inbox text-5xl mb-4 text-slate-300"></i><p class="text-slate-400 italic font-medium">Nenhum item marcado para despacho.</p></div>'; return; } backlogItems.forEach(item => { const originLabel = { projects: 'Projeto', contracts: 'Contrato', operational: 'Operacional' }[item.originCollection]; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700', dispatchCustomItems: 'bg-slate-100 text-slate-700' }[item.originCollection]; const jsonVal = JSON.stringify({id: item.id, collection: item.originCollection}); const isChecked = selectedBacklogItems.has(JSON.stringify({id: item.id, collection: item.originCollection})); const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-3 flex items-start gap-4 dispatch-item-row"; if(isChecked) row.classList.add('bg-blue-50', 'border-blue-200'); row.innerHTML = `<div class="flex items-start gap-3 pt-1"><span class="drag-handle cursor-move text-slate-300 hover:text-slate-500 transition-colors" title="Arraste para reordenar"><i class="fas fa-grip-vertical text-lg"></i></span><input type="checkbox" class="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500 dispatch-checkbox cursor-pointer" value='${jsonVal}' onchange="toggleBacklogSelection(this)" ${isChecked ? 'checked' : ''}></div><div class="flex-1"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${originColor}">${originLabel}</span><div class="w-1.5 h-3 rounded-full ${window.getStatusColorBg(item.status)}"></div>${item.priority === 'Urgente' ? '<span class="bg-red-100 text-red-600 text-[10px] font-black uppercase px-2 py-0.5 rounded">Urgente</span>' : ''}</div><h4 class="font-bold text-slate-800 text-base">${(item.pautaTitle && item.pautaTitle.trim()) ? item.pautaTitle : item.name}</h4><div class="text-xs text-slate-500 mt-1 line-clamp-2 markdown-content markdown-compact">${md(item.desc, 'Sem descrição.')}</div></div><button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${item.originCollection}')" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover do Backlog"><i class="fas fa-times-circle text-lg"></i></button>`;
                             row.setAttribute('draggable','true');
                             row.dataset.key = jsonVal;
                             row.addEventListener('dragstart', (e) => {
@@ -3764,7 +3939,8 @@ window.openAddBacklogItemModal = (meetingId) => {
                     const __orderedItems = (meeting.items || []).map((it,i)=>({ ...it, __idx: i, order: (it.order ?? it.itemNumber ?? (i+1)) })).sort((a,b)=>(a.order||0)-(b.order||0));
                     __orderedItems.forEach((item, idx) => { const liveItem = dataStore[item.collection]?.find(i => i.id === item.itemId) || {}; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL', dispatchCustomItems: 'AVULSO' }[item.collection] || item.collection; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700', dispatchCustomItems: 'bg-slate-100 text-slate-700' }[item.collection] || 'bg-slate-100';
                         const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4 relative group dispatch-detail-card";
-                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><p class="text-sm text-slate-600 leading-relaxed mb-3 preserve-lines">${(item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : (liveItem.desc || 'Sem descrição detalhada.')}</p><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><p class="text-sm text-red-700 font-medium leading-snug preserve-lines">${liveItem.risks}</p></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${getDocLinksArray(item).length} Arquivos</span></div><div class="space-y-2 mb-3">${getDocLinksArray(item).map((link, linkIdx) => renderMeetingDocLink(link, meeting.id, item.__idx, linkIdx)).join('')}${getDocLinksArray(item).length === 0 ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${item.__idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); addMeetingItemDoc('${meeting.id}', ${item.__idx}, this.value); this.value=''; }"><button onclick="addMeetingItemDoc('${meeting.id}', ${item.__idx}, document.getElementById('newDoc_${meeting.id}_${item.__idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${item.__idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${item.__idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Registre a decisão, responsáveis e prazos definidos na reunião..." onblur="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, document.getElementById('outcome_${meeting.id}_${item.__idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
+                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><div class="text-sm text-slate-600 leading-relaxed mb-3 markdown-content">${md((item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : liveItem.desc, 'Sem descrição detalhada.')}</div><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><div class="text-sm text-red-700 font-medium leading-snug markdown-content">${md(liveItem.risks)}</div></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${getDocLinksArray(item).length} Arquivos</span></div><div class="space-y-2 mb-3">${getDocLinksArray(item).map((link, linkIdx) => renderMeetingDocLink(link, meeting.id, item.__idx, linkIdx)).join('')}${getDocLinksArray(item).length === 0 ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${item.__idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); addMeetingItemDoc('${meeting.id}', ${item.__idx}, this.value); this.value=''; }"><button onclick="addMeetingItemDoc('${meeting.id}', ${item.__idx}, document.getElementById('newDoc_${meeting.id}_${item.__idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${item.__idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${item.__idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Use Markdown. Ex: **Deliberação:** ...
+- [ ] Responsável — prazo" onblur="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, document.getElementById('outcome_${meeting.id}_${item.__idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
                         mainContent.appendChild(row); }); } }
         };
 
@@ -4376,15 +4552,8 @@ Object.keys(cols).forEach(key => {
                 : '';
 
             const complexityTag = item.complexity ? `<span class="pmg-tag ${item.complexity === 'Alta' ? 'tag-g' : (item.complexity === 'Baixa' ? 'tag-p' : 'tag-m')} ml-2" title="Complexidade">${item.complexity === 'Alta' ? 'G' : (item.complexity === 'Baixa' ? 'P' : 'M')}</span>` : '';
-
-            // --- LÓGICA DE INTEGRAÇÃO OPERACIONAL ---
-            let operationalHtml = '';
-            if (activeTab === 'projects' || activeTab === 'contracts') {
-                const linkedOps = (dataStore.operational || []).filter(op => op.projRelation === item.id);
-                if (linkedOps.length > 0) {
-                    operationalHtml = `<div class="mt-4 pt-4 border-t border-slate-100 -mx-5 px-5 bg-orange-50/40 pb-2"><div class="flex items-center gap-2 mb-3 mt-1"><i class="fas fa-network-wired text-orange-400 text-xs"></i><p class="text-[10px] font-black text-orange-400 uppercase tracking-wider">Desdobramento Operacional (${linkedOps.length})</p></div><div class="grid grid-cols-1 gap-2">${linkedOps.map(op => { const opServices = op.services || (op.service ? [op.service] : ['N/A']); const badges = opServices.map(s => `<span class="px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 text-[9px] font-black uppercase border border-orange-200">${s}</span>`).join(''); return `<div class="flex items-center justify-between bg-white border border-orange-100 p-2.5 rounded-lg shadow-sm hover:border-orange-300 transition-colors cursor-default"><div class="flex items-center gap-2.5 overflow-hidden"><div class="w-2 h-2 rounded-full ${window.getStatusColorBg(op.status)} shrink-0"></div><div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-700 truncate">${op.name}</p><div class="flex flex-wrap gap-1 mt-0.5">${badges}</div></div></div><span class="text-[9px] font-bold uppercase ${window.getStatusColor(op.status).split(' ')[0]} bg-slate-50 px-2 py-0.5 rounded border border-slate-100">${op.status}</span></div>`}).join('')}</div></div>`;
-                }
-            }
+            // Desdobramento operacional removido dos cards após retirada da aba Operacional.
+            const operationalHtml = '';
 
             const formatDateBR = (value) => value ? new Date(value + "T00:00:00").toLocaleDateString('pt-BR') : '';
             const escapeHtml = (value) => String(value || '')
@@ -4434,7 +4603,7 @@ Object.keys(cols).forEach(key => {
                 nextActionResumoHtml = `
                     <div class="summary-box border-blue-100 bg-blue-50/70">
                         <p class="summary-box-title text-blue-700"><i class="fas fa-forward-step"></i> Próxima ação</p>
-                        ${nextActionResumoText ? `<p class="summary-box-body preserve-lines clamp-2">${escapeHtml(nextActionResumoText)}</p>` : `<p class="summary-box-body italic text-slate-400 font-semibold">Não informada.</p>`}
+                        ${nextActionResumoText ? `<div class="summary-box-body markdown-content markdown-compact clamp-2">${md(nextActionResumoText)}</div>` : `<p class="summary-box-body italic text-slate-400 font-semibold">Não informada.</p>`}
                         ${(item.nextActionOwner || item.nextActionDeadline) ? `<div class="summary-meta">
                             ${item.nextActionOwner ? `<span class="summary-meta-chip bg-white/90 border border-blue-100 text-slate-600"><i class="fas fa-user text-blue-400"></i>${escapeHtml(item.nextActionOwner)}</span>` : ''}
                             ${item.nextActionDeadline ? `<span class="summary-meta-chip bg-white/90 border border-blue-100 text-slate-600"><i class="far fa-calendar text-blue-400"></i>${formatDateBR(item.nextActionDeadline)}</span>` : ''}
@@ -4448,7 +4617,7 @@ Object.keys(cols).forEach(key => {
                 decisionResumoHtml = `
                     <div class="summary-box border-amber-200 bg-amber-50/80">
                         <p class="summary-box-title text-amber-700"><i class="fas fa-gavel"></i> Decisão necessária</p>
-                        ${decisionResumoText ? `<p class="summary-box-body preserve-lines clamp-2">${escapeHtml(decisionResumoText)}</p>` : `<p class="summary-box-body italic text-slate-400 font-semibold">Decisão indicada, mas sem descrição.</p>`}
+                        ${decisionResumoText ? `<div class="summary-box-body markdown-content markdown-compact clamp-2">${md(decisionResumoText)}</div>` : `<p class="summary-box-body italic text-slate-400 font-semibold">Decisão indicada, mas sem descrição.</p>`}
                         <div class="summary-meta">
                             <span class="summary-meta-chip bg-white border border-amber-200 text-amber-700">${escapeHtml(item.decisionLevel || 'Nível não informado')}</span>
                         </div>
@@ -4461,7 +4630,7 @@ Object.keys(cols).forEach(key => {
                 encaminhamentosResumoHtml = `
                     <div class="summary-inline-note">
                         <p class="summary-box-title text-blue-700"><i class="fas fa-list-check"></i> Encaminhamentos</p>
-                        <p class="summary-box-body preserve-lines clamp-2">${escapeHtml(encaminhamentosResumoText)}</p>
+                        <div class="summary-box-body markdown-content markdown-compact clamp-2">${md(encaminhamentosResumoText)}</div>
                     </div>
                 `;
             }
@@ -4539,12 +4708,12 @@ Object.keys(cols).forEach(key => {
                 <div class="accordion-content px-5 bg-slate-50/50">
                     <div class="py-5 space-y-5">
                         <div class="space-y-5">
-                            <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><p class="text-sm text-slate-700 leading-relaxed font-medium preserve-lines">${item.desc || 'Sem descrição.'}</p></div>
-                            ${activeTab === 'projects' && (item.nextAction || item.nextActionOwner || item.nextActionDeadline) ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-forward-step mr-1"></i> Próxima ação</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${escapeHtml(nextActionResumoText) || 'Não informada.'}</p><div class="flex flex-wrap gap-2 mt-3 text-[11px] font-black uppercase text-slate-500">${item.nextActionOwner ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Responsável: ${item.nextActionOwner}</span>` : ''}${item.nextActionDeadline ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Prazo: ${formatDateBR(item.nextActionDeadline)}</span>` : ''}</div></div>` : ''}
-                            ${activeTab === 'projects' && (item.decisionNeeded === 'Sim' || item.decisionDesc) ? `<div class="bg-amber-50 p-4 rounded-xl border border-amber-200"><p class="text-xs font-semibold text-slate-500 text-amber-700 uppercase mb-2"><i class="fas fa-gavel mr-1"></i> Decisão necessária ${item.decisionLevel ? `— ${item.decisionLevel}` : ''}</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${item.decisionDesc || 'Decisão indicada, mas sem descrição.'}</p></div>` : ''}
-                            ${shouldShowEncaminhamentosResumo ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${escapeHtml(encaminhamentosResumoText)}</p></div>` : ''}
-                            ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><p class="text-sm text-red-700 leading-relaxed font-bold preserve-lines">${item.risks}</p></div>` : ''}
-                            ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><p class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 preserve-lines">${item.obs}</p></div>` : ''}
+                            <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><div class="text-sm text-slate-700 leading-relaxed font-medium markdown-content">${md(item.desc, 'Sem descrição.')}</div></div>
+                            ${activeTab === 'projects' && (item.nextAction || item.nextActionOwner || item.nextActionDeadline) ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-forward-step mr-1"></i> Próxima ação</p><div class="text-sm text-slate-700 leading-relaxed font-bold markdown-content">${md(nextActionResumoText, 'Não informada.')}</div><div class="flex flex-wrap gap-2 mt-3 text-[11px] font-black uppercase text-slate-500">${item.nextActionOwner ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Responsável: ${item.nextActionOwner}</span>` : ''}${item.nextActionDeadline ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Prazo: ${formatDateBR(item.nextActionDeadline)}</span>` : ''}</div></div>` : ''}
+                            ${activeTab === 'projects' && (item.decisionNeeded === 'Sim' || item.decisionDesc) ? `<div class="bg-amber-50 p-4 rounded-xl border border-amber-200"><p class="text-xs font-semibold text-slate-500 text-amber-700 uppercase mb-2"><i class="fas fa-gavel mr-1"></i> Decisão necessária ${item.decisionLevel ? `— ${item.decisionLevel}` : ''}</p><div class="text-sm text-slate-700 leading-relaxed font-bold markdown-content">${md(item.decisionDesc, 'Decisão indicada, mas sem descrição.')}</div></div>` : ''}
+                            ${shouldShowEncaminhamentosResumo ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><div class="text-sm text-slate-700 leading-relaxed font-bold markdown-content">${md(encaminhamentosResumoText)}</div></div>` : ''}
+                            ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><div class="text-sm text-red-700 leading-relaxed font-bold markdown-content">${md(item.risks)}</div></div>` : ''}
+                            ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><div class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 markdown-content">${md(item.obs)}</div></div>` : ''}
                             ${getDocLinksArray(item).length ? `<div class="pt-2">
                                 <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2"><i class="fas fa-paperclip mr-1"></i> Documentos</p>
                                 <div class="space-y-2">
