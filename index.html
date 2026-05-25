@@ -964,6 +964,7 @@
             <div class="modal-container flex-1 overflow-y-auto">
                 <form id="projectForm" class="p-4 md:p-8">
                     <input type="hidden" id="editId">
+                    <div id="projectAuditInfo" class="mb-6 hidden rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-[11px] text-slate-500"></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
                         <!-- Identificação -->
                         <div class="space-y-8">
@@ -1253,11 +1254,12 @@
                         </div>
                     </div>
 
-                    <div id="projectAuditInfo" class="mt-8 hidden rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 text-[11px] text-slate-400"></div>
-
-                    <div class="mt-6 flex gap-4 pb-8">
+                    <div id="projectFloatingSaveBar" class="sticky bottom-0 z-30 -mx-4 md:-mx-8 mt-6 flex gap-4 border-t border-slate-200 bg-white/95 px-4 md:px-8 py-4 shadow-[0_-12px_30px_rgba(15,23,42,0.10)] backdrop-blur">
                         <button type="button" id="deleteBtn" onclick="deleteProject()" class="bg-red-50 text-red-600 font-bold px-6 rounded-2xl shadow-sm hover:bg-red-100 transition-all uppercase text-xs tracking-widest hidden"><i class="fas fa-trash mr-2"></i> Excluir</button>
-                        <button type="button" id="saveBtn" onclick="saveProject()" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-blue-700 transition-all uppercase text-xs tracking-[0.2em]">Gravar Dados</button>
+                        <button type="button" id="saveBtn" onclick="saveProject()" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-blue-700 transition-all uppercase text-xs tracking-[0.2em]">
+                            <i class="fas fa-save mr-2"></i> Gravar Dados
+                            <span id="unsavedChangesBadge" class="ml-3 hidden rounded-full bg-amber-100 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-700">alterações não salvas</span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -2310,8 +2312,83 @@
         // ... (Todas as demais funções: modal, save, delete, meetings etc... permanecem) ...
         // ... (Para economizar espaço, não repito código que não mudou, mas a função createCardHtml será substituída abaixo) ...
 
-        window.toggleModal = id => { const m = document.getElementById(id); m.style.display = (m.style.display === 'flex' || m.style.display === 'block') ? 'none' : 'flex'; };
+        let projectFormDirty = false;
+        let projectFormBaseline = '';
+        let suppressProjectClosePrompt = false;
+
+        function getProjectFormSnapshot() {
+            const form = document.getElementById('projectForm');
+            if (!form) return '';
+            const fields = Array.from(form.querySelectorAll('input, textarea, select')).map(el => ({
+                id: el.id || '',
+                name: el.name || '',
+                type: el.type || '',
+                value: el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value
+            }));
+            const serviceTags = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(el => el.innerText);
+            const rasciTags = ['rasciContainerR','rasciContainerA','rasciContainerS','rasciContainerC','rasciContainerI'].reduce((acc, id) => {
+                acc[id] = Array.from(document.querySelectorAll(`#${id} .actor-tag span`)).map(el => el.innerText);
+                return acc;
+            }, {});
+            return JSON.stringify({ fields, serviceTags, rasciTags });
+        }
+
+        function updateProjectDirtyState() {
+            const badge = document.getElementById('unsavedChangesBadge');
+            const saveBtn = document.getElementById('saveBtn');
+            projectFormDirty = !!projectFormBaseline && getProjectFormSnapshot() !== projectFormBaseline;
+            if (badge) badge.classList.toggle('hidden', !projectFormDirty);
+            if (saveBtn) {
+                saveBtn.classList.toggle('bg-amber-500', projectFormDirty);
+                saveBtn.classList.toggle('hover:bg-amber-600', projectFormDirty);
+                saveBtn.classList.toggle('bg-blue-600', !projectFormDirty);
+                saveBtn.classList.toggle('hover:bg-blue-700', !projectFormDirty);
+            }
+        }
+
+        function resetProjectDirtyState() {
+            projectFormBaseline = getProjectFormSnapshot();
+            projectFormDirty = false;
+            updateProjectDirtyState();
+        }
+
+        window.toggleModal = async id => {
+            const m = document.getElementById(id);
+            if (!m) return;
+            const isOpen = (m.style.display === 'flex' || m.style.display === 'block');
+
+            if (id === 'projectModal' && isOpen && projectFormDirty && !suppressProjectClosePrompt) {
+                const shouldSave = await window.confirmModal({
+                    title: 'Deseja salvar as alterações feitas?',
+                    message: 'Existem alterações não salvas neste registro. Se você fechar sem salvar, as edições serão descartadas.',
+                    okText: 'Salvar alterações',
+                    cancelText: 'Descartar',
+                    variant: 'success'
+                });
+                if (shouldSave) {
+                    await window.saveProject();
+                    return;
+                }
+                projectFormDirty = false;
+            }
+
+            m.style.display = isOpen ? 'none' : 'flex';
+
+            if (id === 'projectModal' && !isOpen) {
+                setTimeout(resetProjectDirtyState, 0);
+            }
+        };
         
+        document.addEventListener('input', (e) => {
+            if (e.target && e.target.closest && e.target.closest('#projectForm')) updateProjectDirtyState();
+        });
+        document.addEventListener('change', (e) => {
+            if (e.target && e.target.closest && e.target.closest('#projectForm')) updateProjectDirtyState();
+        });
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.closest && e.target.closest('#projectForm')) setTimeout(updateProjectDirtyState, 0);
+        });
+
         window.openNewModal = () => {
             const form = document.getElementById('projectForm');
             form.reset();
@@ -2393,6 +2470,7 @@ document.getElementById('projRisks').value = '';
             }
 
             toggleModal('projectModal');
+            setTimeout(resetProjectDirtyState, 0);
         };
 
         // ... (Funções auxiliares de toggle) ...
@@ -2459,7 +2537,25 @@ document.getElementById('projRisks').value = '';
         window.addServiceTag = (val) => { if(!val) return; const container = document.getElementById('serviceTagsContainer'); const existing = Array.from(container.querySelectorAll('span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'serviceTagsContainer', null, 'tag-orange'); };
         const setupTagInput = (inputId, containerId, colorClass) => { const input = document.getElementById(inputId); if(!input) return; input.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); const val = this.value.trim().replace(',', ''); if(val) { createTag(val, containerId, inputId, colorClass); this.value = ''; } } }); };
         
-        window.addRoadmapRow = (data = '', etapa = '') => { const container = document.getElementById('roadmapContainer'); const row = document.createElement('div'); row.className = 'grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm'; row.innerHTML = `<div class="sm:col-span-4"><input type="date" class="input-style roadmap-date" value="${data}"></div><div class="sm:col-span-7"><input type="text" class="input-style roadmap-step" placeholder="Etapa..." value="${etapa}"></div><div class="sm:col-span-1 text-center"><button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button></div>`; container.appendChild(row); };
+        window.addRoadmapRow = (data = '', etapa = '', noDate = false) => {
+            const container = document.getElementById('roadmapContainer');
+            const row = document.createElement('div');
+            row.className = 'grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm';
+            const semData = noDate || data === 'a-definir' || data === 'A definir';
+            row.innerHTML = `
+                <div class="sm:col-span-4 space-y-2">
+                    <input type="date" class="input-style roadmap-date" value="${semData ? '' : data}" ${semData ? 'disabled' : ''}>
+                    <label class="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-500">
+                        <input type="checkbox" class="roadmap-no-date" ${semData ? 'checked' : ''} onchange="const input=this.closest('div').querySelector('.roadmap-date'); input.disabled=this.checked; if(this.checked) input.value='';">
+                        Data a definir
+                    </label>
+                </div>
+                <div class="sm:col-span-7"><input type="text" class="input-style roadmap-step" placeholder="Etapa..." value="${String(etapa || '').replace(/"/g, '&quot;')}"></div>
+                <div class="sm:col-span-1 text-center"><button type="button" onclick="this.parentElement.parentElement.remove(); updateProjectDirtyState();" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button></div>
+            `;
+            container.appendChild(row);
+            updateProjectDirtyState();
+        };
 
         
         // ===== Observações Gerais: histórico (obsLog) =====
@@ -2625,7 +2721,7 @@ document.getElementById('projRisks').value = '';
                 await window.addObsEntry();
             }
             const roadmap = [];
-            document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date').value; const e = row.querySelector('.roadmap-step').value; if (d && e) roadmap.push({ data: d, etapa: e }); });
+            document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmap.push({ data: noDate ? '' : d, etapa: e, noDate }); });
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const existingForAudit = (dataStore[activeTab] || []).find(i => i.id === id) || null;
             const data = {
@@ -2643,7 +2739,7 @@ document.getElementById('projRisks').value = '';
                 return;
             }
             if (__newStatus === 'Concluído' && !data.concludedAt) data.concludedAt = (__existingItem && __existingItem.concludedAt) ? __existingItem.concludedAt : Date.now();
-            try { if(document.getElementById('editId').value) { const existing = dataStore[activeTab].find(i => i.id === id); if(existing && existing.onDispatch) data.onDispatch = true; if(existing && existing.onPlanner) data.onPlanner = true; if(existing && existing.dispatchData) data.dispatchData = existing.dispatchData; } await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, {merge: true}); toggleModal('projectModal'); } catch (err) { console.error("Erro ao salvar:", err); }
+            try { if(document.getElementById('editId').value) { const existing = dataStore[activeTab].find(i => i.id === id); if(existing && existing.onDispatch) data.onDispatch = true; if(existing && existing.onPlanner) data.onPlanner = true; if(existing && existing.dispatchData) data.dispatchData = existing.dispatchData; } await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, {merge: true}); projectFormDirty = false; resetProjectDirtyState(); suppressProjectClosePrompt = true; await toggleModal('projectModal'); suppressProjectClosePrompt = false; } catch (err) { console.error("Erro ao salvar:", err); }
         };
 
         // ... (Delete Project, Dispatch Toggle, Meeting functions... mantidas) ...
@@ -3030,8 +3126,9 @@ window.togglePlanner = async (id, collectionName) => {
             }
 
             window.toggleRiskInput(); 
-            if (item.roadmap) { item.roadmap.forEach(r => window.addRoadmapRow(r.data, r.etapa)); }
+            if (item.roadmap) { item.roadmap.forEach(r => window.addRoadmapRow(r.data || '', r.etapa || '', !!r.noDate || !r.data)); }
             if (t === 'contracts') { document.getElementById('projType').value = item.type || 'Contrato'; document.getElementById('projHasResource').value = item.hasResource || 'Não'; document.getElementById('projResourceValue').value = item.resourceValue || ''; document.getElementById('contractProgram').value = item.program || ''; document.getElementById('contractComponent').value = item.programComponent || ''; window.toggleResourceInput(); window.toggleContractProgramFields(); } else if (t === 'operational') { /* serviços já foram populados como tags acima */ }
+            setTimeout(resetProjectDirtyState, 0);
         };
 
         // ... (Render Portaria, Switch Tab, Render Gantt, Backlog Items functions... mantidas) ...
@@ -3049,7 +3146,7 @@ window.togglePlanner = async (id, collectionName) => {
         window.renderGantt = () => { const container = document.getElementById('ganttBodyContainer'); container.innerHTML = ''; let items = []; if (currentGanttFilter === 'all' || currentGanttFilter === 'projects') { items = [...items, ...dataStore.projects.map(i => ({...i, type: 'project'}))]; } if (currentGanttFilter === 'all' || currentGanttFilter === 'contracts') { items = [...items, ...dataStore.contracts.map(i => ({...i, type: 'contract'}))]; } items = items.filter(i => i.prazo);
             // Filtro por coordenação (menu lateral)
             if (currentFilter !== 'all') { items = items.filter(i => (i.coord || '') === currentFilter); }
- items.sort((a,b) => a.prazo.localeCompare(b.prazo)); const ganttYear = 2026; const yearStart = new Date(ganttYear, 0, 1).getTime(); const yearEnd = new Date(ganttYear, 11, 31, 23, 59, 59, 999).getTime(); const yearDuration = yearEnd - yearStart; const todayDate = new Date(); const today = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 12, 0, 0, 0).getTime(); const timelineOffsetPx = 250; const timelineWidthPx = 1200; if(items.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026.</p>'; return; } items.forEach(item => { const deadlineDate = new Date(item.prazo + 'T12:00:00').getTime(); let startDate = yearStart; if (item.roadmap && item.roadmap.length > 0) { const sorted = [...item.roadmap].sort((a,b) => a.data.localeCompare(b.data)); startDate = new Date(sorted[0].data + 'T12:00:00').getTime(); } const safeStart = Math.max(startDate, yearStart); const safeEnd = Math.min(deadlineDate, yearEnd); if (safeEnd < safeStart) return; const left = ((safeStart - yearStart) / yearDuration) * 100; const width = ((safeEnd - safeStart) / yearDuration) * 100; const colorClass = item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'; const row = document.createElement('div'); row.className = 'gantt-row'; let milestonesHtml = ''; if (item.roadmap) { item.roadmap.forEach(r => { const mDate = new Date(r.data + 'T12:00:00').getTime(); if (mDate >= yearStart && mDate <= yearEnd) { const mPos = ((mDate - yearStart) / yearDuration) * 100; const mColor = item.type === 'project' ? 'bg-blue-400' : 'bg-purple-400'; const fmtDate = new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); milestonesHtml += `<div class="gantt-milestone-wrapper" style="left: ${mPos}%"><div class="gantt-milestone-diamond ${mColor}"></div><div class="gantt-milestone-tooltip"><div class="font-bold text-emerald-300 mb-0.5 uppercase tracking-wider">${fmtDate}</div><div class="font-medium text-white text-[11px] leading-tight">${r.etapa}</div></div></div>`; } }); } row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${item.coord || 'N/A'}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${item.name}">${item.name}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${item.type === 'project' ? 'projects' : 'contracts'}')"><span class="gantt-bar-label">${item.status}</span></div>${milestonesHtml}</div>`; container.appendChild(row); }); if (today >= yearStart && today <= yearEnd) { const todayRatio = (today - yearStart) / yearDuration; const todayLeftPx = timelineOffsetPx + (timelineWidthPx * todayRatio); const line = document.createElement('div'); line.className = 'gantt-today-line'; line.style.left = `${todayLeftPx}px`; line.innerHTML = `<div class="gantt-today-label">Hoje</div>`; container.appendChild(line); } };
+ items.sort((a,b) => a.prazo.localeCompare(b.prazo)); const ganttYear = 2026; const yearStart = new Date(ganttYear, 0, 1).getTime(); const yearEnd = new Date(ganttYear, 11, 31, 23, 59, 59, 999).getTime(); const yearDuration = yearEnd - yearStart; const todayDate = new Date(); const today = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 12, 0, 0, 0).getTime(); const timelineOffsetPx = 250; const timelineWidthPx = 1200; if(items.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026.</p>'; return; } items.forEach(item => { const deadlineDate = new Date(item.prazo + 'T12:00:00').getTime(); let startDate = yearStart; if (item.roadmap && item.roadmap.length > 0) { const datedRoadmap = item.roadmap.filter(r => r.data && !r.noDate); const sorted = [...datedRoadmap].sort((a,b) => a.data.localeCompare(b.data)); if (sorted.length) startDate = new Date(sorted[0].data + 'T12:00:00').getTime(); } const safeStart = Math.max(startDate, yearStart); const safeEnd = Math.min(deadlineDate, yearEnd); if (safeEnd < safeStart) return; const left = ((safeStart - yearStart) / yearDuration) * 100; const width = ((safeEnd - safeStart) / yearDuration) * 100; const colorClass = item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'; const row = document.createElement('div'); row.className = 'gantt-row'; let milestonesHtml = ''; if (item.roadmap) { item.roadmap.filter(r => r.data && !r.noDate).forEach(r => { const mDate = new Date(r.data + 'T12:00:00').getTime(); if (mDate >= yearStart && mDate <= yearEnd) { const mPos = ((mDate - yearStart) / yearDuration) * 100; const mColor = item.type === 'project' ? 'bg-blue-400' : 'bg-purple-400'; const fmtDate = new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); milestonesHtml += `<div class="gantt-milestone-wrapper" style="left: ${mPos}%"><div class="gantt-milestone-diamond ${mColor}"></div><div class="gantt-milestone-tooltip"><div class="font-bold text-emerald-300 mb-0.5 uppercase tracking-wider">${fmtDate}</div><div class="font-medium text-white text-[11px] leading-tight">${r.etapa}</div></div></div>`; } }); } row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${item.coord || 'N/A'}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${item.name}">${item.name}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${item.type === 'project' ? 'projects' : 'contracts'}')"><span class="gantt-bar-label">${item.status}</span></div>${milestonesHtml}</div>`; container.appendChild(row); }); if (today >= yearStart && today <= yearEnd) { const todayRatio = (today - yearStart) / yearDuration; const todayLeftPx = timelineOffsetPx + (timelineWidthPx * todayRatio); const line = document.createElement('div'); line.className = 'gantt-today-line'; line.style.left = `${todayLeftPx}px`; line.innerHTML = `<div class="gantt-today-label">Hoje</div>`; container.appendChild(line); } };
         
         // ==========================
         // DESPACHOS – ITENS AVULSOS
@@ -3918,8 +4015,8 @@ Object.keys(cols).forEach(key => {
 
         // Função auxiliar para criar HTML do card (ATUALIZADA COM RASCI)
         function createCardHtml(item, today) {
-            const sortedRoadmap = (item.roadmap || []).sort((a,b) => a.data.localeCompare(b.data));
-            const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const isPast = r.data < today; const dotClass = isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'; const dateClass = isPast ? 'text-slate-400' : 'text-blue-600 font-black'; const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR')}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
+            const sortedRoadmap = (item.roadmap || []).sort((a,b) => (a.noDate || !a.data ? '9999-12-31' : a.data).localeCompare(b.noDate || !b.data ? '9999-12-31' : b.data));
+            const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const semData = r.noDate || !r.data; const isPast = !semData && r.data < today; const dotClass = semData ? 'bg-slate-400 ring-4 ring-slate-100' : (isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'); const dateClass = semData ? 'text-slate-500 font-black' : (isPast ? 'text-slate-400' : 'text-blue-600 font-black'); const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; const dateLabel = semData ? 'Data a definir' : new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${dateLabel}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
             const respectBadge = (activeTab === 'contracts' && item.program === 'Respeito à Vida' && (item.programComponent === '1' || item.programComponent === '3'))
                 ? `<span class=\"ml-2 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-100\">Respeito à Vida — C${item.programComponent}</span>`
                 : '';
@@ -4035,6 +4132,12 @@ Object.keys(cols).forEach(key => {
                 servicesBadgeHtml = `<p class="text-[9px] text-slate-400 font-bold uppercase truncate">${item.service}</p>`;
             }
 
+            const priorityBadgeClass = {
+                'Urgente': 'bg-red-100 text-red-600 border-red-200',
+                'Alta': 'bg-orange-100 text-orange-700 border-orange-200',
+                'Média': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                'Baixa': 'bg-green-100 text-green-700 border-green-200'
+            }[item.priority || 'Média'] || 'bg-slate-100 text-slate-600 border-slate-200';
             return `
             <div class="accordion-row bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-3 group hover:border-blue-300 transition-colors">
                 <div class="px-5 py-5 flex flex-col gap-3">
@@ -4046,7 +4149,7 @@ Object.keys(cols).forEach(key => {
                                 <div class="flex flex-wrap items-center gap-1 mb-1">
                                     <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-black uppercase tracking-wider">${item.coord || 'N/A'}</span>
                                     <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black ${window.getStatusColor(item.status)}">${item.status || 'Sem status'}</span>
-                                    ${item.priority === 'Urgente' ? '<span class="text-[10px] uppercase px-2 py-0.5 rounded-lg bg-red-100 text-red-600 border border-red-200 font-black">Urgente</span>' : ''}
+                                    <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black ${priorityBadgeClass}">${item.priority || 'Média'}</span>
                                     ${respectBadge}
                                 </div>
                                 <h4 class="font-bold text-slate-900 text-base leading-tight clamp-2 title-fixed">${item.name}</h4>
@@ -4105,10 +4208,6 @@ Object.keys(cols).forEach(key => {
                         ${operationalHtml}
 
                         <div class="space-y-4 pt-4 border-t border-slate-200">
-                             <div class="flex flex-wrap gap-2">
-                                <span class="text-[11px] uppercase px-3 py-1.5 rounded-lg border font-bold ${window.getStatusColor(item.status)}">${item.status}</span>
-                                ${item.priority === 'Urgente' ? '<span class="text-[11px] uppercase px-3 py-1.5 rounded-lg bg-red-100 text-red-600 border border-red-200 font-black">Urgente</span>' : ''}
-                            </div>
                             <div class="grid grid-cols-2 gap-4">
                                 ${item.sei ? `<div><p class="text-[10px] font-black text-slate-400 uppercase mb-1">SEI</p><p class="text-sm font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded inline-block truncate max-w-full">${item.sei}</p></div>` : ''}
                             </div>
