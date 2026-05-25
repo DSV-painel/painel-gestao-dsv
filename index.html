@@ -14,7 +14,7 @@
         .h-dvh { height: 100dvh; }
 
         /* Modal e Scrollbars */
-        #projectModal, #indicatorModal, #newIndicatorModal, #pmgLegendModal, #dispatchModal, #meetingModal, #editMeetingModal, #editDispatchItemModal, #addBacklogItemModal, #customDispatchItemModal, #calendarModal, #rasciLegendModal { 
+        #projectModal, #indicatorModal, #newIndicatorModal, #pmgLegendModal, #dispatchModal, #meetingModal, #editMeetingModal, #editDispatchItemModal, #addBacklogItemModal, #customDispatchItemModal, #calendarModal { 
             display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; 
             background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); 
         }
@@ -35,7 +35,7 @@
 
         .actor-tag { font-size: 0.85rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem; border: 1px solid; }
         
-        /* Cores específicas para tags RASCI */
+        /* Cores específicas para tags */
         .tag-blue { background-color: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
         .tag-red { background-color: #fee2e2; color: #b91c1c; border-color: #fecaca; }
         .tag-orange { background-color: #ffedd5; color: #c2410c; border-color: #fed7aa; }
@@ -55,6 +55,91 @@
             .doc-link-fields { grid-template-columns: 1fr; }
             .doc-remove-btn { width: 100%; }
         }
+
+
+/* Ajustes de alinhamento – Roadmap e Links de Documentos */
+.doc-link-row {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 0.75rem;
+  overflow: hidden;
+}
+.doc-link-fields {
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.45fr);
+  align-items: end;
+}
+.doc-link-container.compact {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+}
+.doc-link-container.compact input {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.doc-remove-btn {
+  margin-top: 1.38rem;
+}
+@media (max-width: 1024px) {
+  .doc-link-fields { grid-template-columns: 1fr; }
+  .doc-remove-btn { margin-top: 0; align-self: stretch; }
+}
+
+.roadmap-row {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.95fr) minmax(280px, 2fr) 44px;
+  gap: 0.75rem;
+  align-items: start;
+  background: #ffffff;
+  padding: 0.85rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(15,23,42,.04);
+}
+.roadmap-date-block,
+.roadmap-step-block { min-width: 0; }
+.roadmap-date-block .input-style,
+.roadmap-step-block .input-style { height: 50px; }
+.roadmap-no-date-label {
+  min-height: 22px;
+  margin-top: .35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #64748b;
+}
+.roadmap-remove-btn {
+  width: 42px;
+  height: 50px;
+  border-radius: .85rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #f87171;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s ease;
+}
+.roadmap-remove-btn:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+@media (max-width: 900px) {
+  .roadmap-row { grid-template-columns: 1fr; }
+  .roadmap-remove-btn { width: 100%; }
+}
+
+
         .hidden-field { display: none !important; }
 
         .radio-group { display: flex; gap: 1rem; padding: 0.75rem; background-color: white; border: 1px solid #dbeafe; border-radius: 0.75rem; }
@@ -230,6 +315,15 @@
         .btn-planner.active-planner { background: #2563eb; color: #f8fafc; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .btn-planner.active-planner:hover { background: #1d4ed8; }
 
+        /* Botão Validação da Diretoria */
+        .btn-validation { 
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; 
+            border-radius: 10px; transition: all 0.2s; background: #f1f5f9; color: #94a3b8; font-size: 1.05rem;
+        }
+        .btn-validation:hover { background: #e2e8f0; color: #475569; }
+        .btn-validation.active-validation { background: #059669; color: #f8fafc; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-validation.active-validation:hover { background: #047857; }
+
         /* Estilos da Nova View de Despachos */
         .meeting-card { cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
         .meeting-card:hover { background-color: #f1f5f9; border-color: #e2e8f0; }
@@ -343,12 +437,192 @@
 .preserve-lines { white-space: pre-line; }
 
 /* Cards executivos – Projetos */
-.exec-summary-grid { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 0.75rem; }
-@media (min-width: 768px) { .exec-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.summary-box { border-radius: 0.9rem; padding: 0.75rem; border: 1px solid #e2e8f0; background: #f8fafc; }
-.summary-box-title { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .25rem; }
+.exec-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: stretch;
+}
+@media (min-width: 900px) { .exec-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.summary-box {
+  border-radius: 0.9rem;
+  padding: 0.85rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  min-height: 118px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.summary-box-title {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin: 0;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+.summary-box-body {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #1e293b;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.summary-meta {
+  margin-top: auto;
+  padding-top: .35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  align-items: center;
+}
+.summary-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .28rem;
+  min-height: 24px;
+  max-width: 100%;
+  border-radius: .55rem;
+  padding: .25rem .5rem;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  line-height: 1.15;
+}
+.summary-inline-note {
+  margin-top: .75rem;
+  border-radius: .9rem;
+  padding: .75rem .85rem;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+}
+.summary-inline-note .summary-box-title { margin-bottom: .35rem; }
+.card-header-layout { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.card-click-area { min-width: 0; flex: 1 1 auto; cursor: pointer; }
+.card-content-line { display: flex; align-items: flex-start; gap: 1rem; min-width: 0; }
+.card-main-content { min-width: 0; flex: 1 1 auto; }
+.card-status-strip { width: 0.375rem; min-width: 0.375rem; height: 2.5rem; border-radius: 999px; }
+.card-badge-row { display: flex; flex-wrap: wrap; gap: .3rem; align-items: center; margin-bottom: .35rem; }
+.card-actions { display: flex; align-items: center; gap: .5rem; flex: 0 0 auto; margin-top: .1rem; }
+@media (max-width: 640px) {
+  .card-header-layout { flex-direction: column; }
+  .card-actions { align-self: flex-end; }
+}
 .unit-badge { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; border-radius: .45rem; padding: .2rem .45rem; border: 1px solid; display: inline-flex; align-items: center; gap: .25rem; }
 
+
+.card-summary-stack { display: flex; flex-direction: column; gap: 0.8rem; }
+.card-summary-section {
+  margin-top: 0.85rem;
+  padding: 0.9rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+.card-summary-section-title {
+  margin: 0 0 0.55rem;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.55rem;
+}
+.services-grid .unit-badge {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.8rem;
+  font-size: 10px;
+  line-height: 1.35;
+  align-items: flex-start;
+  justify-content: flex-start;
+  white-space: normal;
+}
+.services-grid .unit-badge i {
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+.card-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.card-main-title-block { display: flex; flex-direction: column; gap: 0.35rem; }
+.card-footer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.55rem;
+  margin-top: 0.1rem;
+  border-top: 1px solid #e2e8f0;
+}
+.card-date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 30px;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.card-actions { gap: 0.6rem; }
+.card-actions .btn-dispatch,
+.card-actions .btn-planner,
+.card-actions .btn-validation {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.card-toggle-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #94a3b8;
+  transition: all 0.2s;
+}
+.card-toggle-btn:hover { background: #eff6ff; color: #2563eb; }
+.accordion-row.active .card-toggle-btn { background: #eff6ff; color: #2563eb; }
+@media (max-width: 900px) {
+  .services-grid { grid-template-columns: 1fr; }
+}
+
+/* Alinhamento geral de campos e caixas de texto */
+.input-style { min-height: 44px; line-height: 1.45; }
+textarea.input-style { min-height: 92px; resize: vertical; }
+.field-label { min-height: 16px; line-height: 1.25; }
+.form-field-grid { align-items: start; }
+
+/* Ajuste final dos cards-resumo: evita sensação de duplicidade e melhora alinhamento */
+.exec-summary-grid .summary-box { min-height: 108px; }
+.summary-box-body { display: block; }
+.summary-box .summary-meta { min-height: 28px; }
+.summary-inline-note { margin-top: 0.75rem; }
+.summary-inline-note .summary-box-body { font-weight: 700; }
+.card-main-content > .exec-summary-grid + .summary-inline-note { margin-top: 0.75rem; }
 
 
 
@@ -509,6 +783,92 @@
 .pdf-export-root .pdf-avoid-break { 
   break-inside: avoid !important; 
   page-break-inside: avoid !important; 
+}
+
+
+/* Evita repetição visual: quando o card é aberto, o resumo recolhido some
+   e permanecem apenas os blocos detalhados do acordeão. */
+.accordion-row.active .exec-summary-grid,
+.accordion-row.active .summary-inline-note {
+  display: none !important;
+}
+
+
+
+/* ===============================
+   AJUSTE – LINKS DE DOCUMENTOS
+   Melhora a distribuição dos campos e evita estouro horizontal
+   =============================== */
+.doc-link-row,
+.doc-link-fields,
+.doc-link-fields > div,
+.doc-link-container.compact,
+.doc-link-container.compact input {
+  box-sizing: border-box;
+}
+.doc-link-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: 0.75rem;
+  align-items: end;
+  width: 100%;
+}
+.doc-link-fields {
+  display: grid !important;
+  grid-template-columns: minmax(170px, 0.85fr) minmax(0, 1.35fr);
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+  align-items: end;
+}
+.doc-link-fields > div {
+  min-width: 0;
+  width: 100%;
+}
+.doc-link-field-label {
+  min-height: 16px;
+  line-height: 1.2;
+}
+.doc-link-container.compact {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0.65rem 0.85rem;
+  overflow: hidden;
+}
+.doc-link-container.compact i {
+  flex: 0 0 auto;
+}
+.doc-link-container.compact input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.doc-remove-btn {
+  width: 42px;
+  min-width: 42px;
+  height: 46px;
+  min-height: 46px;
+  align-self: end;
+  margin-top: 0 !important;
+}
+@media (max-width: 860px) {
+  .doc-link-row {
+    grid-template-columns: 1fr;
+  }
+  .doc-link-fields {
+    grid-template-columns: 1fr;
+  }
+  .doc-remove-btn {
+    width: 100%;
+  }
 }
 
 </style>
@@ -1216,54 +1576,6 @@
                         </div>
                     </div>
 
-                    <!-- SEÇÃO 05: MATRIZ RASCI -->
-                    <div class="mt-6 bg-slate-50 p-4 sm:p-6 rounded-3xl border border-slate-100">
-                        <div class="flex items-center gap-3 border-b border-slate-200 pb-3 mb-5">
-                            <h4 class="form-section-title !mb-0 !border-0 !pb-0"><strong>05. Matriz RASCI</strong></h4>
-                            <!-- Botão Estilo PMG (Azul) -->
-                            <button type="button" onclick="toggleModal('rasciLegendModal')" class="bg-blue-50 text-blue-600 hover:bg-blue-100 text-[11px] font-bold uppercase px-3 py-1.5 rounded-lg transition-colors border border-blue-200 flex items-center gap-1">
-                                <i class="fas fa-info-circle mr-1"></i> O que é?
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                            <!-- R - Responsável -->
-                            <div class="flex flex-col">
-                                <label class="field-label text-blue-600" title="Responsável pela execução">R - Responsável</label>
-                                <div class="tag-container bg-white" id="rasciContainerR">
-                                    <input type="text" id="rasciInputR" class="bg-transparent outline-none text-xs font-normal flex-1 min-w-[50px] placeholder-slate-400" placeholder="Insira o ator + Enter">
-                                </div>
-                            </div>
-                            <!-- A - Aprovador -->
-                            <div class="flex flex-col">
-                                <label class="field-label text-red-600" title="Quem aprova e responde">A - Aprovador</label>
-                                <div class="tag-container bg-white" id="rasciContainerA">
-                                    <input type="text" id="rasciInputA" class="bg-transparent outline-none text-xs font-normal flex-1 min-w-[50px] placeholder-slate-400" placeholder="Insira o ator + Enter">
-                                </div>
-                            </div>
-                            <!-- S - Suporte -->
-                            <div class="flex flex-col">
-                                <label class="field-label text-orange-600" title="Quem dá suporte/apoio">S - Suporte</label>
-                                <div class="tag-container bg-white" id="rasciContainerS">
-                                    <input type="text" id="rasciInputS" class="bg-transparent outline-none text-xs font-normal flex-1 min-w-[50px] placeholder-slate-400" placeholder="Insira o ator + Enter">
-                                </div>
-                            </div>
-                            <!-- C - Consultado -->
-                            <div class="flex flex-col">
-                                <label class="field-label text-purple-600" title="Quem deve ser consultado">C - Consultado</label>
-                                <div class="tag-container bg-white" id="rasciContainerC">
-                                    <input type="text" id="rasciInputC" class="bg-transparent outline-none text-xs font-normal flex-1 min-w-[50px] placeholder-slate-400" placeholder="Insira o ator + Enter">
-                                </div>
-                            </div>
-                            <!-- I - Informado -->
-                            <div class="flex flex-col">
-                                <label class="field-label text-emerald-600" title="Quem deve ser informado">I - Informado</label>
-                                <div class="tag-container bg-white" id="rasciContainerI">
-                                    <input type="text" id="rasciInputI" class="bg-transparent outline-none text-xs font-normal flex-1 min-w-[50px] placeholder-slate-400" placeholder="Insira o ator + Enter">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div id="projectFloatingSaveBar" class="sticky bottom-0 z-30 -mx-4 md:-mx-8 mt-6 flex gap-4 border-t border-slate-200 bg-white/95 px-4 md:px-8 py-4 shadow-[0_-12px_30px_rgba(15,23,42,0.10)] backdrop-blur">
                         <button type="button" id="deleteBtn" onclick="deleteProject()" class="bg-red-50 text-red-600 font-bold px-6 rounded-2xl shadow-sm hover:bg-red-100 transition-all uppercase text-xs tracking-widest hidden"><i class="fas fa-trash mr-2"></i> Excluir</button>
                         <button type="button" id="saveBtn" onclick="saveProject()" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-blue-700 transition-all uppercase text-xs tracking-[0.2em]">
@@ -1272,54 +1584,6 @@
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- ... (Demais Modais, como RASCI Legend, PMG, Indicator, etc, permanecem iguais) ... -->
-     <!-- Modal Legenda RASCI (NOVO) -->
-    <div id="rasciLegendModal" class="items-center justify-center p-4" style="display: none;" onclick="if(event.target === this) toggleModal('rasciLegendModal')">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 border border-slate-200 overflow-y-auto max-h-[90vh]">
-            <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-4 flex items-center gap-2"><i class="fas fa-users-cog text-indigo-600"></i> Matriz de Responsabilidades (RASCI)</h3>
-            <div class="space-y-3">
-                <div class="flex gap-4 p-3 bg-blue-50 rounded-xl border border-blue-100 items-start">
-                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-black shrink-0 text-lg">R</div>
-                    <div>
-                        <h4 class="font-bold text-blue-800 text-sm uppercase">Responsável (Responsible)</h4>
-                        <p class="text-xs text-blue-700 mt-1">Quem efetivamente trabalha na tarefa. É o "executor". Pode haver mais de um R, mas o ideal é manter focado.</p>
-                    </div>
-                </div>
-                <div class="flex gap-4 p-3 bg-red-50 rounded-xl border border-red-100 items-start">
-                    <div class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center font-black shrink-0 text-lg">A</div>
-                    <div>
-                        <h4 class="font-bold text-red-800 text-sm uppercase">Aprovador (Accountable)</h4>
-                        <p class="text-xs text-red-700 mt-1">Quem responde pelo resultado final. É quem tem autoridade para vetar ou aprovar. <strong>Deve haver apenas um "A" por atividade</strong>.</p>
-                    </div>
-                </div>
-                <div class="flex gap-4 p-3 bg-orange-50 rounded-xl border border-orange-100 items-start">
-                    <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-black shrink-0 text-lg">S</div>
-                    <div>
-                        <h4 class="font-bold text-orange-800 text-sm uppercase">Suporte (Support)</h4>
-                        <p class="text-xs text-orange-700 mt-1">Quem fornece recursos, apoio logístico ou ajuda prática ao Responsável durante a execução.</p>
-                    </div>
-                </div>
-                <div class="flex gap-4 p-3 bg-purple-50 rounded-xl border border-purple-100 items-start">
-                    <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-black shrink-0 text-lg">C</div>
-                    <div>
-                        <h4 class="font-bold text-purple-800 text-sm uppercase">Consultado (Consulted)</h4>
-                        <p class="text-xs text-purple-700 mt-1">Especialistas ou partes interessadas que devem ser ouvidas <strong>antes</strong> da decisão ou ação. A comunicação é de via dupla.</p>
-                    </div>
-                </div>
-                <div class="flex gap-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100 items-start">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-black shrink-0 text-lg">I</div>
-                    <div>
-                        <h4 class="font-bold text-emerald-800 text-sm uppercase">Informado (Informed)</h4>
-                        <p class="text-xs text-emerald-700 mt-1">Quem precisa ser avisado <strong>após</strong> a decisão ou ação ter sido tomada. A comunicação é de via única (apenas notificação).</p>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-6 text-right">
-                <button onclick="toggleModal('rasciLegendModal')" class="bg-slate-800 text-white font-bold py-2 px-6 rounded-lg text-xs uppercase hover:bg-slate-700">Entendido</button>
             </div>
         </div>
     </div>
@@ -1430,9 +1694,6 @@
                         </button>
 <button onclick="switchTab('contracts')" id="tab-contracts" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
                             <i class="fas fa-file-contract w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Contratos</span>
-                        </button>
-                        <button onclick="switchTab('operational')" id="tab-operational" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
-                            <i class="fas fa-tasks w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Operacional</span>
                         </button>
                         <button onclick="switchTab('gantt')" id="tab-gantt" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
                             <i class="fas fa-stream w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Cronograma</span>
@@ -2382,11 +2643,7 @@
                 value: el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value
             }));
             const serviceTags = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(el => el.innerText);
-            const rasciTags = ['rasciContainerR','rasciContainerA','rasciContainerS','rasciContainerC','rasciContainerI'].reduce((acc, id) => {
-                acc[id] = Array.from(document.querySelectorAll(`#${id} .actor-tag span`)).map(el => el.innerText);
-                return acc;
-            }, {});
-            return JSON.stringify({ fields, serviceTags, rasciTags });
+            return JSON.stringify({ fields, serviceTags });
         }
 
         function updateProjectDirtyState() {
@@ -2490,11 +2747,6 @@ document.getElementById('projRisks').value = '';
             if (encaminhamentosField) encaminhamentosField.classList.toggle('hidden-field', activeTab === 'operational');
             document.getElementById('riskField').classList.add('hidden-field');
             
-            document.getElementById('rasciInputR').value = '';
-            document.getElementById('rasciInputA').value = '';
-            document.getElementById('rasciInputS').value = '';
-            document.getElementById('rasciInputC').value = '';
-            document.getElementById('rasciInputI').value = '';
 
             document.getElementById('deleteBtn').classList.add('hidden');
             setAuditInfo('projectAuditInfo', null);
@@ -2542,7 +2794,7 @@ document.getElementById('projRisks').value = '';
 
             const doc = normalizeDocLink(value) || { url: '', label: '' };
             const row = document.createElement('div');
-            row.className = 'doc-link-row flex';
+            row.className = 'doc-link-row';
             row.innerHTML = `
                 <div class="doc-link-fields">
                     <div>
@@ -2604,7 +2856,7 @@ document.getElementById('projRisks').value = '';
         window.toggleRiskInput = () => { const status = document.getElementById('projStatus').value; const riskField = document.getElementById('riskField'); const show = ["Em Execução (com risco)"].includes(status); riskField.classList.toggle('hidden-field', !show); };
         window.toggleDecisionFields = () => { const needed = document.getElementById('projDecisionNeeded')?.value === 'Sim'; const detail = document.getElementById('decisionDetailField'); if (detail) detail.classList.toggle('hidden-field', !needed); };
 
-        // ... (Funções de Tag e RASCI - mantidas) ...
+        // Funções de Tags
         const getTagsFromContainer = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); };
         const createTag = (text, containerId, inputId, colorClass = 'tag-blue') => { const container = document.getElementById(containerId); const input = inputId ? document.getElementById(inputId) : null; if(!container) return; const tag = document.createElement('div'); tag.className = `actor-tag ${colorClass}`; tag.innerHTML = `<span>${text}</span><i class="fas fa-times cursor-pointer hover:opacity-75" onclick="this.parentElement.remove()"></i>`; if(input) { container.insertBefore(tag, input); } else { container.appendChild(tag); } };
         window.addServiceTag = (val) => { if(!val) return; const container = document.getElementById('serviceTagsContainer'); const existing = Array.from(container.querySelectorAll('span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'serviceTagsContainer', null, 'tag-orange'); };
@@ -2613,18 +2865,22 @@ document.getElementById('projRisks').value = '';
         window.addRoadmapRow = (data = '', etapa = '', noDate = false) => {
             const container = document.getElementById('roadmapContainer');
             const row = document.createElement('div');
-            row.className = 'grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm';
+            row.className = 'roadmap-row';
             const semData = noDate || data === 'a-definir' || data === 'A definir';
             row.innerHTML = `
-                <div class="sm:col-span-4 space-y-2">
+                <div class="roadmap-date-block">
                     <input type="date" class="input-style roadmap-date" value="${semData ? '' : data}" ${semData ? 'disabled' : ''}>
-                    <label class="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-500">
-                        <input type="checkbox" class="roadmap-no-date" ${semData ? 'checked' : ''} onchange="const input=this.closest('div').querySelector('.roadmap-date'); input.disabled=this.checked; if(this.checked) input.value='';">
+                    <label class="roadmap-no-date-label">
+                        <input type="checkbox" class="roadmap-no-date" ${semData ? 'checked' : ''} onchange="const input=this.closest('.roadmap-date-block').querySelector('.roadmap-date'); input.disabled=this.checked; if(this.checked) input.value='';">
                         Data a definir
                     </label>
                 </div>
-                <div class="sm:col-span-7"><input type="text" class="input-style roadmap-step" placeholder="Etapa..." value="${String(etapa || '').replace(/"/g, '&quot;')}"></div>
-                <div class="sm:col-span-1 text-center"><button type="button" onclick="this.parentElement.parentElement.remove(); updateProjectDirtyState();" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button></div>
+                <div class="roadmap-step-block">
+                    <input type="text" class="input-style roadmap-step" placeholder="Etapa / entrega do roadmap..." value="${String(etapa || '').replace(/"/g, '&quot;')}">
+                </div>
+                <div class="roadmap-action-block">
+                    <button type="button" onclick="this.closest('.roadmap-row').remove(); updateProjectDirtyState();" class="roadmap-remove-btn" title="Remover etapa"><i class="fas fa-trash"></i></button>
+                </div>
             `;
             container.appendChild(row);
             updateProjectDirtyState();
@@ -2798,8 +3054,7 @@ document.getElementById('projRisks').value = '';
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const existingForAudit = (dataStore[activeTab] || []).find(i => i.id === id) || null;
             const data = {
-                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', nextAction: document.getElementById('projNextAction') ? document.getElementById('projNextAction').value : '', nextActionOwner: document.getElementById('projNextActionOwner') ? document.getElementById('projNextActionOwner').value : '', nextActionDeadline: document.getElementById('projNextActionDeadline') ? document.getElementById('projNextActionDeadline').value : '', decisionNeeded: document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não', decisionLevel: document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '', decisionDesc: document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value : '', services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap,
-                rasci: { r: getTagsFromContainer('rasciContainerR'), a: getTagsFromContainer('rasciContainerA'), s: getTagsFromContainer('rasciContainerS'), c: getTagsFromContainer('rasciContainerC'), i: getTagsFromContainer('rasciContainerI') }, ...buildAuditFields(existingForAudit)
+                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', nextAction: document.getElementById('projNextAction') ? document.getElementById('projNextAction').value : '', nextActionOwner: document.getElementById('projNextActionOwner') ? document.getElementById('projNextActionOwner').value : '', nextActionDeadline: document.getElementById('projNextActionDeadline') ? document.getElementById('projNextActionDeadline').value : '', decisionNeeded: document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não', decisionLevel: document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '', decisionDesc: document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value : '', services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
             };
             if (activeTab === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (activeTab === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
             // Confirmação ao marcar como Concluído
@@ -2812,7 +3067,7 @@ document.getElementById('projRisks').value = '';
                 return;
             }
             if (__newStatus === 'Concluído' && !data.concludedAt) data.concludedAt = (__existingItem && __existingItem.concludedAt) ? __existingItem.concludedAt : Date.now();
-            try { if(document.getElementById('editId').value) { const existing = dataStore[activeTab].find(i => i.id === id); if(existing && existing.onDispatch) data.onDispatch = true; if(existing && existing.onPlanner) data.onPlanner = true; if(existing && existing.dispatchData) data.dispatchData = existing.dispatchData; } await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, {merge: true}); projectFormDirty = false; resetProjectDirtyState(); suppressProjectClosePrompt = true; await toggleModal('projectModal'); suppressProjectClosePrompt = false; } catch (err) { console.error("Erro ao salvar:", err); }
+            try { if(document.getElementById('editId').value) { const existing = dataStore[activeTab].find(i => i.id === id); if(existing && existing.onDispatch) data.onDispatch = true; if(existing && existing.onPlanner) data.onPlanner = true; if(existing && existing.onDiretoriaValidation) data.onDiretoriaValidation = true; if(existing && existing.dispatchData) data.dispatchData = existing.dispatchData; } await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, {merge: true}); projectFormDirty = false; resetProjectDirtyState(); suppressProjectClosePrompt = true; await toggleModal('projectModal'); suppressProjectClosePrompt = false; } catch (err) { console.error("Erro ao salvar:", err); }
         };
 
         // ... (Delete Project, Dispatch Toggle, Meeting functions... mantidas) ...
@@ -2970,6 +3225,42 @@ window.togglePlanner = async (id, collectionName) => {
         console.error("Erro ao atualizar Planner:", err);
     }
 };
+
+window.toggleDiretoriaValidation = async (id, collectionName) => {
+    if (!collectionName) collectionName = activeTab;
+    const item = dataStore[collectionName]?.find(i => i.id === id);
+    if (!item) return;
+
+    const newVal = !item.onDiretoriaValidation;
+
+    const itemLabel = (item.pautaTitle || item.name || 'este item').toString();
+    const actionMsg = newVal ? `Marcar para Validação da Diretoria?` : `Remover da Validação da Diretoria?`;
+
+    const ok = await window.confirmModal({
+        title: newVal ? 'Confirmar validação' : 'Confirmar remoção',
+        message: `${actionMsg}
+
+Item: ${itemLabel}`,
+        okText: 'Sim, confirmar',
+        cancelText: 'Cancelar',
+        variant: newVal ? 'success' : 'danger'
+    });
+    if (!ok) return;
+
+    try {
+        item.onDiretoriaValidation = newVal;
+        await setDoc(
+            doc(db, 'artifacts', appId, 'public', 'data', collectionName, id),
+            { onDiretoriaValidation: newVal },
+            { merge: true }
+        );
+        if (activeTab === 'despachos') window.renderDespachos();
+        else window.renderData();
+    } catch (err) {
+        console.error("Erro ao atualizar Validação da Diretoria:", err);
+    }
+};
+
 
         window.toggleBacklogSelection = (checkbox) => { const val = JSON.parse(checkbox.value); if (checkbox.checked) { selectedBacklogItems.add(checkbox.value); } else { selectedBacklogItems.delete(checkbox.value); } const btn = document.getElementById('createMeetingBtn'); const count = selectedBacklogItems.size; if(btn) { if(count > 0) { btn.classList.remove('opacity-50', 'cursor-not-allowed'); btn.innerText = `Gerar Pauta (${count} itens)`; btn.disabled = false; } else { btn.classList.add('opacity-50', 'cursor-not-allowed'); btn.innerText = `Gerar Pauta`; btn.disabled = true; } } document.getElementById('selectedCountBadge').innerText = count; };
         window.openCreateMeetingModal = () => { document.getElementById('meetingForm').reset(); document.getElementById('newMeetingDate').valueAsDate = new Date(); document.getElementById('selectedCountBadge').innerText = selectedBacklogItems.size; toggleModal('meetingModal'); };
@@ -3188,17 +3479,7 @@ window.togglePlanner = async (id, collectionName) => {
             if (encaminhamentosFieldEdit) encaminhamentosFieldEdit.classList.toggle('hidden-field', t === 'operational');
             document.getElementById('projDuration').value = item.duration || ''; 
             document.getElementById('projComplexity').value = item.complexity || 'Média';
-
-            if (item.rasci) {
-                const populateTags = (val, containerId, inputId, color) => { if (Array.isArray(val)) { val.forEach(t => createTag(t, containerId, inputId, color)); } else if (typeof val === 'string' && val.trim() !== '') { createTag(val, containerId, inputId, color); } };
-                populateTags(item.rasci.r, 'rasciContainerR', 'rasciInputR', 'tag-blue');
-                populateTags(item.rasci.a, 'rasciContainerA', 'rasciInputA', 'tag-red');
-                populateTags(item.rasci.s, 'rasciContainerS', 'rasciInputS', 'tag-orange');
-                populateTags(item.rasci.c, 'rasciContainerC', 'rasciInputC', 'tag-purple');
-                populateTags(item.rasci.i, 'rasciContainerI', 'rasciInputI', 'tag-green');
-            }
-
-            window.toggleRiskInput(); 
+window.toggleRiskInput(); 
             if (item.roadmap) { item.roadmap.forEach(r => window.addRoadmapRow(r.data || '', r.etapa || '', !!r.noDate || !r.data)); }
             if (t === 'contracts') { document.getElementById('projType').value = item.type || 'Contrato'; document.getElementById('projHasResource').value = item.hasResource || 'Não'; document.getElementById('projResourceValue').value = item.resourceValue || ''; document.getElementById('contractProgram').value = item.program || ''; document.getElementById('contractComponent').value = item.programComponent || ''; window.toggleResourceInput(); window.toggleContractProgramFields(); } else if (t === 'operational') { /* serviços já foram populados como tags acima */ }
             setTimeout(resetProjectDirtyState, 0);
@@ -3207,10 +3488,10 @@ window.togglePlanner = async (id, collectionName) => {
         // ... (Render Portaria, Switch Tab, Render Gantt, Backlog Items functions... mantidas) ...
         window.setPortariaFilter = (type) => { currentPortariaFilter = type; document.querySelectorAll('.portaria-filter-btn').forEach(btn => btn.classList.remove('active')); const activeBtn = document.getElementById('pf-' + type); if(activeBtn) activeBtn.classList.add('active'); window.renderPortaria(); };
         window.renderPortaria = () => { const container = document.getElementById('portariaList'); const search = document.getElementById('searchInput').value.toLowerCase(); container.innerHTML = ''; let filtered = PORTARIA_DATA.filter(item => item.title.toLowerCase().includes(search) || item.items.some(sub => sub.toLowerCase().includes(search)) || item.art.toLowerCase().includes(search)); if (currentPortariaFilter !== 'all') filtered = filtered.filter(item => item.type === currentPortariaFilter); if(filtered.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center mt-10">Nenhum item encontrado.</p>'; return; } filtered.forEach(item => { let bc = '', tc = ''; if(item.type === 'Diretoria') { bc = 'badge-diretoria'; tc = 'type-diretoria'; } else if(item.type === 'Coordenadoria') { bc = 'badge-coordenadoria'; tc = 'type-coordenadoria'; } else if(item.type === 'Divisão') { bc = 'badge-divisao'; tc = 'type-divisao'; } else { bc = 'badge-servico'; tc = 'type-servico'; } const itemsHtml = item.items.map((sub, idx) => `<li class="flex items-start gap-3 relative pl-2 group/item"><span class="text-[10px] font-bold text-slate-400 mt-0.5 w-5 shrink-0 text-right">${['I','II','III','IV','V','VI','VII','VIII','IX','X'][idx] || '-'}</span><span class="text-sm text-slate-700 leading-snug border-l border-slate-200 pl-3">${sub}</span></li>`).join(''); container.innerHTML += `<div class="portaria-card ${tc}"><div class="flex items-start justify-between mb-4"><div><span class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest block mb-1">${item.art}</span><h4 class="font-bold text-slate-800 text-lg leading-tight mb-2">${item.title}</h4><p class="text-xs text-slate-500 italic border-l-2 border-slate-200 pl-2 leading-relaxed max-w-2xl">${item.preamble}</p></div><span class="portaria-badge ${bc} ml-2 shrink-0">${item.type}</span></div><ul class="space-y-3 pt-2">${itemsHtml}</ul></div>`; }); };
-        window.switchTab = (tab) => { activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
-            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'operational') { addBtn.classList.add('btn-theme-operational'); addBtnText.innerText = 'Adicionar Atividade'; app.classList.add('operational-theme'); document.getElementById('viewTitle').innerText = 'Atividades Operacionais'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(false, true); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = (tab === 'operational' || tab === 'projects') ? 'flex' : 'none'; const filterServiceLabel = document.querySelector('#operationalFilters label'); if (filterServiceLabel) filterServiceLabel.innerText = tab === 'projects' ? 'Filtrar por Divisão/Serviço responsável' : 'Filtrar por Serviço'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
+        window.switchTab = (tab) => { if (tab === 'operational') tab = 'projects'; activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
+            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = (tab === 'projects') ? 'flex' : 'none'; const filterServiceLabel = document.querySelector('#operationalFilters label'); if (filterServiceLabel) filterServiceLabel.innerText = tab === 'projects' ? 'Filtrar por Divisão/Serviço responsável' : 'Filtrar por Serviço'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
             if (coordWrapper) {
-              const showCoord = ['projects','contracts','operational','gantt'].includes(tab);
+              const showCoord = ['projects','contracts','gantt'].includes(tab);
               // Use inline display to avoid any Tailwind utility precedence issues (e.g., flex vs hidden)
               coordWrapper.style.display = showCoord ? '' : 'none';
               coordWrapper.classList.toggle('hidden', !showCoord);
@@ -4086,7 +4367,7 @@ Object.keys(cols).forEach(key => {
                 }
             }};
 
-        // Função auxiliar para criar HTML do card (ATUALIZADA COM RASCI)
+        // Função auxiliar para criar HTML do card
         function createCardHtml(item, today) {
             const sortedRoadmap = (item.roadmap || []).sort((a,b) => (a.noDate || !a.data ? '9999-12-31' : a.data).localeCompare(b.noDate || !b.data ? '9999-12-31' : b.data));
             const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const semData = r.noDate || !r.data; const isPast = !semData && r.data < today; const dotClass = semData ? 'bg-slate-400 ring-4 ring-slate-100' : (isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'); const dateClass = semData ? 'text-slate-500 font-black' : (isPast ? 'text-slate-400' : 'text-blue-600 font-black'); const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; const dateLabel = semData ? 'Data a definir' : new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${dateLabel}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
@@ -4105,91 +4386,82 @@ Object.keys(cols).forEach(key => {
                 }
             }
 
-            // --- LÓGICA DA MATRIZ RASCI (NOVO BLOCO) ---
-            let rasciHtml = '';
-            if (item.rasci) {
-                const roles = {
-                    r: { label: 'R', title: 'Responsável', class: 'bg-blue-100 text-blue-700 border-blue-200' },
-                    a: { label: 'A', title: 'Aprovador', class: 'bg-red-100 text-red-700 border-red-200' },
-                    s: { label: 'S', title: 'Suporte', class: 'bg-orange-100 text-orange-700 border-orange-200' },
-                    c: { label: 'C', title: 'Consultado', class: 'bg-purple-100 text-purple-700 border-purple-200' },
-                    i: { label: 'I', title: 'Informado', class: 'bg-emerald-100 text-emerald-700 border-emerald-200' }
-                };
-
-                let innerRasci = '';
-                Object.keys(roles).forEach(key => {
-                    let actors = item.rasci[key];
-                    // Normaliza para array se for string (legado)
-                    if (typeof actors === 'string') actors = actors ? [actors] : [];
-                    
-                    if (actors && actors.length > 0) {
-                        const role = roles[key];
-                        // Cria badges para os atores
-                        const actorsHtml = actors.map(a => `<span class="text-[10px] font-bold text-slate-600 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">${a}</span>`).join(' ');
-                        innerRasci += `
-                            <div class="flex items-start gap-2 mb-2">
-                                <span class="w-5 h-5 flex items-center justify-center rounded ${role.class} text-[10px] font-black border shrink-0" title="${role.title}">${role.label}</span>
-                                <div class="flex-1 flex flex-wrap gap-1 items-center leading-tight pt-0.5">${actorsHtml}</div>
-                            </div>
-                        `;
-                    }
-                });
-
-                if (innerRasci) {
-                    rasciHtml = `
-                        <div class="mt-4 pt-4 border-t border-slate-100">
-                            <div class="flex items-center gap-2 mb-3">
-                                <i class="fas fa-users-cog text-slate-400 text-xs"></i>
-                                <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest">Matriz de Responsabilidades (RASCI)</p>
-                            </div>
-                            <div class="grid grid-cols-1 gap-1">
-                                ${innerRasci}
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-
             const formatDateBR = (value) => value ? new Date(value + "T00:00:00").toLocaleDateString('pt-BR') : '';
+            const escapeHtml = (value) => String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+            const cleanText = (value) => String(value || '').replace(/\s+/g, ' ').trim();
+            const stripSummaryLabel = (value) => String(value || '')
+                .replace(/^\s*(pr[oó]xima\s+a[cç][aã]o|a[cç][oõ]es?\s+seguintes?|encaminhamentos?|decis[aã]o\s+necess[aá]ria|ponto\s+de\s+decis[aã]o)\s*[:\-–—]\s*/i, '')
+                .trim();
+            const normalizeForCompare = (value) => cleanText(stripSummaryLabel(value)).toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, ' ')
+                .trim();
+            const isRepeatedInfo = (a, b) => {
+                const x = normalizeForCompare(a);
+                const y = normalizeForCompare(b);
+                if (!x || !y) return false;
+                return x === y || (x.length > 18 && y.includes(x)) || (y.length > 18 && x.includes(y));
+            };
+            const removeRepeatedLines = (text, references = []) => {
+                const refList = references.filter(Boolean);
+                const seen = new Set();
+                return String(text || '')
+                    .split(/\n+/)
+                    .map(line => stripSummaryLabel(line))
+                    .map(line => line.trim())
+                    .filter(line => {
+                        if (!line) return false;
+                        const normalizedLine = normalizeForCompare(line);
+                        if (!normalizedLine || seen.has(normalizedLine)) return false;
+                        seen.add(normalizedLine);
+                        return !refList.some(ref => isRepeatedInfo(line, ref));
+                    })
+                    .join('\n');
+            };
+
+            const nextActionResumoText = stripSummaryLabel(item.nextAction || '');
+            const decisionResumoText = stripSummaryLabel(item.decisionDesc || '');
+            const encaminhamentosResumoText = removeRepeatedLines(item.encaminhamentos, [nextActionResumoText, decisionResumoText]);
+            const shouldShowEncaminhamentosResumo = Boolean((activeTab === 'projects' || activeTab === 'contracts') && encaminhamentosResumoText);
 
             let nextActionResumoHtml = '';
-            if (activeTab === 'projects' && (item.nextAction || item.nextActionOwner || item.nextActionDeadline)) {
+            if (activeTab === 'projects' && (nextActionResumoText || item.nextActionOwner || item.nextActionDeadline)) {
                 nextActionResumoHtml = `
                     <div class="summary-box border-blue-100 bg-blue-50/70">
-                        <p class="summary-box-title text-blue-700"><i class="fas fa-forward-step mr-1"></i> Próxima ação</p>
-                        ${item.nextAction ? `<p class="text-xs font-bold text-slate-800 leading-snug preserve-lines clamp-2">${item.nextAction}</p>` : `<p class="text-xs italic text-slate-400">Não informada.</p>`}
-                        <div class="flex flex-wrap gap-2 mt-2 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                            ${item.nextActionOwner ? `<span class="bg-white/80 border border-blue-100 px-2 py-1 rounded-lg"><i class="fas fa-user mr-1 text-blue-400"></i>${item.nextActionOwner}</span>` : ''}
-                            ${item.nextActionDeadline ? `<span class="bg-white/80 border border-blue-100 px-2 py-1 rounded-lg"><i class="far fa-calendar mr-1 text-blue-400"></i>${formatDateBR(item.nextActionDeadline)}</span>` : ''}
-                        </div>
+                        <p class="summary-box-title text-blue-700"><i class="fas fa-forward-step"></i> Próxima ação</p>
+                        ${nextActionResumoText ? `<p class="summary-box-body preserve-lines clamp-2">${escapeHtml(nextActionResumoText)}</p>` : `<p class="summary-box-body italic text-slate-400 font-semibold">Não informada.</p>`}
+                        ${(item.nextActionOwner || item.nextActionDeadline) ? `<div class="summary-meta">
+                            ${item.nextActionOwner ? `<span class="summary-meta-chip bg-white/90 border border-blue-100 text-slate-600"><i class="fas fa-user text-blue-400"></i>${escapeHtml(item.nextActionOwner)}</span>` : ''}
+                            ${item.nextActionDeadline ? `<span class="summary-meta-chip bg-white/90 border border-blue-100 text-slate-600"><i class="far fa-calendar text-blue-400"></i>${formatDateBR(item.nextActionDeadline)}</span>` : ''}
+                        </div>` : ''}
                     </div>
                 `;
             }
 
             let decisionResumoHtml = '';
-            if (activeTab === 'projects' && (item.decisionNeeded === 'Sim' || item.decisionDesc)) {
+            if (activeTab === 'projects' && (item.decisionNeeded === 'Sim' || decisionResumoText)) {
                 decisionResumoHtml = `
                     <div class="summary-box border-amber-200 bg-amber-50/80">
-                        <p class="summary-box-title text-amber-700"><i class="fas fa-gavel mr-1"></i> Decisão necessária</p>
-                        <div class="flex flex-wrap gap-1 mb-1">
-                            <span class="text-[10px] font-black uppercase bg-white border border-amber-200 text-amber-700 px-2 py-0.5 rounded-lg">${item.decisionLevel || 'Nível não informado'}</span>
+                        <p class="summary-box-title text-amber-700"><i class="fas fa-gavel"></i> Decisão necessária</p>
+                        ${decisionResumoText ? `<p class="summary-box-body preserve-lines clamp-2">${escapeHtml(decisionResumoText)}</p>` : `<p class="summary-box-body italic text-slate-400 font-semibold">Decisão indicada, mas sem descrição.</p>`}
+                        <div class="summary-meta">
+                            <span class="summary-meta-chip bg-white border border-amber-200 text-amber-700">${escapeHtml(item.decisionLevel || 'Nível não informado')}</span>
                         </div>
-                        ${item.decisionDesc ? `<p class="text-xs font-bold text-slate-800 leading-snug preserve-lines clamp-2">${item.decisionDesc}</p>` : `<p class="text-xs italic text-slate-400">Decisão indicada, mas sem descrição.</p>`}
                     </div>
                 `;
             }
 
             let encaminhamentosResumoHtml = '';
-            if ((activeTab === 'projects' || activeTab === 'contracts') && item.encaminhamentos && String(item.encaminhamentos).trim()) {
+            if (shouldShowEncaminhamentosResumo) {
                 encaminhamentosResumoHtml = `
-                    <div class="mt-3 rounded-xl border border-blue-100 bg-blue-50/70 px-3 py-2">
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-list-check text-blue-500 text-xs mt-0.5 shrink-0"></i>
-                            <div class="min-w-0">
-                                <p class="text-[10px] font-black text-blue-700 uppercase tracking-wider mb-0.5">Encaminhamentos</p>
-                                <p class="text-xs font-semibold text-slate-700 leading-snug preserve-lines clamp-2">${item.encaminhamentos}</p>
-                            </div>
-                        </div>
+                    <div class="summary-inline-note">
+                        <p class="summary-box-title text-blue-700"><i class="fas fa-list-check"></i> Encaminhamentos</p>
+                        <p class="summary-box-body preserve-lines clamp-2">${escapeHtml(encaminhamentosResumoText)}</p>
                     </div>
                 `;
             }
@@ -4199,7 +4471,12 @@ Object.keys(cols).forEach(key => {
                 const sList = item.services || (item.service ? [item.service] : []);
                 if (sList.length) {
                     const color = activeTab === 'projects' ? 'text-indigo-700 bg-indigo-50 border-indigo-100' : 'text-orange-600 bg-orange-50 border-orange-100';
-                    servicesBadgeHtml = `<div class="flex flex-wrap gap-1 mt-2 mb-1">` + sList.map(s => `<span class="unit-badge ${color}"><i class="fas fa-sitemap text-[8px]"></i>${s}</span>`).join('') + `</div>`;
+                    const servicesTitle = activeTab === 'projects' ? 'Divisões / serviços responsáveis' : 'Serviços envolvidos';
+                    servicesBadgeHtml = `
+                        <div class="card-summary-section">
+                            <p class="card-summary-section-title"><i class="fas fa-sitemap"></i>${servicesTitle}</p>
+                            <div class="services-grid">${sList.map(s => `<span class="unit-badge ${color}"><i class="fas fa-sitemap text-[8px]"></i><span>${s}</span></span>`).join('')}</div>
+                        </div>`;
                 }
             } else if (item.service) {
                 servicesBadgeHtml = `<p class="text-[9px] text-slate-400 font-bold uppercase truncate">${item.service}</p>`;
@@ -4210,42 +4487,51 @@ Object.keys(cols).forEach(key => {
                 : '';
             return `
             <div class="accordion-row bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-3 group hover:border-blue-300 transition-colors">
-                <div class="px-5 py-5 flex flex-col gap-3">
-                    <div class="flex items-start justify-between">
-                        <div class="flex items-start justify-between gap-3 w-full cursor-pointer" onclick="this.closest('.accordion-row').classList.toggle('active')">
-                            <div class="flex items-start gap-4 min-w-0 flex-1">
-                                <div class="w-1.5 h-10 rounded-full ${window.getStatusColorBg(item.status)}"></div>
-                                <div class="flex-1 min-w-0">
-                                <div class="flex flex-wrap items-center gap-1 mb-1">
-                                    <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-black uppercase tracking-wider">${item.coord || 'N/A'}</span>
-                                    <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black ${window.getStatusColor(item.status)}">${item.status || 'Sem status'}</span>
-                                    ${priorityBadgeHtml}
-                                    ${respectBadge}
+                <div class="px-5 py-5 flex flex-col gap-4">
+                    <div class="card-header-layout">
+                        <div class="card-click-area" onclick="this.closest('.accordion-row').classList.toggle('active')">
+                            <div class="card-content-line">
+                                <div class="card-status-strip ${window.getStatusColorBg(item.status)}"></div>
+                                <div class="card-main-content">
+                                    <div class="card-main-title-block">
+                                        <div class="card-badge-row">
+                                            <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-black uppercase tracking-wider">${item.coord || 'N/A'}</span>
+                                            <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black ${window.getStatusColor(item.status)}">${item.status || 'Sem status'}</span>
+                                            ${priorityBadgeHtml}
+                                            ${respectBadge}
+                                        </div>
+                                        <h4 class="font-bold text-slate-900 text-base leading-tight clamp-2">${item.name}</h4>
+                                    </div>
+                                    <div class="card-summary-stack">
+                                        ${servicesBadgeHtml}
+                                        ${decisionResumoHtml ? `<div class="exec-summary-grid">${decisionResumoHtml}</div>` : ''}
+                                        ${encaminhamentosResumoHtml}
+                                    </div>
                                 </div>
-                                <h4 class="font-bold text-slate-900 text-base leading-tight clamp-2 title-fixed">${item.name}</h4>
-                                ${servicesBadgeHtml}
-                                ${(nextActionResumoHtml || decisionResumoHtml) ? `<div class="exec-summary-grid mt-3">${nextActionResumoHtml}${decisionResumoHtml}</div>` : ''}
-                                ${encaminhamentosResumoHtml}
                             </div>
                         </div>
+                        <div class="card-actions card-top-actions">
+                            <button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${activeTab}')" class="btn-dispatch ${item.onDispatch ? 'active-dispatch' : ''}" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}">
+                                <i class="fas fa-clipboard-list"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); togglePlanner('${item.id}', '${activeTab}')" class="btn-planner ${item.onPlanner ? 'active-planner' : ''}" title="${item.onPlanner ? 'Remover do Planner da Presidência' : 'Sinalizar no Planner da Presidência'}">
+                                <i class="fas fa-tasks"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); toggleDiretoriaValidation('${item.id}', '${activeTab}')" class="btn-validation ${item.onDiretoriaValidation ? 'active-validation' : ''}" title="${item.onDiretoriaValidation ? 'Remover da Validação da Diretoria' : 'Marcar para Validação da Diretoria'}">
+                                <i class="fas fa-user-check"></i>
+                            </button>
                         </div>
-                        <div class="flex items-center gap-2 shrink-0 card-top-actions">
-                        <button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${activeTab}')" class="btn-dispatch ${item.onDispatch ? 'active-dispatch' : ''}" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}">
-                            <i class="fas fa-clipboard-list"></i>
-                        </button>
-                        <button onclick="event.stopPropagation(); togglePlanner('${item.id}', '${activeTab}')" class="btn-planner ${item.onPlanner ? 'active-planner' : ''}" title="${item.onPlanner ? 'Remover do Planner da Presidência' : 'Sinalizar no Planner da Presidência'}">
-                            <i class="fas fa-tasks"></i>
-                        </button>
-                    </div>
                     </div>
                     
-                    <div class="flex items-center justify-between pt-1 border-t border-slate-50 mt-1">
-                        <div class="flex items-center gap-4 text-xs text-slate-400 font-bold uppercase">
-                            <span><i class="far fa-calendar mr-1"></i> ${item.prazo ? new Date(item.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'}</span>
+                    <div class="card-footer-meta">
+                        <div class="flex items-center gap-3 text-xs text-slate-400 font-bold uppercase">
+                            <span class="card-date-chip"><i class="far fa-calendar"></i> ${item.prazo ? new Date(item.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'}</span>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <button onclick="editItem('${item.id}')" class="text-slate-300 hover:text-blue-600 transition-colors text-sm"><i class="fas fa-edit"></i></button>
-                            <i class="fas fa-chevron-down text-slate-300 chevron-icon transition-transform text-sm cursor-pointer" onclick="this.closest('.accordion-row').classList.toggle('active')"></i>
+                        <div class="flex items-center gap-2">
+                            <button onclick="editItem('${item.id}')" class="text-slate-300 hover:text-blue-600 transition-colors text-sm w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-blue-50"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="card-toggle-btn" onclick="this.closest('.accordion-row').classList.toggle('active')">
+                                <i class="fas fa-chevron-down chevron-icon transition-transform text-sm"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -4253,19 +4539,18 @@ Object.keys(cols).forEach(key => {
                 <div class="accordion-content px-5 bg-slate-50/50">
                     <div class="py-5 space-y-5">
                         <div class="space-y-5">
-                            <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><p class="text-sm text-slate-700 leading-relaxed font-medium preserve-lines preserve-lines preserve-lines">${item.desc || 'Sem descrição.'}</p></div>
-                            ${activeTab === 'projects' && (item.nextAction || item.nextActionOwner || item.nextActionDeadline) ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-forward-step mr-1"></i> Próxima ação</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${item.nextAction || 'Não informada.'}</p><div class="flex flex-wrap gap-2 mt-3 text-[11px] font-black uppercase text-slate-500">${item.nextActionOwner ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Responsável: ${item.nextActionOwner}</span>` : ''}${item.nextActionDeadline ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Prazo: ${formatDateBR(item.nextActionDeadline)}</span>` : ''}</div></div>` : ''}
+                            <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><p class="text-sm text-slate-700 leading-relaxed font-medium preserve-lines">${item.desc || 'Sem descrição.'}</p></div>
+                            ${activeTab === 'projects' && (item.nextAction || item.nextActionOwner || item.nextActionDeadline) ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-forward-step mr-1"></i> Próxima ação</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${escapeHtml(nextActionResumoText) || 'Não informada.'}</p><div class="flex flex-wrap gap-2 mt-3 text-[11px] font-black uppercase text-slate-500">${item.nextActionOwner ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Responsável: ${item.nextActionOwner}</span>` : ''}${item.nextActionDeadline ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Prazo: ${formatDateBR(item.nextActionDeadline)}</span>` : ''}</div></div>` : ''}
                             ${activeTab === 'projects' && (item.decisionNeeded === 'Sim' || item.decisionDesc) ? `<div class="bg-amber-50 p-4 rounded-xl border border-amber-200"><p class="text-xs font-semibold text-slate-500 text-amber-700 uppercase mb-2"><i class="fas fa-gavel mr-1"></i> Decisão necessária ${item.decisionLevel ? `— ${item.decisionLevel}` : ''}</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${item.decisionDesc || 'Decisão indicada, mas sem descrição.'}</p></div>` : ''}
-                            ${(activeTab === 'projects' || activeTab === 'contracts') && item.encaminhamentos ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${item.encaminhamentos}</p></div>` : ''}
-                            ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><p class="text-sm text-red-700 leading-relaxed font-bold preserve-lines preserve-lines">${item.risks}</p></div>` : ''}
-                            ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><p class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 preserve-lines preserve-lines">${item.obs}</p></div>` : ''}
+                            ${shouldShowEncaminhamentosResumo ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${escapeHtml(encaminhamentosResumoText)}</p></div>` : ''}
+                            ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><p class="text-sm text-red-700 leading-relaxed font-bold preserve-lines">${item.risks}</p></div>` : ''}
+                            ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><p class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 preserve-lines">${item.obs}</p></div>` : ''}
                             ${getDocLinksArray(item).length ? `<div class="pt-2">
                                 <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2"><i class="fas fa-paperclip mr-1"></i> Documentos</p>
                                 <div class="space-y-2">
                                     ${getDocLinksArray(item).map(link => renderDocLinkCard(link)).join('')}
                                 </div>
                             </div>` : ''}
-                            ${rasciHtml}
                             ${roadmapHtml}
                         </div>
                         
@@ -4453,9 +4738,7 @@ window.setListFilter = f => { if(f === 'Concluído' && typeof window.openComplet
             updateAuthIndicator(user);
             if (window.__dsvListenersStarted) return;
             window.__dsvListenersStarted = true;
- initListeners(); setTimeout(() => window.switchTab('projects'), 500); setupTagInput('rasciInputR', 'rasciContainerR', 'tag-blue'); setupTagInput('rasciInputA', 'rasciContainerA', 'tag-red'); setupTagInput('rasciInputS', 'rasciContainerS', 'tag-orange'); setupTagInput('rasciInputC', 'rasciContainerC', 'tag-purple'); setupTagInput('rasciInputI', 'rasciContainerI', 'tag-green');
-
-                    // Indicadores: listeners de busca/filtro
+ initListeners(); setTimeout(() => window.switchTab('projects'), 500); // Indicadores: listeners de busca/filtro
                     const s = document.getElementById('indicatorSearch');
                     const c = document.getElementById('indicatorClearSearch');
                     const tf = document.getElementById('indicatorTypeFilter');
