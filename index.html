@@ -332,6 +332,14 @@
 /* Fix: preservar quebras de linha em textos de textarea */
 .preserve-lines { white-space: pre-line; }
 
+/* Cards executivos – Projetos */
+.exec-summary-grid { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 0.75rem; }
+@media (min-width: 768px) { .exec-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.summary-box { border-radius: 0.9rem; padding: 0.75rem; border: 1px solid #e2e8f0; background: #f8fafc; }
+.summary-box-title { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .25rem; }
+.unit-badge { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; border-radius: .45rem; padding: .2rem .45rem; border: 1px solid; display: inline-flex; align-items: center; gap: .25rem; }
+
+
 
 
 /* ===============================
@@ -1085,12 +1093,81 @@
                                     
                                     <!-- CAMPO SERVIÇO ATUALIZADO PARA MULTI-SELECT (TAGS) -->
                                     <div id="serviceField" class="flex flex-col hidden-field">
-                                        <label class="field-label">Serviços Envolvidos</label>
+                                        <label id="serviceFieldLabel" class="field-label">Divisões/Serviços responsáveis</label>
                                         <div id="serviceTagsContainer" class="tag-container bg-white mb-2 min-h-[44px] flex-wrap gap-2"></div>
                                         <select id="projServiceAdder" class="input-style" onchange="addServiceTag(this.value); this.value='';">
-                                            <option value="">+ Adicionar Serviço...</option>
-                                            <option value="SCCE">SCCE</option><option value="SDCG">SDCG</option><option value="SFP">SFP</option><option value="SIEDU">SIEDU</option><option value="SOPED">SOPED</option><option value="SETEF">SETEF</option><option value="SDMP">SDMP</option><option value="SDAP">SDAP</option><option value="SAST">SAST</option><option value="RENAEST">RENAEST</option><option value="SESV">SESV</option><option value="SMO">SMO</option><option value="SEP">SEP</option><option value="STSV">STSV</option><option value="SISV">SISV</option><option value="SIM">SIM</option><option value="SGR">SGR</option><option value="SAT">SAT</option><option value="SENT">SENT</option><option value="SFI">SFI</option>
+                                            <option value="">+ Adicionar Divisão/Serviço...</option>
+                                            <optgroup label="Divisões – Portaria nº 44/2025">
+                                                <option value="Divisão de Estatísticas de Trânsito">Divisão de Estatísticas de Trânsito</option>
+                                                <option value="Divisão de Redução de Mortes e Lesões no Trânsito">Divisão de Redução de Mortes e Lesões no Trânsito</option>
+                                                <option value="Divisão de Estudos para Segurança no Trânsito">Divisão de Estudos para Segurança no Trânsito</option>
+                                                <option value="Divisão de Integração para Segurança no Trânsito">Divisão de Integração para Segurança no Trânsito</option>
+                                                <option value="Divisão do Plano Estadual de Segurança Viária">Divisão do Plano Estadual de Segurança Viária</option>
+                                                <option value="Divisão de Engenharia de Trânsito">Divisão de Engenharia de Trânsito</option>
+                                            </optgroup>
+                                            <optgroup label="Serviços – Portaria nº 44/2025">
+                                                <option value="Serviço de Desenvolvimento de Competências Específicas">Serviço de Desenvolvimento de Competências Específicas</option>
+                                                <option value="Serviço de Desenvolvimento de Competências Gerais">Serviço de Desenvolvimento de Competências Gerais</option>
+                                                <option value="Serviço de Formação Profissional">Serviço de Formação Profissional</option>
+                                                <option value="Serviço de Integração da Educação">Serviço de Integração da Educação</option>
+                                                <option value="Serviço de Operações de Educação">Serviço de Operações de Educação</option>
+                                                <option value="Serviço de Promoção de Educação no Ensino Fundamental">Serviço de Promoção de Educação no Ensino Fundamental</option>
+                                                <option value="Serviço de Desenvolvimento de Motoristas Profissionais">Serviço de Desenvolvimento de Motoristas Profissionais</option>
+                                                <option value="Serviço de Desenvolvimento de Agentes Públicos">Serviço de Desenvolvimento de Agentes Públicos</option>
+                                                <option value="Serviço de Análise de Sinistro de Trânsito">Serviço de Análise de Sinistro de Trânsito</option>
+                                                <option value="Serviço de Integração da Informação">Serviço de Integração da Informação</option>
+                                                <option value="Serviço de Estratégia de Segurança Viária">Serviço de Estratégia de Segurança Viária</option>
+                                                <option value="Serviço de Monitoramento">Serviço de Monitoramento</option>
+                                                <option value="Serviço de Estudos e Pesquisas">Serviço de Estudos e Pesquisas</option>
+                                                <option value="Serviço de Tecnologia em Segurança Viária">Serviço de Tecnologia em Segurança Viária</option>
+                                                <option value="Serviço de Integração para Segurança Viária">Serviço de Integração para Segurança Viária</option>
+                                                <option value="Serviço de Integração com os Municípios">Serviço de Integração com os Municípios</option>
+                                                <option value="Serviço de Gestão de Recursos">Serviço de Gestão de Recursos</option>
+                                                <option value="Serviço de Análise Técnica">Serviço de Análise Técnica</option>
+                                                <option value="Serviço de Engenharia de Trânsito">Serviço de Engenharia de Trânsito</option>
+                                                <option value="Serviço de Fiscalização de Intervenções">Serviço de Fiscalização de Intervenções</option>
+                                            </optgroup>
                                         </select>
+                                    </div>
+
+                                    <div id="projectActionDecisionField" class="hidden-field space-y-5 pt-3 border-t border-slate-100">
+                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                            <div class="sm:col-span-3 flex flex-col">
+                                                <label class="field-label text-blue-700"><i class="fas fa-forward-step mr-1"></i> Próxima ação</label>
+                                                <textarea id="projNextAction" rows="3" class="input-style resize-none preserve-lines" placeholder="Ex: Validar minuta com CGSV; consolidar retorno dos municípios; submeter à Diretoria..."></textarea>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <label class="field-label">Responsável pela próxima ação</label>
+                                                <input type="text" id="projNextActionOwner" class="input-style" placeholder="Nome ou área">
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <label class="field-label">Prazo da próxima ação</label>
+                                                <input type="date" id="projNextActionDeadline" class="input-style">
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <label class="field-label">Decisão necessária?</label>
+                                                <select id="projDecisionNeeded" class="input-style" onchange="toggleDecisionFields()">
+                                                    <option value="Não">Não</option>
+                                                    <option value="Sim">Sim</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div id="decisionDetailField" class="hidden-field grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                            <div class="flex flex-col">
+                                                <label class="field-label text-amber-700">Nível da decisão</label>
+                                                <select id="projDecisionLevel" class="input-style border-amber-200 focus:ring-amber-200">
+                                                    <option value="Diretoria DSV">Diretoria DSV</option>
+                                                    <option value="Presidência">Presidência</option>
+                                                    <option value="Coordenação Geral">Coordenação Geral</option>
+                                                    <option value="Área técnica">Área técnica</option>
+                                                    <option value="Parceiro externo">Parceiro externo</option>
+                                                </select>
+                                            </div>
+                                            <div class="sm:col-span-2 flex flex-col">
+                                                <label class="field-label text-amber-700">Qual decisão precisa ser tomada?</label>
+                                                <textarea id="projDecisionDesc" rows="3" class="input-style resize-none preserve-lines border-amber-200 bg-amber-50/40 focus:ring-amber-200" placeholder="Descreva a decisão pendente e o impacto para o andamento do projeto..."></textarea>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="flex flex-col">
@@ -1320,7 +1397,7 @@
     <div id="appShell" class="flex flex-col md:flex-row h-dvh md:h-screen overflow-hidden">
         
         <!-- Sidebar -->
-        <aside class="w-full md:w-64 bg-slate-900 text-white flex flex-col shadow-xl shrink-0 z-30 h-auto md:h-full">
+        <aside class="w-full md:w-64 text-white flex flex-col shadow-xl shrink-0 z-30 h-auto md:h-full" style="background-color:#004077;">
             <div class="p-3 md:p-5 border-b border-slate-800 flex justify-between md:block items-center">
                 <div>
                     <h1 class="text-lg md:text-2xl font-bold tracking-tight uppercase">DSV <span class="text-blue-400">2026</span></h1>
@@ -1332,7 +1409,7 @@
                 </div>
             </div>
             
-            <nav class="flex-1 flex md:flex-col flex-row overflow-x-auto md:overflow-y-auto px-2 py-2 md:px-3 md:mt-3 space-x-2 md:space-x-0 md:space-y-3 bg-slate-900 scrollbar-hide shrink-0 items-center md:items-stretch">
+            <nav class="flex-1 flex md:flex-col flex-row overflow-x-auto md:overflow-y-auto px-2 py-2 md:px-3 md:mt-3 space-x-2 md:space-x-0 md:space-y-3 scrollbar-hide shrink-0 items-center md:items-stretch" style="background-color:#004077;">
                 <div class="flex-none min-w-[140px] md:w-full">
                     <p class="text-[11px] font-normal text-slate-500 uppercase tracking-widest mb-2 px-2 hidden md:block">Visualização</p>
                     <div class="flex md:block space-x-2 md:space-x-0 md:space-y-1">
@@ -1375,6 +1452,9 @@
                             <button id="coord-COST" onclick="setFilter('COST')" class="coord-btn bg-slate-800 p-2 rounded-lg text-xs font-bold text-white hover:bg-slate-700 min-w-[50px]">COST</button>
                             <button id="coord-CIST" onclick="setFilter('CIST')" class="coord-btn bg-slate-800 p-2 rounded-lg text-xs font-bold text-white hover:bg-slate-700 min-w-[50px]">CIST</button>
                             <button id="coord-all" onclick="setFilter('all')" class="coord-btn md:col-span-2 bg-slate-700 p-2 rounded-lg text-xs font-bold text-white text-center uppercase whitespace-nowrap hover:bg-slate-600">Limpar</button>
+                            <div class="md:col-span-2 mt-3 pt-4 border-t border-slate-800 flex justify-center">
+                                <img src="data:image/png;base64,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" alt="DETRAN-SP" class="max-w-[150px] md:max-w-[170px] w-full h-auto object-contain opacity-90 hover:opacity-100 transition-opacity" loading="lazy">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1522,9 +1602,39 @@
 </div>
 <div id="operationalFilters" class="px-4 md:px-6 pt-5 flex flex-col sm:flex-row gap-4 hidden">
                     <div class="flex-1">
-                        <label class="text-xs font-semibold text-slate-500 text-slate-400 uppercase ml-2 mb-1 block">Filtrar por Serviço</label>
+                        <label class="text-xs font-semibold text-slate-500 text-slate-400 uppercase ml-2 mb-1 block">Filtrar por Divisão/Serviço</label>
                         <select id="filterService" onchange="renderData()" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none font-medium">
-                            <option value="all">Todos os Serviços</option><option value="SCCE">SCCE</option><option value="SDCG">SDCG</option><option value="SFP">SFP</option><option value="SIEDU">SIEDU</option><option value="SOPED">SOPED</option><option value="SETEF">SETEF</option><option value="SDMP">SDMP</option><option value="SDAP">SDAP</option><option value="SAST">SAST</option><option value="RENAEST">RENAEST</option><option value="SESV">SESV</option><option value="SMO">SMO</option><option value="SEP">SEP</option><option value="STSV">STSV</option><option value="SISV">SISV</option><option value="SIM">SIM</option><option value="SGR">SGR</option><option value="SAT">SAT</option><option value="SENT">SENT</option><option value="SFI">SFI</option>
+                            <option value="all">Todas as Divisões/Serviços</option>
+                            <optgroup label="Divisões – Portaria nº 44/2025">
+                                <option value="Divisão de Estatísticas de Trânsito">Divisão de Estatísticas de Trânsito</option>
+                                <option value="Divisão de Redução de Mortes e Lesões no Trânsito">Divisão de Redução de Mortes e Lesões no Trânsito</option>
+                                <option value="Divisão de Estudos para Segurança no Trânsito">Divisão de Estudos para Segurança no Trânsito</option>
+                                <option value="Divisão de Integração para Segurança no Trânsito">Divisão de Integração para Segurança no Trânsito</option>
+                                <option value="Divisão do Plano Estadual de Segurança Viária">Divisão do Plano Estadual de Segurança Viária</option>
+                                <option value="Divisão de Engenharia de Trânsito">Divisão de Engenharia de Trânsito</option>
+                            </optgroup>
+                            <optgroup label="Serviços – Portaria nº 44/2025">
+                                <option value="Serviço de Desenvolvimento de Competências Específicas">Serviço de Desenvolvimento de Competências Específicas</option>
+                                <option value="Serviço de Desenvolvimento de Competências Gerais">Serviço de Desenvolvimento de Competências Gerais</option>
+                                <option value="Serviço de Formação Profissional">Serviço de Formação Profissional</option>
+                                <option value="Serviço de Integração da Educação">Serviço de Integração da Educação</option>
+                                <option value="Serviço de Operações de Educação">Serviço de Operações de Educação</option>
+                                <option value="Serviço de Promoção de Educação no Ensino Fundamental">Serviço de Promoção de Educação no Ensino Fundamental</option>
+                                <option value="Serviço de Desenvolvimento de Motoristas Profissionais">Serviço de Desenvolvimento de Motoristas Profissionais</option>
+                                <option value="Serviço de Desenvolvimento de Agentes Públicos">Serviço de Desenvolvimento de Agentes Públicos</option>
+                                <option value="Serviço de Análise de Sinistro de Trânsito">Serviço de Análise de Sinistro de Trânsito</option>
+                                <option value="Serviço de Integração da Informação">Serviço de Integração da Informação</option>
+                                <option value="Serviço de Estratégia de Segurança Viária">Serviço de Estratégia de Segurança Viária</option>
+                                <option value="Serviço de Monitoramento">Serviço de Monitoramento</option>
+                                <option value="Serviço de Estudos e Pesquisas">Serviço de Estudos e Pesquisas</option>
+                                <option value="Serviço de Tecnologia em Segurança Viária">Serviço de Tecnologia em Segurança Viária</option>
+                                <option value="Serviço de Integração para Segurança Viária">Serviço de Integração para Segurança Viária</option>
+                                <option value="Serviço de Integração com os Municípios">Serviço de Integração com os Municípios</option>
+                                <option value="Serviço de Gestão de Recursos">Serviço de Gestão de Recursos</option>
+                                <option value="Serviço de Análise Técnica">Serviço de Análise Técnica</option>
+                                <option value="Serviço de Engenharia de Trânsito">Serviço de Engenharia de Trânsito</option>
+                                <option value="Serviço de Fiscalização de Intervenções">Serviço de Fiscalização de Intervenções</option>
+                                            </optgroup>
                         </select>
                     </div>
                 </div>
@@ -2223,6 +2333,7 @@
             const serviceField = document.getElementById('serviceField');
             const durationField = document.getElementById('operationalDurationField');
             const complexityField = document.getElementById('complexityField');
+            const projectActionDecisionField = document.getElementById('projectActionDecisionField');
             
                         const programField = document.getElementById('contractProgramField');
             const componentField = document.getElementById('contractComponentField');
@@ -2232,12 +2343,17 @@ typeField.classList.add('hidden-field');
             serviceField.classList.add('hidden-field');
             durationField.classList.add('hidden-field'); 
             complexityField.classList.add('hidden-field');
+            if (projectActionDecisionField) projectActionDecisionField.classList.add('hidden-field');
             
                         programField.classList.add('hidden-field');
             componentField.classList.add('hidden-field');
 document.getElementById('projRisks').value = '';
             const encaminhamentosField = document.getElementById('encaminhamentosField');
             if (document.getElementById('projEncaminhamentos')) document.getElementById('projEncaminhamentos').value = '';
+            ['projNextAction','projNextActionOwner','projNextActionDeadline','projDecisionDesc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            const decisionNeededEl = document.getElementById('projDecisionNeeded'); if (decisionNeededEl) decisionNeededEl.value = 'Não';
+            const decisionLevelEl = document.getElementById('projDecisionLevel'); if (decisionLevelEl) decisionLevelEl.value = 'Diretoria DSV';
+            if (typeof window.toggleDecisionFields === 'function') window.toggleDecisionFields();
             if (encaminhamentosField) encaminhamentosField.classList.toggle('hidden-field', activeTab === 'operational');
             document.getElementById('riskField').classList.add('hidden-field');
             
@@ -2255,7 +2371,10 @@ document.getElementById('projRisks').value = '';
 
             if (activeTab === 'projects') {
                 document.getElementById('modalTitle').innerText = 'Novo Projeto Estratégico';
-                complexityField.classList.remove('hidden-field'); 
+                complexityField.classList.remove('hidden-field');
+                serviceField.classList.remove('hidden-field');
+                if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
+                if (projectActionDecisionField) projectActionDecisionField.classList.remove('hidden-field'); 
             } else if (activeTab === 'contracts') {
                 document.getElementById('modalTitle').innerText = 'Novo Contrato / Convênio';
                 typeField.classList.remove('hidden-field');
@@ -2269,6 +2388,7 @@ document.getElementById('projRisks').value = '';
                 document.getElementById('modalTitle').innerText = 'Nova Atividade Operacional';
                 relField.classList.remove('hidden-field');
                 serviceField.classList.remove('hidden-field');
+                if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Serviços Envolvidos';
                 durationField.classList.remove('hidden-field'); 
             }
 
@@ -2331,6 +2451,7 @@ document.getElementById('projRisks').value = '';
 
         window.toggleOriginInput = () => { const originType = document.querySelector('input[name="originType"]:checked').value; const wrapper = document.getElementById('projectSelectWrapper'); const select = document.getElementById('projRelation'); const label = wrapper.querySelector('label'); if (originType === 'pontual') { wrapper.classList.add('hidden-field'); select.innerHTML = ''; } else { wrapper.classList.remove('hidden-field'); if (originType === 'projeto') { label.innerText = "Vincular a qual Projeto?"; select.innerHTML = '<option value="">Selecione o Projeto...</option>' + dataStore.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join(''); } else if (originType === 'contrato') { label.innerText = "Vincular a qual Contrato?"; select.innerHTML = '<option value="">Selecione o Contrato...</option>' + dataStore.contracts.map(c => `<option value="${c.id}">${c.name}</option>`).join(''); } } };
         window.toggleRiskInput = () => { const status = document.getElementById('projStatus').value; const riskField = document.getElementById('riskField'); const show = ["Em Execução (com risco)"].includes(status); riskField.classList.toggle('hidden-field', !show); };
+        window.toggleDecisionFields = () => { const needed = document.getElementById('projDecisionNeeded')?.value === 'Sim'; const detail = document.getElementById('decisionDetailField'); if (detail) detail.classList.toggle('hidden-field', !needed); };
 
         // ... (Funções de Tag e RASCI - mantidas) ...
         const getTagsFromContainer = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); };
@@ -2508,7 +2629,7 @@ document.getElementById('projRisks').value = '';
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const existingForAudit = (dataStore[activeTab] || []).find(i => i.id === id) || null;
             const data = {
-                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap,
+                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', nextAction: document.getElementById('projNextAction') ? document.getElementById('projNextAction').value : '', nextActionOwner: document.getElementById('projNextActionOwner') ? document.getElementById('projNextActionOwner').value : '', nextActionDeadline: document.getElementById('projNextActionDeadline') ? document.getElementById('projNextActionDeadline').value : '', decisionNeeded: document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não', decisionLevel: document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '', decisionDesc: document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value : '', services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap,
                 rasci: { r: getTagsFromContainer('rasciContainerR'), a: getTagsFromContainer('rasciContainerA'), s: getTagsFromContainer('rasciContainerS'), c: getTagsFromContainer('rasciContainerC'), i: getTagsFromContainer('rasciContainerI') }, ...buildAuditFields(existingForAudit)
             };
             if (activeTab === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (activeTab === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
@@ -2851,6 +2972,12 @@ window.togglePlanner = async (id, collectionName) => {
             } else {
                  document.getElementById('modalTitle').innerText = 'Editar Projeto Estratégico';
                  document.getElementById('complexityField').classList.remove('hidden-field');
+                 document.getElementById('serviceField').classList.remove('hidden-field');
+                 if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
+                 const projectActionDecisionFieldEdit = document.getElementById('projectActionDecisionField');
+                 if (projectActionDecisionFieldEdit) projectActionDecisionFieldEdit.classList.remove('hidden-field');
+                 const projectServices = item.services || (item.service ? [item.service] : []);
+                 projectServices.forEach(s => window.addServiceTag(s));
             }
 
             document.getElementById('editId').value = item.id;
@@ -2881,6 +3008,13 @@ window.togglePlanner = async (id, collectionName) => {
             links.forEach(l => window.addDocLinkRow(l));
             document.getElementById('projRisks').value = item.risks || ''; 
             if (document.getElementById('projEncaminhamentos')) document.getElementById('projEncaminhamentos').value = item.encaminhamentos || '';
+            if (document.getElementById('projNextAction')) document.getElementById('projNextAction').value = item.nextAction || '';
+            if (document.getElementById('projNextActionOwner')) document.getElementById('projNextActionOwner').value = item.nextActionOwner || '';
+            if (document.getElementById('projNextActionDeadline')) document.getElementById('projNextActionDeadline').value = item.nextActionDeadline || '';
+            if (document.getElementById('projDecisionNeeded')) document.getElementById('projDecisionNeeded').value = item.decisionNeeded || (item.decisionDesc ? 'Sim' : 'Não');
+            if (document.getElementById('projDecisionLevel')) document.getElementById('projDecisionLevel').value = item.decisionLevel || 'Diretoria DSV';
+            if (document.getElementById('projDecisionDesc')) document.getElementById('projDecisionDesc').value = item.decisionDesc || '';
+            if (typeof window.toggleDecisionFields === 'function') window.toggleDecisionFields();
             const encaminhamentosFieldEdit = document.getElementById('encaminhamentosField');
             if (encaminhamentosFieldEdit) encaminhamentosFieldEdit.classList.toggle('hidden-field', t === 'operational');
             document.getElementById('projDuration').value = item.duration || ''; 
@@ -2897,14 +3031,14 @@ window.togglePlanner = async (id, collectionName) => {
 
             window.toggleRiskInput(); 
             if (item.roadmap) { item.roadmap.forEach(r => window.addRoadmapRow(r.data, r.etapa)); }
-            if (t === 'contracts') { document.getElementById('projType').value = item.type || 'Contrato'; document.getElementById('projHasResource').value = item.hasResource || 'Não'; document.getElementById('projResourceValue').value = item.resourceValue || ''; document.getElementById('contractProgram').value = item.program || ''; document.getElementById('contractComponent').value = item.programComponent || ''; window.toggleResourceInput(); window.toggleContractProgramFields(); } else if (t === 'operational') { document.getElementById('projService').value = item.service || 'SCCE'; }
+            if (t === 'contracts') { document.getElementById('projType').value = item.type || 'Contrato'; document.getElementById('projHasResource').value = item.hasResource || 'Não'; document.getElementById('projResourceValue').value = item.resourceValue || ''; document.getElementById('contractProgram').value = item.program || ''; document.getElementById('contractComponent').value = item.programComponent || ''; window.toggleResourceInput(); window.toggleContractProgramFields(); } else if (t === 'operational') { /* serviços já foram populados como tags acima */ }
         };
 
         // ... (Render Portaria, Switch Tab, Render Gantt, Backlog Items functions... mantidas) ...
         window.setPortariaFilter = (type) => { currentPortariaFilter = type; document.querySelectorAll('.portaria-filter-btn').forEach(btn => btn.classList.remove('active')); const activeBtn = document.getElementById('pf-' + type); if(activeBtn) activeBtn.classList.add('active'); window.renderPortaria(); };
         window.renderPortaria = () => { const container = document.getElementById('portariaList'); const search = document.getElementById('searchInput').value.toLowerCase(); container.innerHTML = ''; let filtered = PORTARIA_DATA.filter(item => item.title.toLowerCase().includes(search) || item.items.some(sub => sub.toLowerCase().includes(search)) || item.art.toLowerCase().includes(search)); if (currentPortariaFilter !== 'all') filtered = filtered.filter(item => item.type === currentPortariaFilter); if(filtered.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center mt-10">Nenhum item encontrado.</p>'; return; } filtered.forEach(item => { let bc = '', tc = ''; if(item.type === 'Diretoria') { bc = 'badge-diretoria'; tc = 'type-diretoria'; } else if(item.type === 'Coordenadoria') { bc = 'badge-coordenadoria'; tc = 'type-coordenadoria'; } else if(item.type === 'Divisão') { bc = 'badge-divisao'; tc = 'type-divisao'; } else { bc = 'badge-servico'; tc = 'type-servico'; } const itemsHtml = item.items.map((sub, idx) => `<li class="flex items-start gap-3 relative pl-2 group/item"><span class="text-[10px] font-bold text-slate-400 mt-0.5 w-5 shrink-0 text-right">${['I','II','III','IV','V','VI','VII','VIII','IX','X'][idx] || '-'}</span><span class="text-sm text-slate-700 leading-snug border-l border-slate-200 pl-3">${sub}</span></li>`).join(''); container.innerHTML += `<div class="portaria-card ${tc}"><div class="flex items-start justify-between mb-4"><div><span class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest block mb-1">${item.art}</span><h4 class="font-bold text-slate-800 text-lg leading-tight mb-2">${item.title}</h4><p class="text-xs text-slate-500 italic border-l-2 border-slate-200 pl-2 leading-relaxed max-w-2xl">${item.preamble}</p></div><span class="portaria-badge ${bc} ml-2 shrink-0">${item.type}</span></div><ul class="space-y-3 pt-2">${itemsHtml}</ul></div>`; }); };
         window.switchTab = (tab) => { activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
-            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'operational') { addBtn.classList.add('btn-theme-operational'); addBtnText.innerText = 'Adicionar Atividade'; app.classList.add('operational-theme'); document.getElementById('viewTitle').innerText = 'Atividades Operacionais'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(false, true); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = tab === 'operational' ? 'flex' : 'none'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
+            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'operational') { addBtn.classList.add('btn-theme-operational'); addBtnText.innerText = 'Adicionar Atividade'; app.classList.add('operational-theme'); document.getElementById('viewTitle').innerText = 'Atividades Operacionais'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(false, true); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = (tab === 'operational' || tab === 'projects') ? 'flex' : 'none'; const filterServiceLabel = document.querySelector('#operationalFilters label'); if (filterServiceLabel) filterServiceLabel.innerText = tab === 'projects' ? 'Filtrar por Divisão/Serviço responsável' : 'Filtrar por Serviço'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
             if (coordWrapper) {
               const showCoord = ['projects','contracts','operational','gantt'].includes(tab);
               // Use inline display to avoid any Tailwind utility precedence issues (e.g., flex vs hidden)
@@ -3594,9 +3728,9 @@ window.openAddBacklogItemModal = (meetingId) => {
             let filtered = dataStore[activeTab] || [];
             if (activeTab === 'projects') { filtered = filtered.filter(i => !i.type || i.type === 'Projeto'); }
             
-            if(search) filtered = filtered.filter(i => i.name && i.name.toLowerCase().includes(search));
+            if(search) filtered = filtered.filter(i => { const hay = [i.name, i.desc, i.encaminhamentos, i.nextAction, i.nextActionOwner, i.decisionDesc, i.decisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
             if(currentFilter !== 'all') filtered = filtered.filter(i => i.coord === currentFilter);
-            if(activeTab === 'operational') { const serviceFilter = document.getElementById('filterService').value; if(serviceFilter !== 'all') { filtered = filtered.filter(i => { const s = i.services || (i.service ? [i.service] : []); return s.includes(serviceFilter); }); } }
+            if(activeTab === 'operational' || activeTab === 'projects') { const serviceFilter = document.getElementById('filterService').value; if(serviceFilter !== 'all') { filtered = filtered.filter(i => { const s = i.services || (i.service ? [i.service] : []); return s.includes(serviceFilter); }); } }
             if(currentPriorityFilter !== 'all') filtered = filtered.filter(i => i.priority === currentPriorityFilter);
 
             updateCoordProgressSection(dataStore.projects || []);
@@ -3846,6 +3980,35 @@ Object.keys(cols).forEach(key => {
                 }
             }
 
+            const formatDateBR = (value) => value ? new Date(value + "T00:00:00").toLocaleDateString('pt-BR') : '';
+
+            let nextActionResumoHtml = '';
+            if (activeTab === 'projects' && (item.nextAction || item.nextActionOwner || item.nextActionDeadline)) {
+                nextActionResumoHtml = `
+                    <div class="summary-box border-blue-100 bg-blue-50/70">
+                        <p class="summary-box-title text-blue-700"><i class="fas fa-forward-step mr-1"></i> Próxima ação</p>
+                        ${item.nextAction ? `<p class="text-xs font-bold text-slate-800 leading-snug preserve-lines clamp-2">${item.nextAction}</p>` : `<p class="text-xs italic text-slate-400">Não informada.</p>`}
+                        <div class="flex flex-wrap gap-2 mt-2 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                            ${item.nextActionOwner ? `<span class="bg-white/80 border border-blue-100 px-2 py-1 rounded-lg"><i class="fas fa-user mr-1 text-blue-400"></i>${item.nextActionOwner}</span>` : ''}
+                            ${item.nextActionDeadline ? `<span class="bg-white/80 border border-blue-100 px-2 py-1 rounded-lg"><i class="far fa-calendar mr-1 text-blue-400"></i>${formatDateBR(item.nextActionDeadline)}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            let decisionResumoHtml = '';
+            if (activeTab === 'projects' && (item.decisionNeeded === 'Sim' || item.decisionDesc)) {
+                decisionResumoHtml = `
+                    <div class="summary-box border-amber-200 bg-amber-50/80">
+                        <p class="summary-box-title text-amber-700"><i class="fas fa-gavel mr-1"></i> Decisão necessária</p>
+                        <div class="flex flex-wrap gap-1 mb-1">
+                            <span class="text-[10px] font-black uppercase bg-white border border-amber-200 text-amber-700 px-2 py-0.5 rounded-lg">${item.decisionLevel || 'Nível não informado'}</span>
+                        </div>
+                        ${item.decisionDesc ? `<p class="text-xs font-bold text-slate-800 leading-snug preserve-lines clamp-2">${item.decisionDesc}</p>` : `<p class="text-xs italic text-slate-400">Decisão indicada, mas sem descrição.</p>`}
+                    </div>
+                `;
+            }
+
             let encaminhamentosResumoHtml = '';
             if ((activeTab === 'projects' || activeTab === 'contracts') && item.encaminhamentos && String(item.encaminhamentos).trim()) {
                 encaminhamentosResumoHtml = `
@@ -3862,9 +4025,12 @@ Object.keys(cols).forEach(key => {
             }
 
             let servicesBadgeHtml = '';
-            if (activeTab === 'operational') {
-                const sList = item.services || (item.service ? [item.service] : ['N/A']);
-                servicesBadgeHtml = `<div class="flex flex-wrap gap-1 mt-1 mb-1">` + sList.map(s => `<p class="text-[9px] text-orange-600 bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded font-black uppercase tracking-wide">${s}</p>`).join('') + `</div>`;
+            if (activeTab === 'operational' || activeTab === 'projects') {
+                const sList = item.services || (item.service ? [item.service] : []);
+                if (sList.length) {
+                    const color = activeTab === 'projects' ? 'text-indigo-700 bg-indigo-50 border-indigo-100' : 'text-orange-600 bg-orange-50 border-orange-100';
+                    servicesBadgeHtml = `<div class="flex flex-wrap gap-1 mt-2 mb-1">` + sList.map(s => `<span class="unit-badge ${color}"><i class="fas fa-sitemap text-[8px]"></i>${s}</span>`).join('') + `</div>`;
+                }
             } else if (item.service) {
                 servicesBadgeHtml = `<p class="text-[9px] text-slate-400 font-bold uppercase truncate">${item.service}</p>`;
             }
@@ -3877,13 +4043,16 @@ Object.keys(cols).forEach(key => {
                             <div class="flex items-start gap-4 min-w-0 flex-1">
                                 <div class="w-1.5 h-10 rounded-full ${window.getStatusColorBg(item.status)}"></div>
                                 <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-1 mb-1">
+                                <div class="flex flex-wrap items-center gap-1 mb-1">
                                     <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-black uppercase tracking-wider">${item.coord || 'N/A'}</span>
-                                    ${complexityTag}${respectBadge}
+                                    <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black ${window.getStatusColor(item.status)}">${item.status || 'Sem status'}</span>
+                                    ${item.priority === 'Urgente' ? '<span class="text-[10px] uppercase px-2 py-0.5 rounded-lg bg-red-100 text-red-600 border border-red-200 font-black">Urgente</span>' : ''}
+                                    ${respectBadge}
                                 </div>
                                 <h4 class="font-bold text-slate-900 text-base leading-tight clamp-2 title-fixed">${item.name}</h4>
-                                ${encaminhamentosResumoHtml}
                                 ${servicesBadgeHtml}
+                                ${(nextActionResumoHtml || decisionResumoHtml) ? `<div class="exec-summary-grid mt-3">${nextActionResumoHtml}${decisionResumoHtml}</div>` : ''}
+                                ${encaminhamentosResumoHtml}
                             </div>
                         </div>
                         </div>
@@ -3912,6 +4081,8 @@ Object.keys(cols).forEach(key => {
                     <div class="py-5 space-y-5">
                         <div class="space-y-5">
                             <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><p class="text-sm text-slate-700 leading-relaxed font-medium preserve-lines preserve-lines preserve-lines">${item.desc || 'Sem descrição.'}</p></div>
+                            ${activeTab === 'projects' && (item.nextAction || item.nextActionOwner || item.nextActionDeadline) ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-forward-step mr-1"></i> Próxima ação</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${item.nextAction || 'Não informada.'}</p><div class="flex flex-wrap gap-2 mt-3 text-[11px] font-black uppercase text-slate-500">${item.nextActionOwner ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Responsável: ${item.nextActionOwner}</span>` : ''}${item.nextActionDeadline ? `<span class="bg-white border border-blue-100 rounded-lg px-2 py-1">Prazo: ${formatDateBR(item.nextActionDeadline)}</span>` : ''}</div></div>` : ''}
+                            ${activeTab === 'projects' && (item.decisionNeeded === 'Sim' || item.decisionDesc) ? `<div class="bg-amber-50 p-4 rounded-xl border border-amber-200"><p class="text-xs font-semibold text-slate-500 text-amber-700 uppercase mb-2"><i class="fas fa-gavel mr-1"></i> Decisão necessária ${item.decisionLevel ? `— ${item.decisionLevel}` : ''}</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${item.decisionDesc || 'Decisão indicada, mas sem descrição.'}</p></div>` : ''}
                             ${(activeTab === 'projects' || activeTab === 'contracts') && item.encaminhamentos ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><p class="text-sm text-slate-700 leading-relaxed font-bold preserve-lines">${item.encaminhamentos}</p></div>` : ''}
                             ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><p class="text-sm text-red-700 leading-relaxed font-bold preserve-lines preserve-lines">${item.risks}</p></div>` : ''}
                             ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><p class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 preserve-lines preserve-lines">${item.obs}</p></div>` : ''}
