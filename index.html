@@ -938,6 +938,56 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 .markdown-content.markdown-compact ul,
 .markdown-content.markdown-compact ol { padding-left: 0.25rem; }
 
+
+/* ===============================
+   INDICADORES – PAINEL EXECUTIVO
+   =============================== */
+.ind-kpi-grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:1rem;}
+@media(min-width:720px){.ind-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(min-width:1180px){.ind-kpi-grid{grid-template-columns:repeat(5,minmax(0,1fr));}}
+.ind-kpi-card{background:#fff;border:1px solid #e2e8f0;border-radius:1.25rem;padding:1rem;box-shadow:0 1px 2px rgba(15,23,42,.04);position:relative;overflow:hidden;}
+.ind-kpi-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#0f172a;}
+.ind-kpi-card.pink::before{background:#be185d}.ind-kpi-card.indigo::before{background:#4f46e5}.ind-kpi-card.green::before{background:#059669}.ind-kpi-card.amber::before{background:#d97706}.ind-kpi-card.blue::before{background:#2563eb}
+.ind-kpi-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:.35rem;}
+.ind-kpi-value{font-size:1.55rem;font-weight:900;color:#0f172a;line-height:1;}
+.ind-kpi-note{font-size:11px;font-weight:700;color:#94a3b8;margin-top:.35rem;}
+.ind-section-title{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0 0 .25rem;}
+.ind-section-title h3{font-size:1rem;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:.02em;}
+.ind-section-title p{font-size:12px;color:#64748b;font-weight:700;margin-top:.15rem;}
+.indicator-card-v2{background:#fff;border:1px solid #e2e8f0;border-radius:1.35rem;padding:1.1rem;transition:all .2s ease;box-shadow:0 1px 2px rgba(15,23,42,.04);position:relative;overflow:hidden;cursor:pointer;}
+.indicator-card-v2:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(15,23,42,.08);border-color:#cbd5e1;}
+.indicator-card-v2::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:#be185d;}
+.indicator-card-v2.other::before{background:#4f46e5;}
+.indicator-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;}
+.indicator-card-title{font-size:1rem;font-weight:900;line-height:1.25;color:#0f172a;margin:0;}
+.indicator-card-sub{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#64748b;margin-top:.35rem;}
+.indicator-pill-row{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.65rem;}
+.indicator-pill{display:inline-flex;align-items:center;gap:.35rem;min-height:24px;padding:.25rem .55rem;border-radius:999px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;border:1px solid #e2e8f0;background:#f8fafc;color:#475569;}
+.indicator-pill.pink{background:#fdf2f8;border-color:#fbcfe8;color:#be185d}.indicator-pill.indigo{background:#eef2ff;border-color:#c7d2fe;color:#4338ca}.indicator-pill.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.indicator-pill.amber{background:#fffbeb;border-color:#fde68a;color:#b45309}.indicator-pill.red{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+.indicator-value-box{text-align:right;min-width:130px;}
+.indicator-value-box .label{font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:#94a3b8;}
+.indicator-value-box .value{font-size:1.55rem;font-weight:900;line-height:1;color:#0f172a;margin-top:.2rem;}
+.indicator-value-box .unit{font-size:.75rem;color:#94a3b8;font-weight:800;}
+.indicator-progress-wrap{margin-top:1rem;padding:.9rem;border-radius:1rem;background:#f8fafc;border:1px solid #e2e8f0;}
+.indicator-progress-meta{display:flex;justify-content:space-between;gap:1rem;font-size:11px;font-weight:900;text-transform:uppercase;color:#64748b;margin-bottom:.45rem;}
+.indicator-progress-bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;}
+.indicator-progress-fill{height:100%;border-radius:999px;background:#be185d;transition:width .4s ease;}
+.indicator-progress-fill.other{background:#4f46e5;}
+.indicator-month-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.35rem;margin-top:1rem;}
+@media(max-width:720px){.indicator-card-head{flex-direction:column}.indicator-value-box{text-align:left}.indicator-month-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.indicator-month{border:1px solid #e2e8f0;background:#fff;border-radius:.75rem;padding:.45rem;text-align:center;min-height:54px;}
+.indicator-month .m{font-size:9px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;}
+.indicator-month .v{font-size:12px;font-weight:900;color:#334155;margin-top:.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.indicator-ppa-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.45rem;margin-top:1rem;}
+.indicator-ppa-item{border:1px solid #e2e8f0;background:#f8fafc;border-radius:.85rem;padding:.55rem;text-align:center;}
+.indicator-ppa-item.current{background:#fdf2f8;border-color:#fbcfe8;box-shadow:inset 0 0 0 1px #fbcfe8;}
+.indicator-ppa-item .year{font-size:10px;font-weight:900;color:#64748b;letter-spacing:.08em;text-transform:uppercase;}
+.indicator-ppa-item .val{font-size:13px;font-weight:900;color:#0f172a;margin-top:.15rem;}
+.indicator-modal-section{border:1px solid #e2e8f0;background:#f8fafc;border-radius:1.25rem;padding:1rem;}
+.indicator-modal-section-title{font-size:11px;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:.45rem;margin-bottom:1rem;padding-bottom:.65rem;border-bottom:1px solid #e2e8f0;}
+.indicator-form-grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:1rem;}
+@media(min-width:760px){.indicator-form-grid.two{grid-template-columns:repeat(2,minmax(0,1fr));}.indicator-form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr));}}
+
 </style>
 </head>
 <body id="mainBody" class="bg-slate-50 text-slate-900 text-sm overflow-hidden">
@@ -1034,129 +1084,127 @@ textarea.input-style { min-height: 92px; resize: vertical; }
     <!-- ... (Modais e Sidebar iguais, sem alterações) ... -->
     <!-- Modal Novo Indicador -->
     <div id="newIndicatorModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
-            <div class="bg-gradient-to-r from-pink-600 to-rose-500 px-6 py-4 flex justify-between items-center text-white shrink-0">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-plus-circle text-lg"></i>
-                    <h3 class="font-black uppercase tracking-tight">Novo Indicador</h3>
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
+            <div class="bg-gradient-to-r from-slate-900 via-pink-700 to-rose-500 px-6 py-5 flex justify-between items-start text-white shrink-0">
+                <div class="flex items-start gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center"><i class="fas fa-plus-circle text-lg"></i></div>
+                    <div>
+                        <h3 class="font-black uppercase tracking-tight text-lg">Cadastrar Indicador</h3>
+                        <p class="text-xs text-pink-100 font-semibold mt-1">Defina a ficha técnica, a meta e a série mensal para acompanhamento executivo.</p>
+                    </div>
                 </div>
-                <button onclick="toggleModal('newIndicatorModal')" class="hover:text-pink-200 transition-colors"><i class="fas fa-times"></i></button>
+                <button onclick="toggleModal('newIndicatorModal')" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 transition-colors"><i class="fas fa-times"></i></button>
             </div>
-            <div class="p-6 flex-1 overflow-y-auto">
-                <form id="newIndicatorForm" class="space-y-4">
-                    <div class="flex flex-col">
-                        <label class="field-label">Nome do Indicador</label>
-                        <input type="text" id="newIndName" class="input-style" required placeholder="Ex: Taxa de Eficiência...">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="field-label">Produto / Categoria</label>
-                        <input type="text" id="newIndProduct" class="input-style" placeholder="Ex: Capacitação, Gestão...">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="flex flex-col">
-                            <label class="field-label">Meta 2026</label>
-                            <input type="number" step="0.01" id="newIndMeta" class="input-style" required placeholder="0.00">
-                        </div>
-                        <div class="flex flex-col">
-                            <label class="field-label">Unidade</label>
-                            <input type="text" id="newIndUnit" class="input-style" placeholder="%, un, dias...">
+            <div class="p-6 flex-1 overflow-y-auto bg-slate-50">
+                <form id="newIndicatorForm" class="space-y-5">
+                    <div class="indicator-modal-section bg-white">
+                        <div class="indicator-modal-section-title"><i class="fas fa-id-card text-pink-600"></i> Identificação do indicador</div>
+                        <div class="indicator-form-grid two">
+                            <div class="flex flex-col md:col-span-2">
+                                <label class="field-label">Nome do Indicador</label>
+                                <input type="text" id="newIndName" class="input-style" required placeholder="Ex: Servidores capacitados em trilha obrigatória">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="field-label">Código / Referência</label>
+                                <input type="text" id="newIndCode" class="input-style" placeholder="Ex: I.1.1, BR 2026, PPA">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="field-label">Produto / Macroentrega</label>
+                                <input type="text" id="newIndProduct" class="input-style" placeholder="Ex: Educação Corporativa, Segurança Viária">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="field-label">Responsável pelo acompanhamento</label>
+                                <input type="text" id="newIndOwner" class="input-style" placeholder="Ex: EPT / CEC / CGSV">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="field-label">Fonte de apuração</label>
+                                <input type="text" id="newIndSource" class="input-style" placeholder="Ex: Relatório Moodle, Planilha, Sistema">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- PPA SIMPLIFICADO -->
-                    <div id="newIndPpaSimpleWrapper" class="mt-2 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                        <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">
-                            Indicador – PPA 2024 a 2027
-                        </h5>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="field-label">Meta 2024</label>
-                                <input type="number" id="newIndMeta2024" class="input-style" placeholder="0">
+                    <div class="indicator-modal-section bg-white">
+                        <div class="indicator-modal-section-title"><i class="fas fa-bullseye text-pink-600"></i> Parâmetros de monitoramento</div>
+                        <div class="indicator-form-grid three">
+                            <div class="flex flex-col">
+                                <label class="field-label">Tipo</label>
+                                <select id="newIndType" class="input-style">
+                                    <option value="ppa">Estratégico (PPA)</option>
+                                    <option value="other">Gerencial / Acompanhamento</option>
+                                </select>
                             </div>
-                            <div>
-                                <label class="field-label">Alcançado 2024</label>
-                                <input type="number" id="newIndReal2024" class="input-style" placeholder="0">
-                            </div>
-                            <div>
-                                <label class="field-label">Meta 2025</label>
-                                <input type="number" id="newIndMeta2025" class="input-style" placeholder="0">
-                            </div>
-                            <div>
-                                <label class="field-label">Alcançado 2025</label>
-                                <input type="number" id="newIndReal2025" class="input-style" placeholder="0">
-                            </div>
-                            <div>
+                            <div class="flex flex-col">
                                 <label class="field-label">Meta 2026</label>
-                                <input type="number" id="newIndMeta2026" class="input-style" placeholder="0">
+                                <input type="number" step="0.01" id="newIndMeta" class="input-style" required placeholder="0.00">
                             </div>
-                            <div class="text-xs text-slate-500 flex items-center">
-                                Acompanhamento 2026 será feito mensalmente
+                            <div class="flex flex-col">
+                                <label class="field-label">Unidade</label>
+                                <input type="text" id="newIndUnit" class="input-style" placeholder="%, vagas, horas, un, dias">
                             </div>
-                            <div>
-                                <label class="field-label">Meta 2027</label>
-                                <input type="number" id="newIndMeta2027" class="input-style" placeholder="0">
+                            <div class="flex flex-col">
+                                <label class="field-label">Regra de Cálculo</label>
+                                <select id="newIndRule" class="input-style">
+                                    <option value="Soma">Soma / Acumulado no ano</option>
+                                    <option value="Último valor">Último valor informado</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="field-label">Periodicidade</label>
+                                <select id="newIndPeriodicity" class="input-style">
+                                    <option value="Mensal">Mensal</option>
+                                    <option value="Bimestral">Bimestral</option>
+                                    <option value="Trimestral">Trimestral</option>
+                                    <option value="Sob demanda">Sob demanda</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="field-label">Sentido esperado</label>
+                                <select id="newIndDirection" class="input-style">
+                                    <option value="Quanto maior, melhor">Quanto maior, melhor</option>
+                                    <option value="Quanto menor, melhor">Quanto menor, melhor</option>
+                                    <option value="Monitoramento">Monitoramento</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col md:col-span-3">
+                                <label class="field-label">Fórmula / Critério de apuração</label>
+                                <textarea id="newIndFormula" rows="2" class="input-style" placeholder="Descreva como o indicador deve ser calculado e validado."></textarea>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="flex flex-col">
-                            <label class="field-label">Tipo</label>
-                            <select id="newIndType" class="input-style">
-                                <option value="ppa">Estratégico (PPA)</option>
-                                <option value="other">Outros (Gerencial)</option>
-                            </select>
-                        </div>
-                        <div class="flex flex-col">
-                            <label class="field-label">Regra de Cálculo</label>
-                            <select id="newIndRule" class="input-style">
-                                <option value="Soma">Soma (Acumulado)</option>
-                                <option value="Último valor">Último Valor (Status)</option>
-                            </select>
+                    <div id="newIndPpaSimpleWrapper" class="indicator-modal-section bg-white">
+                        <div class="indicator-modal-section-title"><i class="fas fa-layer-group text-pink-600"></i> PPA 2024–2027</div>
+                        <div class="indicator-form-grid four grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div><label class="field-label">Meta 2024</label><input type="number" id="newIndMeta2024" class="input-style" placeholder="0"></div>
+                            <div><label class="field-label">Alcançado 2024</label><input type="number" id="newIndReal2024" class="input-style" placeholder="0"></div>
+                            <div><label class="field-label">Meta 2025</label><input type="number" id="newIndMeta2025" class="input-style" placeholder="0"></div>
+                            <div><label class="field-label">Alcançado 2025</label><input type="number" id="newIndReal2025" class="input-style" placeholder="0"></div>
+                            <div><label class="field-label">Meta 2026</label><input type="number" id="newIndMeta2026" class="input-style" placeholder="0"></div>
+                            <div><label class="field-label">Meta 2027</label><input type="number" id="newIndMeta2027" class="input-style" placeholder="0"></div>
+                            <div class="sm:col-span-2 lg:col-span-2 flex items-center text-xs text-slate-500 font-semibold bg-pink-50 border border-pink-100 rounded-xl p-3">O realizado de 2026 será apurado pelos lançamentos mensais.</div>
                         </div>
                     </div>
-                    
-                    
 
-                    <details class="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                    <details class="indicator-modal-section bg-white">
                         <summary class="cursor-pointer select-none flex items-center justify-between text-xs font-black text-slate-600 uppercase tracking-widest">
-                            <span><i class="fas fa-sliders-h mr-2 text-slate-400"></i>Acompanhamento inicial (opcional)</span>
-                            <span class="text-[10px] text-slate-400 font-bold normal-case tracking-normal">(clique para abrir)</span>
+                            <span><i class="fas fa-calendar-check mr-2 text-pink-600"></i>Acompanhamento mensal inicial</span>
+                            <span class="text-[10px] text-slate-400 font-bold normal-case tracking-normal">opcional</span>
                         </summary>
-                        <div class="pt-4 space-y-6">
-                            <div id="newIndPpaOptionalWrapper">
-                                <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">PPA (opcional)</h5>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <div class="flex flex-col">
-                                        <label class="field-label">Meta PPA 2025</label>
-                                        <input type="number" step="0.01" id="newIndPpa2025" class="input-style" placeholder="0.00">
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label class="field-label">Meta PPA 2026</label>
-                                        <input type="number" step="0.01" id="newIndPpa2026" class="input-style" placeholder="0.00">
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label class="field-label">Realizado PPA 2025</label>
-                                        <input type="number" step="0.01" id="newIndPpaReal2025" class="input-style" placeholder="0.00">
-                                    </div>
-                                </div>
-                            </div>
-
+                        <div class="pt-5 space-y-5">
                             <div>
-                                <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Lançamento mensal 2025 (histórico)</h5>
-                                <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="newIndMonthsGrid2025"></div>
+                                <div class="indicator-modal-section-title mb-3"><i class="fas fa-history text-indigo-600"></i> Realizado mensal 2025 (histórico)</div>
+                                <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3" id="newIndMonthsGrid2025"></div>
                             </div>
-
                             <div>
-                                <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Lançamento mensal 2026 (realizado)</h5>
-                                <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="newIndMonthsGrid2026"></div>
+                                <div class="indicator-modal-section-title mb-3"><i class="fas fa-calendar-alt text-pink-600"></i> Realizado mensal 2026</div>
+                                <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3" id="newIndMonthsGrid2026"></div>
                             </div>
                         </div>
                     </details>
-<div class="flex justify-end pt-4">
-                        <button id="btnCreateIndicator" type="button" onclick="createIndicator()" class="bg-pink-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-pink-200 hover:bg-pink-700 transition-all uppercase text-xs tracking-widest flex items-center gap-2">
-                            <i class="fas fa-save"></i> Criar Indicador
-                        </button>
+
+                    <div class="flex justify-end gap-3 pt-2">
+                        <button type="button" onclick="toggleModal('newIndicatorModal')" class="bg-white text-slate-700 border border-slate-200 font-black py-3 px-6 rounded-xl hover:bg-slate-100 transition-all uppercase text-xs tracking-widest">Cancelar</button>
+                        <button id="btnCreateIndicator" type="button" onclick="createIndicator()" class="bg-pink-600 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-pink-200 hover:bg-pink-700 transition-all uppercase text-xs tracking-widest flex items-center gap-2"><i class="fas fa-save"></i> Criar Indicador</button>
                     </div>
                 </form>
             </div>
@@ -1692,46 +1740,69 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
     <!-- Modal Edição Indicador -->
     <div id="indicatorModal" class="items-center justify-center p-2 sm:p-4" style="display: none;">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
-            <div class="bg-gradient-to-r from-pink-600 to-rose-500 px-6 py-4 flex justify-between items-center text-white shrink-0">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-chart-line text-lg"></i>
-                    <h3 class="font-black uppercase tracking-tight">Atualizar Indicador</h3>
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
+            <div class="bg-gradient-to-r from-slate-900 via-pink-700 to-rose-500 px-6 py-5 flex justify-between items-start text-white shrink-0">
+                <div class="flex items-start gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center"><i class="fas fa-chart-line text-lg"></i></div>
+                    <div>
+                        <h3 class="font-black uppercase tracking-tight text-lg">Atualizar Indicador</h3>
+                        <p class="text-xs text-pink-100 font-semibold mt-1">Revise a ficha técnica e lance os valores realizados por mês.</p>
+                    </div>
                 </div>
-                <button onclick="toggleModal('indicatorModal')" class="hover:text-pink-200 transition-colors"><i class="fas fa-times"></i></button>
+                <button onclick="toggleModal('indicatorModal')" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 transition-colors"><i class="fas fa-times"></i></button>
             </div>
-            <div class="p-6 overflow-y-auto">
-                <form id="indicatorForm">
+            <div class="p-6 overflow-y-auto bg-slate-50">
+                <form id="indicatorForm" class="space-y-5">
                     <input type="hidden" id="indId">
-                    <div class="mb-6">
-                        <h4 id="indNameDisplay" class="text-xl font-black text-slate-800 leading-tight mb-1">Nome do Indicador</h4>
-                        <p class="text-sm text-slate-500 font-bold uppercase tracking-wider">Meta Anual 2026: <span id="indMetaDisplay" class="text-pink-600">0</span></p>
-                    </div>
-
-                    <!-- Seção PPA Dinâmica (Preenchida via JS) -->
-                    <div id="indPpaSection" class="hidden mb-8 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                        <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Histórico PPA (2024-2027)</h5>
-                        <div id="indPpaGrid" class="grid grid-cols-2 gap-4"></div>
-                    </div>
-                    
-                    <!-- NOVA SEÇÃO: Lançamento Mensal 2025 -->
-                    <div id="indMonths2025Wrapper" class="hidden mb-8 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                        <h5 class="text-xs font-semibold text-slate-500 text-indigo-400 uppercase tracking-widest mb-4 border-b border-indigo-200 pb-2">Lançamento Mensal 2025 (Histórico)</h5>
-                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="indMonthsGrid2025">
-                            <!-- Gerado via JS -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                            <div>
+                                <h4 id="indNameDisplay" class="text-xl font-black text-slate-900 leading-tight mb-1">Nome do Indicador</h4>
+                                <p class="text-sm text-slate-500 font-bold uppercase tracking-wider">Meta 2026: <span id="indMetaDisplay" class="text-pink-600">0</span></p>
+                            </div>
+                            <div id="indicatorAuditInfo" class="hidden rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 text-[11px] text-slate-400"></div>
                         </div>
                     </div>
-                    
-                    <h5 class="text-xs font-semibold text-slate-500 text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Lançamento Mensal 2026 (Realizado)</h5>
-                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="indMonthsGrid">
-                        <!-- Gerado via JS -->
-                    </div>
-                    
-                    <div id="indicatorAuditInfo" class="mt-8 hidden rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 text-[11px] text-slate-400"></div>
 
-                    <div class="mt-6 flex justify-between items-center gap-4">
-                        <button type="button" id="btnDeleteIndicator" onclick="deleteIndicator()" class="bg-red-50 text-red-600 font-bold py-3 px-6 rounded-xl shadow-sm hover:bg-red-100 transition-all uppercase text-xs tracking-widest flex items-center"><i class="fas fa-trash mr-2"></i> Excluir</button>
-                        <button type="button" onclick="saveIndicator()" class="bg-pink-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-pink-200 hover:bg-pink-700 transition-all uppercase text-xs tracking-widest">Salvar Lançamentos</button>
+                    <div class="indicator-modal-section bg-white">
+                        <div class="indicator-modal-section-title"><i class="fas fa-id-card text-pink-600"></i> Ficha técnica</div>
+                        <div class="indicator-form-grid two">
+                            <div class="flex flex-col md:col-span-2"><label class="field-label">Nome</label><input id="indEditName" type="text" class="input-style"></div>
+                            <div><label class="field-label">Código / Referência</label><input id="indEditCode" type="text" class="input-style"></div>
+                            <div><label class="field-label">Produto / Macroentrega</label><input id="indEditProduct" type="text" class="input-style"></div>
+                            <div><label class="field-label">Responsável</label><input id="indEditOwner" type="text" class="input-style"></div>
+                            <div><label class="field-label">Fonte de apuração</label><input id="indEditSource" type="text" class="input-style"></div>
+                            <div><label class="field-label">Tipo</label><select id="indEditType" class="input-style"><option value="ppa">Estratégico (PPA)</option><option value="other">Gerencial / Acompanhamento</option></select></div>
+                            <div><label class="field-label">Meta 2026</label><input id="indEditMeta" type="number" step="any" class="input-style"></div>
+                            <div><label class="field-label">Unidade</label><input id="indEditUnit" type="text" class="input-style"></div>
+                            <div><label class="field-label">Regra de cálculo</label><select id="indEditRule" class="input-style"><option value="Soma">Soma / Acumulado</option><option value="Último valor">Último valor informado</option></select></div>
+                            <div><label class="field-label">Periodicidade</label><input id="indEditPeriodicity" type="text" class="input-style" placeholder="Mensal"></div>
+                            <div><label class="field-label">Sentido esperado</label><input id="indEditDirection" type="text" class="input-style" placeholder="Quanto maior, melhor"></div>
+                            <div class="md:col-span-2"><label class="field-label">Fórmula / Critério</label><textarea id="indEditFormula" rows="2" class="input-style"></textarea></div>
+                        </div>
+                    </div>
+
+                    <div id="indPpaSection" class="hidden indicator-modal-section bg-white">
+                        <div class="indicator-modal-section-title"><i class="fas fa-layer-group text-pink-600"></i> PPA 2024–2027</div>
+                        <div id="indPpaGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+                    </div>
+
+                    <div id="indMonths2025Wrapper" class="hidden indicator-modal-section bg-white">
+                        <div class="indicator-modal-section-title"><i class="fas fa-history text-indigo-600"></i> Realizado mensal 2025 (histórico)</div>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4" id="indMonthsGrid2025"></div>
+                    </div>
+
+                    <div class="indicator-modal-section bg-white">
+                        <div class="indicator-modal-section-title"><i class="fas fa-calendar-alt text-pink-600"></i> Realizado mensal 2026</div>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4" id="indMonthsGrid"></div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 pt-2">
+                        <button type="button" id="btnDeleteIndicator" onclick="deleteIndicator()" class="bg-red-50 text-red-600 border border-red-100 font-black py-3 px-6 rounded-xl shadow-sm hover:bg-red-100 transition-all uppercase text-xs tracking-widest flex items-center justify-center"><i class="fas fa-trash mr-2"></i> Excluir</button>
+                        <div class="flex gap-3 justify-end">
+                            <button type="button" onclick="toggleModal('indicatorModal')" class="bg-white text-slate-700 border border-slate-200 font-black py-3 px-6 rounded-xl hover:bg-slate-100 transition-all uppercase text-xs tracking-widest">Cancelar</button>
+                            <button type="button" onclick="saveIndicator()" class="bg-pink-600 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-pink-200 hover:bg-pink-700 transition-all uppercase text-xs tracking-widest">Salvar Indicador</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -2034,74 +2105,68 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
             <!-- NOVA ABA: INDICADORES -->
             <div id="indicatorsView" class="hidden flex-1 flex flex-col p-4 md:p-6 bg-slate-50 space-y-6 overflow-y-auto pb-20 md:pb-6">
-                <!-- ... Conteúdo de Indicadores ... -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-pink-100 text-pink-600 rounded-xl flex items-center justify-center shadow-sm"><i class="fas fa-flag-checkered text-xl"></i></div>
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex flex-col xl:flex-row xl:items-center justify-between gap-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 bg-pink-50 text-pink-700 rounded-2xl flex items-center justify-center shadow-sm border border-pink-100"><i class="fas fa-chart-line text-2xl"></i></div>
                         <div>
-                            <h3 class="text-lg sm:text-xl font-black text-slate-800 uppercase tracking-tight">INDICADORES ESTRATÉGICOS</h3>
-                            <p class="text-sm text-slate-500 font-medium"> | Monitoramento Mensal</p>
+                            <div class="text-[11px] font-black text-pink-700 uppercase tracking-[0.18em] mb-1">Painel Executivo</div>
+                            <h3 class="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">Indicadores da DSV</h3>
+                            <p class="text-sm text-slate-500 font-semibold mt-1 max-w-3xl">Monitoramento de metas estratégicas, indicadores gerenciais e séries mensais de realização. Clique em um card para editar a ficha técnica e lançar valores.</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="bg-pink-50 px-4 py-2 rounded-lg border border-pink-100 hidden sm:block">
-                            <span class="text-xs font-semibold text-slate-500 text-pink-600 uppercase tracking-wider">Exercício 2026</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Barra de busca / filtros (Indicadores) -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-                    <div class="flex flex-col lg:flex-row gap-3 lg:items-center">
-                        <div class="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-pink-100">
-                            <i class="fas fa-search text-slate-400"></i>
-                            <input id="indicatorSearch" type="text" placeholder="Buscar por nome, produto ou unidade..." class="w-full bg-transparent outline-none text-sm font-medium text-slate-700 placeholder-slate-400" />
-                            <button id="indicatorClearSearch" type="button" class="text-slate-300 hover:text-slate-600 transition-colors" title="Limpar"><i class="fas fa-times-circle"></i></button>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:w-[520px]">
-                            <select id="indicatorTypeFilter" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none">
-                                <option value="all">Todos os tipos</option>
-                                <option value="ppa">PPA (Estratégicos)</option>
-                                <option value="other">Outros</option>
-                            </select>
-                            <select id="indicatorProductFilter" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none">
-                                <option value="all">Todos os produtos</option>
-                            </select>
-                            <select id="indicatorSort" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none">
-                                <option value="name">Ordenar: Nome</option>
-                                <option value="progress">Ordenar: Progresso</option>
-                                <option value="meta">Ordenar: Meta (2026)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-3 mt-3">
-                        <div class="text-[11px] font-bold text-slate-500">
-                            <span id="indicatorCount" class="font-black text-slate-700">0</span> indicadores exibidos
-                            <span class="text-slate-300 mx-2">•</span>
-                            <span class="text-slate-500">Clique em um card para atualizar valores</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="openNewIndicatorModal('ppa')" class="text-xs font-semibold text-slate-500 uppercase tracking-wider bg-pink-50 text-pink-700 border border-pink-200 hover:bg-pink-100 px-3 py-2 rounded-xl transition-colors flex items-center gap-2"><i class="fas fa-plus"></i> Novo PPA</button>
-                            <button onclick="openNewIndicatorModal('other')" class="text-xs font-semibold text-slate-500 uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 px-3 py-2 rounded-xl transition-colors flex items-center gap-2"><i class="fas fa-plus"></i> Novo Outro</button>
-                        </div>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <button onclick="openNewIndicatorModal('ppa')" class="text-xs font-black uppercase tracking-widest bg-pink-600 text-white hover:bg-pink-700 px-4 py-3 rounded-2xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-pink-100"><i class="fas fa-plus"></i> Novo PPA</button>
+                        <button onclick="openNewIndicatorModal('other')" class="text-xs font-black uppercase tracking-widest bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-3 rounded-2xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-100"><i class="fas fa-plus"></i> Novo Gerencial</button>
                     </div>
                 </div>
 
-                <div id="indicatorsEmpty" class="hidden bg-white rounded-2xl border border-slate-200 p-10 text-center">
+                <div class="ind-kpi-grid">
+                    <div class="ind-kpi-card pink"><div class="ind-kpi-label">Total de indicadores</div><div id="indicatorKpiTotal" class="ind-kpi-value">0</div><div class="ind-kpi-note">Base exibida nos filtros atuais</div></div>
+                    <div class="ind-kpi-card blue"><div class="ind-kpi-label">Estratégicos PPA</div><div id="indicatorKpiPpa" class="ind-kpi-value">0</div><div class="ind-kpi-note">Metas vinculadas ao ciclo 2024–2027</div></div>
+                    <div class="ind-kpi-card indigo"><div class="ind-kpi-label">Gerenciais</div><div id="indicatorKpiOther" class="ind-kpi-value">0</div><div class="ind-kpi-note">Acompanhamento interno da DSV</div></div>
+                    <div class="ind-kpi-card green"><div class="ind-kpi-label">Progresso médio</div><div id="indicatorKpiAverage" class="ind-kpi-value">0%</div><div class="ind-kpi-note">Realizado / meta 2026</div></div>
+                    <div class="ind-kpi-card amber"><div class="ind-kpi-label">Atenção</div><div id="indicatorKpiAttention" class="ind-kpi-value">0</div><div class="ind-kpi-note">Abaixo de 50% da meta anual</div></div>
+                </div>
+                
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-4">
+                    <div class="flex flex-col xl:flex-row gap-3 xl:items-center">
+                        <div class="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-pink-100">
+                            <i class="fas fa-search text-slate-400"></i>
+                            <input id="indicatorSearch" type="text" placeholder="Buscar por nome, código, produto, responsável ou fonte..." class="w-full bg-transparent outline-none text-sm font-bold text-slate-700 placeholder-slate-400" />
+                            <button id="indicatorClearSearch" type="button" class="text-slate-300 hover:text-slate-600 transition-colors" title="Limpar"><i class="fas fa-times-circle"></i></button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 xl:w-[620px]">
+                            <select id="indicatorTypeFilter" class="bg-white border border-slate-200 rounded-2xl px-3 py-3 text-sm font-bold text-slate-700 outline-none">
+                                <option value="all">Todos os tipos</option>
+                                <option value="ppa">PPA / Estratégicos</option>
+                                <option value="other">Gerenciais</option>
+                            </select>
+                            <select id="indicatorProductFilter" class="bg-white border border-slate-200 rounded-2xl px-3 py-3 text-sm font-bold text-slate-700 outline-none"><option value="all">Todos os produtos</option></select>
+                            <select id="indicatorSort" class="bg-white border border-slate-200 rounded-2xl px-3 py-3 text-sm font-bold text-slate-700 outline-none">
+                                <option value="name">Ordenar: Nome</option>
+                                <option value="progress">Ordenar: Progresso</option>
+                                <option value="meta">Ordenar: Meta 2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 mt-3 px-1">
+                        <div class="text-[11px] font-bold text-slate-500"><span id="indicatorCount" class="font-black text-slate-800">0</span> indicadores exibidos <span class="text-slate-300 mx-2">•</span> visualização por tipo, macroentrega e progresso</div>
+                    </div>
+                </div>
+
+                <div id="indicatorsEmpty" class="hidden bg-white rounded-3xl border border-slate-200 p-10 text-center">
                     <div class="mx-auto w-16 h-16 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center"><i class="fas fa-chart-line text-2xl"></i></div>
                     <h4 class="mt-4 text-lg font-black text-slate-800">Nenhum indicador encontrado</h4>
                     <p class="mt-1 text-sm text-slate-500 font-medium">Ajuste os filtros ou cadastre um novo indicador.</p>
                 </div>
 
-<div id="indicatorsList" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
-                <div class="pt-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center shadow-sm"><i class="fas fa-chart-bar text-lg"></i></div>
-                            <h3 class="text-lg sm:text-xl font-black text-slate-800 uppercase tracking-tight">Outros Indicadores de Acompanhamento</h3>
-                        </div>
-                        </div>
-                    <div id="otherIndicatorsList" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
+                <div class="space-y-4">
+                    <div class="ind-section-title"><div><h3>Indicadores estratégicos</h3><p>PPA, BR e metas institucionais com monitoramento mensal.</p></div><span id="indicatorPpaCountBadge" class="indicator-pill pink">0 itens</span></div>
+                    <div id="indicatorsList" class="grid grid-cols-1 xl:grid-cols-2 gap-5"></div>
+                </div>
+                <div class="space-y-4 pt-2">
+                    <div class="ind-section-title"><div><h3>Indicadores gerenciais</h3><p>Indicadores de acompanhamento interno, operação e gestão.</p></div><span id="indicatorOtherCountBadge" class="indicator-pill indigo">0 itens</span></div>
+                    <div id="otherIndicatorsList" class="grid grid-cols-1 xl:grid-cols-2 gap-5"></div>
                 </div>
             </div>
 
@@ -3951,13 +4016,37 @@ window.openAddBacklogItemModal = (meetingId) => {
         let indicatorProductFilter = 'all';
         let indicatorSort = 'name';
 
+        function indicatorNumber(value) {
+            const n = Number(String(value ?? 0).replace(',', '.'));
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        function indicatorFmt(value, max = 2) {
+            return indicatorNumber(value).toLocaleString('pt-BR', { maximumFractionDigits: max });
+        }
+
+        function indicatorText(value) {
+            return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+        }
+
         function calcIndicatorTotal(ind) {
             const monthly = Array.isArray(ind.monthly) ? ind.monthly : Array.from({length:12},()=>0);
-            if (ind.rule === 'Soma') {
-                return monthly.reduce((a, b) => a + Number(b || 0), 0);
-            }
-            const filled = monthly.map(v => Number(v || 0)).filter(v => v != 0);
+            if (ind.rule === 'Soma') return monthly.reduce((a, b) => a + indicatorNumber(b), 0);
+            const filled = monthly.map(v => indicatorNumber(v)).filter(v => v !== 0);
             return filled.length > 0 ? filled[filled.length - 1] : 0;
+        }
+
+        function calcIndicatorPercent(ind) {
+            const meta = indicatorNumber(ind.meta);
+            if (meta <= 0) return 0;
+            return Math.round((calcIndicatorTotal(ind) / meta) * 100);
+        }
+
+        function indicatorStatus(percent) {
+            if (percent >= 100) return {label:'Meta atingida', cls:'green', icon:'fa-check-circle'};
+            if (percent >= 70) return {label:'Em avanço', cls:'blue', icon:'fa-arrow-trend-up'};
+            if (percent >= 50) return {label:'Acompanhar', cls:'amber', icon:'fa-clock'};
+            return {label:'Atenção', cls:'red', icon:'fa-triangle-exclamation'};
         }
 
         window.renderIndicators = () => {
@@ -3966,156 +4055,134 @@ window.openAddBacklogItemModal = (meetingId) => {
             const emptyState = document.getElementById('indicatorsEmpty');
             const countEl = document.getElementById('indicatorCount');
             const productSelect = document.getElementById('indicatorProductFilter');
-
             if (!listPPA || !listOther) return;
 
-            const allData = (dataStore.indicators && dataStore.indicators.length > 0)
-                ? dataStore.indicators
-                : (Array.isArray(INITIAL_INDICATORS) ? INITIAL_INDICATORS : []);
-
-            // Normaliza minimamente (evita quebra por campos ausentes)
+            const allData = (dataStore.indicators && dataStore.indicators.length > 0) ? dataStore.indicators : (Array.isArray(INITIAL_INDICATORS) ? INITIAL_INDICATORS : []);
             const normalized = allData.map(ind => normalizeIndicator({ ...ind }));
-            // Dedupe por id (protege contra duplicidade no estado e/ou ids sobrescritos)
             const uniqueById = Array.from(new Map(normalized.map(i => [i.id, i])).values());
 
-            // Monta opções de produtos (uma vez por render)
             if (productSelect) {
-                const products = Array.from(new Set(normalized.map(i => (i.product || 'Sem produto').toString().trim()).filter(Boolean)))
-                    .sort((a,b) => a.localeCompare(b, 'pt-BR'));
+                const products = Array.from(new Set(uniqueById.map(i => (i.product || 'Sem produto').toString().trim()).filter(Boolean))).sort((a,b) => a.localeCompare(b, 'pt-BR'));
                 const current = productSelect.value || 'all';
-                productSelect.innerHTML = '<option value="all">Todos os produtos</option>' + products.map(p => `<option value="${p.replace(/"/g,'&quot;')}">${p}</option>`).join('');
-                // preserva seleção
+                productSelect.innerHTML = '<option value="all">Todos os produtos</option>' + products.map(p => `<option value="${indicatorText(p)}">${indicatorText(p)}</option>`).join('');
                 if ([...productSelect.options].some(o => o.value === current)) productSelect.value = current;
             }
 
             const q = (indicatorSearchQuery || '').trim().toLowerCase();
-
             let filtered = uniqueById.filter(ind => {
-                const matchesType = (indicatorTypeFilter === 'all')
-                    ? true
-                    : (indicatorTypeFilter === 'ppa' ? ind.type === 'ppa' : ind.type !== 'ppa');
-
+                const matchesType = indicatorTypeFilter === 'all' ? true : (indicatorTypeFilter === 'ppa' ? ind.type === 'ppa' : ind.type !== 'ppa');
                 const prod = (ind.product || 'Sem produto').toString().trim();
-                const matchesProduct = (indicatorProductFilter === 'all') ? true : prod === indicatorProductFilter;
-
-                const hay = `${ind.name || ''} ${ind.product || ''} ${ind.unit || ''} ${ind.code || ''}`.toLowerCase();
-                const matchesSearch = q ? hay.includes(q) : true;
-
-                return matchesType && matchesProduct && matchesSearch;
+                const matchesProduct = indicatorProductFilter === 'all' ? true : prod === indicatorProductFilter;
+                const hay = `${ind.name || ''} ${ind.product || ''} ${ind.unit || ''} ${ind.code || ''} ${ind.owner || ''} ${ind.source || ''}`.toLowerCase();
+                return matchesType && matchesProduct && (q ? hay.includes(q) : true);
             });
 
-            // Ordenação
             filtered.sort((a,b) => {
-                if (indicatorSort === 'progress') {
-                    const pa = (Number(a.meta || 0) > 0) ? (calcIndicatorTotal(a) / Number(a.meta || 0)) : 0;
-                    const pb = (Number(b.meta || 0) > 0) ? (calcIndicatorTotal(b) / Number(b.meta || 0)) : 0;
-                    return pb - pa;
-                }
-                if (indicatorSort === 'meta') {
-                    return Number(b.meta || 0) - Number(a.meta || 0);
-                }
+                if (indicatorSort === 'progress') return calcIndicatorPercent(b) - calcIndicatorPercent(a);
+                if (indicatorSort === 'meta') return indicatorNumber(b.meta) - indicatorNumber(a.meta);
                 return (a.name || '').localeCompare((b.name || ''), 'pt-BR');
             });
 
             listPPA.innerHTML = '';
             listOther.innerHTML = '';
-
-            let shown = 0;
+            let ppaCount = 0, otherCount = 0;
+            let progressSum = 0, progressBase = 0, attentionCount = 0;
 
             filtered.forEach(ind => {
                 const total = calcIndicatorTotal(ind);
-                const meta = Number(ind.meta || 0);
-                const formattedTotal = Number(total || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 });
-                const formattedMeta = meta.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
-                const percent = meta > 0 ? Math.round((total / meta) * 100) : 0;
-
-                const monthsHtml = (ind.monthly || Array.from({length:12},()=>0)).map((v, i) => {
+                const meta = indicatorNumber(ind.meta);
+                const percent = calcIndicatorPercent(ind);
+                if (meta > 0) { progressSum += Math.min(percent, 150); progressBase += 1; }
+                if (meta > 0 && percent < 50) attentionCount += 1;
+                const st = indicatorStatus(percent);
+                const isPpa = ind.type === 'ppa';
+                const months = Array.isArray(ind.monthly) ? ind.monthly : Array.from({length:12},()=>0);
+                const monthsHtml = months.map((v, i) => {
                     const mName = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'][i];
-                    return `<div class="month-cell"><div class="month-label">${mName}</div><div class="month-value">${Number(v || 0).toLocaleString('pt-BR')}</div></div>`;
+                    const filled = indicatorNumber(v) !== 0;
+                    return `<div class="indicator-month ${filled ? 'bg-slate-50' : ''}"><div class="m">${mName}</div><div class="v">${indicatorFmt(v, 1)}</div></div>`;
                 }).join('');
 
                 let ppaHtml = '';
-                if (ind.ppa && Object.keys(ind.ppa).length > 0) {
-                    const years = Object.keys(ind.ppa).sort();
-                    ppaHtml = `<div class="mt-5 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2 tracking-widest">Evolução Anual</p><div class="grid grid-cols-4 gap-2">${years.map(year => {
-                        const isCurrent = year === '2026';
-                        const metaVal = Number(ind.ppa?.[year] ?? 0);
-                        const realVal = (ind.ppaRealized && ind.ppaRealized[year] != null) ? Number(ind.ppaRealized[year]) : null;
-                        let displayVal = metaVal.toLocaleString('pt-BR');
-                        if (realVal !== null && year !== '2026') {
-                            displayVal = `<span class="text-[10px] text-slate-400 block">Meta: ${metaVal}</span><span class="text-pink-600 font-black">${realVal}</span>`;
-                        } else if (year === '2025') {
-                            displayVal = `<span class="text-[10px] text-slate-400 block">Meta</span><span class="text-slate-600 font-bold">${metaVal}</span>`;
-                        }
-                        return `<div class="ppa-year-box ${isCurrent ? 'current' : ''}"><div class="ppa-year-label">${year}</div><div class="ppa-year-value">${displayVal}</div></div>`;
-                    }).join('')}</div></div>`;
+                if (isPpa && ind.ppa && Object.keys(ind.ppa).length > 0) {
+                    const years = ['2024','2025','2026','2027'].filter(y => Object.prototype.hasOwnProperty.call(ind.ppa || {}, y) || Object.prototype.hasOwnProperty.call(ind.ppaRealized || {}, y));
+                    ppaHtml = `<div class="indicator-ppa-strip">${years.map(year => {
+                        const metaVal = indicatorNumber(ind.ppa?.[year]);
+                        const realVal = ind.ppaRealized && ind.ppaRealized[year] != null ? indicatorNumber(ind.ppaRealized[year]) : null;
+                        const value = (realVal !== null && year !== '2026') ? `${indicatorFmt(realVal)} <span class="text-[10px] text-slate-400">/ ${indicatorFmt(metaVal)}</span>` : indicatorFmt(metaVal);
+                        return `<div class="indicator-ppa-item ${year === '2026' ? 'current' : ''}"><div class="year">${year}</div><div class="val">${value}</div></div>`;
+                    }).join('')}</div>`;
                 }
 
-                const badge = ind.type === 'ppa'
-                    ? `<span class="text-xs font-semibold text-slate-500 text-pink-500 uppercase tracking-widest block mb-1">PPA</span>`
-                    : `<span class="text-xs font-semibold text-slate-500 text-indigo-500 uppercase tracking-widest block mb-1">OUTRO</span>`;
-
-                const macroLine = `<span class="text-xs font-semibold text-slate-500 ${ind.type === 'ppa' ? 'text-pink-500' : 'text-indigo-500'} uppercase tracking-widest block mt-1">${(ind.product || '').toString()}</span>`;
                 const cardHtml = `
-                    <div class="indicator-card" onclick="openIndicatorModal('${ind.id}')">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-lg leading-tight">${ind.name || 'Indicador'}</h4>
-                                ${macroLine}
+                    <div class="indicator-card-v2 ${isPpa ? '' : 'other'}" onclick="openIndicatorModal('${indicatorText(ind.id)}')">
+                        <div class="indicator-card-head">
+                            <div class="min-w-0">
+                                <h4 class="indicator-card-title">${indicatorText(ind.name || 'Indicador')}</h4>
+                                <div class="indicator-card-sub">${indicatorText(ind.code || (isPpa ? 'PPA' : 'Gerencial'))} • ${indicatorText(ind.product || 'Sem produto')}</div>
+                                <div class="indicator-pill-row">
+                                    <span class="indicator-pill ${isPpa ? 'pink' : 'indigo'}"><i class="fas ${isPpa ? 'fa-bullseye' : 'fa-chart-simple'}"></i>${isPpa ? 'Estratégico' : 'Gerencial'}</span>
+                                    <span class="indicator-pill ${st.cls}"><i class="fas ${st.icon}"></i>${st.label}</span>
+                                    <span class="indicator-pill"><i class="fas fa-calculator"></i>${indicatorText(ind.rule === 'Soma' ? 'Acumulado' : 'Último valor')}</span>
+                                    ${ind.owner ? `<span class="indicator-pill"><i class="fas fa-user-tie"></i>${indicatorText(ind.owner)}</span>` : ''}
+                                </div>
                             </div>
-                            <div class="text-right">
-                                <span class="text-xs font-semibold text-slate-500 text-slate-400 uppercase">${ind.rule === 'Soma' ? 'Acumulado' : 'Último'}</span>
-                                <p class="text-2xl font-black ${ind.type === 'ppa' ? 'text-pink-700' : 'text-indigo-700'} leading-none">${formattedTotal} <span class="text-sm text-slate-400">${ind.unit || ''}</span></p>
-                            </div>
-                        </div>
-                        <div class="mb-5">
-                            <div class="flex justify-between text-[11px] font-bold text-slate-500 uppercase mb-1">
-                                <span>Progresso da Meta (2026)</span>
-                                <span>${percent}% de ${formattedMeta} ${ind.unit || ''}</span>
-                            </div>
-                            <div class="progress-bg">
-                                <div class="progress-fill" style="width: ${Math.min(percent, 100)}%; background-color: ${ind.type === 'ppa' ? '#db2777' : '#4f46e5'};"></div>
+                            <div class="indicator-value-box">
+                                <div class="label">Realizado 2026</div>
+                                <div class="value">${indicatorFmt(total)} <span class="unit">${indicatorText(ind.unit || '')}</span></div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-6 gap-2">${monthsHtml}</div>
+                        <div class="indicator-progress-wrap">
+                            <div class="indicator-progress-meta"><span>Progresso da meta anual</span><span>${percent}% de ${indicatorFmt(meta)} ${indicatorText(ind.unit || '')}</span></div>
+                            <div class="indicator-progress-bar"><div class="indicator-progress-fill ${isPpa ? '' : 'other'}" style="width:${Math.min(Math.max(percent,0),100)}%"></div></div>
+                        </div>
+                        <div class="indicator-month-grid">${monthsHtml}</div>
                         ${ppaHtml}
-                    </div>
-                `;
-
-                if (ind.type === 'ppa') listPPA.insertAdjacentHTML('beforeend', cardHtml);
-                else listOther.insertAdjacentHTML('beforeend', cardHtml);
-                shown += 1;
+                        ${(ind.source || ind.formula) ? `<div class="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-500 font-semibold"><div><span class="font-black text-slate-700 uppercase">Fonte:</span> ${indicatorText(ind.source || 'Não informada')}</div><div><span class="font-black text-slate-700 uppercase">Critério:</span> ${indicatorText(ind.formula || 'Não informado')}</div></div>` : ''}
+                    </div>`;
+                if (isPpa) { listPPA.insertAdjacentHTML('beforeend', cardHtml); ppaCount += 1; }
+                else { listOther.insertAdjacentHTML('beforeend', cardHtml); otherCount += 1; }
             });
 
+            const shown = filtered.length;
+            const avg = progressBase ? Math.round(progressSum / progressBase) : 0;
             if (countEl) countEl.textContent = String(shown);
-
-            const hasAny = shown > 0;
-            if (emptyState) emptyState.classList.toggle('hidden', hasAny);
+            const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            setTxt('indicatorKpiTotal', String(shown));
+            setTxt('indicatorKpiPpa', String(ppaCount));
+            setTxt('indicatorKpiOther', String(otherCount));
+            setTxt('indicatorKpiAverage', `${avg}%`);
+            setTxt('indicatorKpiAttention', String(attentionCount));
+            setTxt('indicatorPpaCountBadge', `${ppaCount} itens`);
+            setTxt('indicatorOtherCountBadge', `${otherCount} itens`);
+            if (emptyState) emptyState.classList.toggle('hidden', shown > 0);
         };
 
         /* ===================== INDICADORES: ABRIR / EDITAR / SALVAR ===================== */
         let selectedIndicatorId = null;
-
         const MONTHS = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
 
         function normalizeIndicator(ind) {
-            // Garante estruturas mínimas para evitar erro ao editar/salvar
-            if (!ind.monthly || !Array.isArray(ind.monthly) || ind.monthly.length !== 12) {
-                ind.monthly = Array.from({ length: 12 }, (_, i) => Number(ind.monthly?.[i] || 0));
-            }
-            if (!ind.monthly_2025 || !Array.isArray(ind.monthly_2025) || ind.monthly_2025.length !== 12) {
-                ind.monthly_2025 = Array.from({ length: 12 }, (_, i) => Number(ind.monthly_2025?.[i] || 0));
-            }
-
-            // PPA só existe para indicadores do tipo 'ppa'
-            if (ind.type === "ppa") {
-                if (!ind.ppa || typeof ind.ppa !== 'object') ind.ppa = { '2026': Number(ind.meta || 0) };
+            if (!ind.monthly || !Array.isArray(ind.monthly) || ind.monthly.length !== 12) ind.monthly = Array.from({ length: 12 }, (_, i) => indicatorNumber(ind.monthly?.[i]));
+            if (!ind.monthly_2025 || !Array.isArray(ind.monthly_2025) || ind.monthly_2025.length !== 12) ind.monthly_2025 = Array.from({ length: 12 }, (_, i) => indicatorNumber(ind.monthly_2025?.[i]));
+            ind.type = ind.type === 'ppa' ? 'ppa' : 'other';
+            ind.rule = ind.rule || 'Soma';
+            ind.meta = indicatorNumber(ind.meta);
+            ind.unit = ind.unit || 'un';
+            ind.product = ind.product || 'Sem produto';
+            ind.code = ind.code || (ind.type === 'ppa' ? 'PPA' : 'GERENCIAL');
+            ind.owner = ind.owner || '';
+            ind.source = ind.source || '';
+            ind.formula = ind.formula || '';
+            ind.periodicity = ind.periodicity || 'Mensal';
+            ind.direction = ind.direction || 'Quanto maior, melhor';
+            if (ind.type === 'ppa') {
+                if (!ind.ppa || typeof ind.ppa !== 'object') ind.ppa = { '2026': ind.meta };
                 if (!ind.ppaRealized || typeof ind.ppaRealized !== 'object') ind.ppaRealized = {};
             } else {
                 ind.ppa = {};
                 ind.ppaRealized = {};
             }
-
             return ind;
         }
 
@@ -4123,159 +4190,87 @@ window.openAddBacklogItemModal = (meetingId) => {
             const list = (dataStore.indicators && dataStore.indicators.length > 0) ? dataStore.indicators : INITIAL_INDICATORS;
             const found = list.find(x => x.id === id);
             if (!found) { console.warn('Indicador não encontrado:', id); return; }
-
             const ind = normalizeIndicator(found);
             selectedIndicatorId = ind.id;
             setAuditInfo('indicatorAuditInfo', ind);
 
-            // Cabeçalho
             document.getElementById('indId').value = ind.id;
             document.getElementById('indNameDisplay').innerText = ind.name || 'Indicador';
-            document.getElementById('indMetaDisplay').innerText = (Number(ind.meta || 0)).toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+            document.getElementById('indMetaDisplay').innerText = `${indicatorFmt(ind.meta)} ${ind.unit || ''}`;
+            const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ''; };
+            setVal('indEditName', ind.name || ''); setVal('indEditCode', ind.code || ''); setVal('indEditProduct', ind.product || '');
+            setVal('indEditOwner', ind.owner || ''); setVal('indEditSource', ind.source || ''); setVal('indEditType', ind.type || 'other');
+            setVal('indEditMeta', ind.meta || 0); setVal('indEditUnit', ind.unit || ''); setVal('indEditRule', ind.rule || 'Soma');
+            setVal('indEditPeriodicity', ind.periodicity || 'Mensal'); setVal('indEditDirection', ind.direction || 'Quanto maior, melhor'); setVal('indEditFormula', ind.formula || '');
 
-            // Seções condicionais
             const ppaSection = document.getElementById('indPpaSection');
             const ppaGrid = document.getElementById('indPpaGrid');
-            const months2025Wrapper = document.getElementById('indMonths2025Wrapper');
-            const monthsGrid2025 = document.getElementById('indMonthsGrid2025');
-
-            // PPA
             const hasPpa = ind.type === 'ppa';
             if (hasPpa) {
-                ppaSection.classList.remove('hidden');
-                ppaGrid.innerHTML = '';
-                const years = Array.from(new Set([ ...Object.keys(ind.ppa || {}), ...Object.keys(ind.ppaRealized || {}) ]))
-                    .sort();
-                years.forEach(y => {
-                    const metaVal = Number(ind.ppa?.[y] ?? 0);
-                    const realizedVal = (y !== '2026') ? Number(ind.ppaRealized?.[y] ?? 0) : null;
-
-                    const box = document.createElement('div');
-                    box.className = 'bg-white rounded-xl border border-slate-200 p-3';
-                    box.innerHTML = `
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">${y}</span>
-                            ${y === '2026' ? '<span class="text-[10px] font-black uppercase tracking-widest text-pink-600">Meta</span>' : '<span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Meta / Realizado</span>'}
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-[10px] font-black text-slate-400 uppercase">Meta</label>
-                                <input type="number" step="any" data-ppa-year="${y}" class="w-full mt-1 bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-pink-100" value="${metaVal}">
+                ppaSection.classList.remove('hidden'); ppaGrid.innerHTML = '';
+                ['2024','2025','2026','2027'].forEach(y => {
+                    const metaVal = indicatorNumber(ind.ppa?.[y]);
+                    const realizedVal = y !== '2026' ? indicatorNumber(ind.ppaRealized?.[y]) : '';
+                    ppaGrid.insertAdjacentHTML('beforeend', `
+                        <div class="bg-white rounded-xl border border-slate-200 p-3">
+                            <div class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">${y}</div>
+                            <div class="grid grid-cols-1 gap-2">
+                                <div><label class="text-[10px] font-black text-slate-400 uppercase">Meta</label><input type="number" step="any" data-ppa-year="${y}" class="w-full mt-1 bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-pink-100" value="${metaVal}"></div>
+                                ${y === '2026' ? '<div class="text-[11px] font-bold text-slate-400 bg-slate-50 border border-slate-200 rounded-lg p-2">Realizado apurado pelos meses de 2026</div>' : `<div><label class="text-[10px] font-black text-slate-400 uppercase">Realizado</label><input type="number" step="any" data-ppa-real-year="${y}" class="w-full mt-1 bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-pink-100" value="${realizedVal}"></div>`}
                             </div>
-                            ${y === '2026' ? '<div class="opacity-50"><label class="text-[10px] font-black text-slate-400 uppercase">Realizado</label><div class="w-full mt-1 bg-slate-100 border border-slate-200 rounded-lg p-2 text-sm font-bold text-slate-400">(editável em 2025)</div></div>' : `
-                            <div>
-                                <label class="text-[10px] font-black text-slate-400 uppercase">Realizado</label>
-                                <input type="number" step="any" data-ppa-real-year="${y}" class="w-full mt-1 bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-pink-100" value="${realizedVal}">
-                            </div>`}
-                        </div>
-                    `;
-                    ppaGrid.appendChild(box);
+                        </div>`);
                 });
-            } else {
-                ppaSection.classList.add('hidden');
-                ppaGrid.innerHTML = '';
-            }
+            } else { ppaSection.classList.add('hidden'); ppaGrid.innerHTML = ''; }
 
-            // Lançamento 2025 (histórico)
-            if (months2025Wrapper) {
-                months2025Wrapper.classList.remove('hidden');
-                monthsGrid2025.innerHTML = '';
-                MONTHS.forEach((m, idx) => {
-                    const v = Number(ind.monthly_2025[idx] || 0);
-                    const cell = document.createElement('div');
-                    cell.className = 'bg-white rounded-xl border border-indigo-200 p-3 shadow-sm';
-                    cell.innerHTML = `
-                        <div class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">${m}</div>
-                        <input type="number" step="any" data-month-2025="${idx}" class="w-full bg-indigo-50 border border-indigo-200 rounded-lg p-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100" value="${v}">
-                    `;
-                    monthsGrid2025.appendChild(cell);
-                });
+            const months2025Wrapper = document.getElementById('indMonths2025Wrapper');
+            const monthsGrid2025 = document.getElementById('indMonthsGrid2025');
+            if (months2025Wrapper && monthsGrid2025) {
+                months2025Wrapper.classList.remove('hidden'); monthsGrid2025.innerHTML = '';
+                MONTHS.forEach((m, idx) => monthsGrid2025.insertAdjacentHTML('beforeend', `<div class="bg-white rounded-xl border border-indigo-200 p-3 shadow-sm"><div class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">${m}</div><input type="number" step="any" data-month-2025="${idx}" class="w-full bg-indigo-50 border border-indigo-200 rounded-lg p-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100" value="${indicatorNumber(ind.monthly_2025[idx])}"></div>`));
             }
-
-            // Lançamento 2026 (realizado)
             const monthsGrid = document.getElementById('indMonthsGrid');
             monthsGrid.innerHTML = '';
-            MONTHS.forEach((m, idx) => {
-                const v = Number(ind.monthly[idx] || 0);
-                const cell = document.createElement('div');
-                cell.className = 'bg-white rounded-xl border border-slate-200 p-3 shadow-sm';
-                cell.innerHTML = `
-                    <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">${m}</div>
-                    <input type="number" step="any" data-month="${idx}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-pink-100" value="${v}">
-                `;
-                monthsGrid.appendChild(cell);
-            });
+            MONTHS.forEach((m, idx) => monthsGrid.insertAdjacentHTML('beforeend', `<div class="bg-white rounded-xl border border-slate-200 p-3 shadow-sm"><div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">${m}</div><input type="number" step="any" data-month="${idx}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-pink-100" value="${indicatorNumber(ind.monthly[idx])}"></div>`));
 
-            // Botão excluir aparece apenas se for doc do Firestore (tem id)
-            const delBtn = document.getElementById('btnDeleteIndicator');
-            if (delBtn) delBtn.classList.remove('hidden');
-
+            const delBtn = document.getElementById('btnDeleteIndicator'); if (delBtn) delBtn.classList.remove('hidden');
             toggleModal('indicatorModal');
         };
 
         window.saveIndicator = async () => {
             const id = selectedIndicatorId || document.getElementById('indId').value;
             if (!id) { alert('Não foi possível identificar o indicador.'); return; }
-
             const list = (dataStore.indicators && dataStore.indicators.length > 0) ? dataStore.indicators : INITIAL_INDICATORS;
             const ind = normalizeIndicator({ ...(list.find(x => x.id === id) || {}) });
+            const getVal = id => document.getElementById(id)?.value ?? '';
+            ind.name = getVal('indEditName') || ind.name;
+            ind.code = getVal('indEditCode') || (getVal('indEditType') === 'ppa' ? 'PPA' : 'GERENCIAL');
+            ind.product = getVal('indEditProduct') || 'Sem produto';
+            ind.owner = getVal('indEditOwner'); ind.source = getVal('indEditSource'); ind.formula = getVal('indEditFormula');
+            ind.type = getVal('indEditType') === 'ppa' ? 'ppa' : 'other';
+            ind.meta = indicatorNumber(getVal('indEditMeta'));
+            ind.unit = getVal('indEditUnit') || 'un'; ind.rule = getVal('indEditRule') || 'Soma'; ind.periodicity = getVal('indEditPeriodicity') || 'Mensal'; ind.direction = getVal('indEditDirection') || 'Quanto maior, melhor';
 
-            // 2026
-            document.querySelectorAll('#indMonthsGrid input[data-month]').forEach(inp => {
-                const idx = Number(inp.getAttribute('data-month'));
-                const val = Number(String(inp.value).replace(',', '.'));
-                ind.monthly[idx] = isNaN(val) ? 0 : val;
-            });
+            document.querySelectorAll('#indMonthsGrid input[data-month]').forEach(inp => { ind.monthly[Number(inp.getAttribute('data-month'))] = indicatorNumber(inp.value); });
+            document.querySelectorAll('#indMonthsGrid2025 input[data-month-2025]').forEach(inp => { ind.monthly_2025[Number(inp.getAttribute('data-month-2025'))] = indicatorNumber(inp.value); });
+            if (ind.type === 'ppa') {
+                if (!ind.ppa) ind.ppa = {}; if (!ind.ppaRealized) ind.ppaRealized = {};
+                document.querySelectorAll('#indPpaGrid input[data-ppa-year]').forEach(inp => { ind.ppa[inp.getAttribute('data-ppa-year')] = indicatorNumber(inp.value); });
+                document.querySelectorAll('#indPpaGrid input[data-ppa-real-year]').forEach(inp => { ind.ppaRealized[inp.getAttribute('data-ppa-real-year')] = indicatorNumber(inp.value); });
+                ind.ppa['2026'] = ind.ppa['2026'] || ind.meta;
+            } else { ind.ppa = {}; ind.ppaRealized = {}; }
 
-            // 2025
-            document.querySelectorAll('#indMonthsGrid2025 input[data-month-2025]').forEach(inp => {
-                const idx = Number(inp.getAttribute('data-month-2025'));
-                const val = Number(String(inp.value).replace(',', '.'));
-                ind.monthly_2025[idx] = isNaN(val) ? 0 : val;
-            });
-
-            // PPA
-            document.querySelectorAll('#indPpaGrid input[data-ppa-year]').forEach(inp => {
-                const year = inp.getAttribute('data-ppa-year');
-                const val = Number(String(inp.value).replace(',', '.'));
-                if (!ind.ppa) ind.ppa = {};
-                ind.ppa[year] = isNaN(val) ? 0 : val;
-            });
-            document.querySelectorAll('#indPpaGrid input[data-ppa-real-year]').forEach(inp => {
-                const year = inp.getAttribute('data-ppa-real-year');
-                const val = Number(String(inp.value).replace(',', '.'));
-                if (!ind.ppaRealized) ind.ppaRealized = {};
-                ind.ppaRealized[year] = isNaN(val) ? 0 : val;
-            });
-
-            // Persistência no Firestore
             try {
-                await setDoc(
-                    doc(db, 'artifacts', appId, 'public', 'data', 'indicators', id),
-                    {
-                        ...ind,
-                        id,
-                        ...buildAuditFields(ind)},
-                    { merge: true }
-                );
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'indicators', id), { ...ind, id, ...buildAuditFields(ind) }, { merge: true });
                 toggleModal('indicatorModal');
-            } catch (err) {
-                console.error('Erro ao salvar indicador:', err);
-                alert('Erro ao salvar no Firebase. Veja o console.');
-            }
+            } catch (err) { console.error('Erro ao salvar indicador:', err); alert('Erro ao salvar no Firebase. Veja o console.'); }
         };
 
         window.deleteIndicator = async () => {
             const id = selectedIndicatorId || document.getElementById('indId').value;
             if (!id) return;
             if (!confirm('Excluir este indicador? Essa ação não pode ser desfeita.')) return;
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'indicators', id));
-                toggleModal('indicatorModal');
-            } catch (err) {
-                console.error('Erro ao excluir indicador:', err);
-                alert('Erro ao excluir no Firebase. Veja o console.');
-            }
+            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'indicators', id)); toggleModal('indicatorModal'); }
+            catch (err) { console.error('Erro ao excluir indicador:', err); alert('Erro ao excluir no Firebase. Veja o console.'); }
         };
 
         /* =================== FIM: INDICADORES: ABRIR / EDITAR / SALVAR =================== */
@@ -4935,158 +4930,80 @@ window.setListFilter = f => { if(f === 'Concluído' && typeof window.openComplet
 
 /* =================== CORRECAO: FUNCOES PARA NOVO INDICADOR =================== */
 
-
-
 function toggleNewIndicatorTypeUI() {
   const type = document.getElementById("newIndType")?.value || "other";
   const isPpa = type === "ppa";
-
   const simple = document.getElementById("newIndPpaSimpleWrapper");
-  const optional = document.getElementById("newIndPpaOptionalWrapper");
-
   if (simple) simple.classList.toggle("hidden-field", !isPpa);
-  if (optional) optional.classList.toggle("hidden-field", !isPpa);
-
-  // Se for "Outros", zera campos de PPA pra não “herdar” nada
   if (!isPpa) {
-    const idsToClear = [
-      "newIndMeta2024","newIndReal2024","newIndMeta2025","newIndReal2025","newIndMeta2027",
-      "newIndPpa2025","newIndPpa2026","newIndPpaReal2025"
-    ];
-    idsToClear.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = "";
-    });
+    ["newIndMeta2024","newIndReal2024","newIndMeta2025","newIndReal2025","newIndMeta2026","newIndMeta2027"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
   }
 }
+
 window.openNewIndicatorModal = function(type = "other") {
   const form = document.getElementById("newIndicatorForm");
   if (form) form.reset();
-
-  // Define o tipo no select (e não em atributo do modal)
   const typeSelect = document.getElementById("newIndType");
-  if (typeSelect) typeSelect.value = type;
-
-  // Ajusta campos visíveis de acordo com o tipo (PPA x Outros)
+  if (typeSelect) { typeSelect.value = type; typeSelect.onchange = toggleNewIndicatorTypeUI; }
   toggleNewIndicatorTypeUI();
-  if (typeSelect) typeSelect.onchange = toggleNewIndicatorTypeUI;
 
-  // Pré-preenche meta PPA 2026 com a Meta 2026 (se existir)
   const metaEl = document.getElementById("newIndMeta");
-  const ppa2026El = document.getElementById("newIndPpa2026");
-  if (metaEl && ppa2026El) {
-    metaEl.addEventListener('input', () => { ppa2026El.value = metaEl.value; }, { once: true });
-  }
+  const ppa2026El = document.getElementById("newIndMeta2026");
+  if (metaEl && ppa2026El) metaEl.oninput = () => { if ((document.getElementById("newIndType")?.value || "other") === "ppa") ppa2026El.value = metaEl.value; };
 
-  // Gera os grids de meses (2025 e 2026) para permitir acompanhamento desde o cadastro
   const grid2025 = document.getElementById("newIndMonthsGrid2025");
   const grid2026 = document.getElementById("newIndMonthsGrid2026");
   const months = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-
   function buildMonthGrid(grid, prefix) {
     if (!grid) return;
     grid.innerHTML = "";
-    months.forEach((m, i) => {
-      grid.insertAdjacentHTML('beforeend',
-        `<div class="flex flex-col">
-           <label class="field-label">${m}</label>
-           <input type="number" step="0.01" id="${prefix}_${i}" class="input-style" value="0">
-         </div>`
-      );
-    });
+    months.forEach((m, i) => grid.insertAdjacentHTML('beforeend', `<div class="flex flex-col"><label class="field-label">${m}</label><input type="number" step="0.01" id="${prefix}_${i}" class="input-style" value="0"></div>`));
   }
   buildMonthGrid(grid2025, "newIndMonth2025");
   buildMonthGrid(grid2026, "newIndMonth2026");
-
   toggleModal("newIndicatorModal");
 };
 
-
-
 window.createIndicator = async function createIndicator() {
-
-  // Evita criacao duplicada (duplo clique, latencia, Enter, etc.)
-  // E, como protecao extra, usa um id fixo enquanto a criacao estiver em andamento
-  // (assim, mesmo que esta funcao dispare duas vezes por algum motivo, ela sobrescreve o mesmo doc).
   if (window.__creatingIndicator) return;
   window.__creatingIndicator = true;
-  if (!window.__pendingIndicatorDocId) {
-    window.__pendingIndicatorDocId = (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()));
-  }
+  if (!window.__pendingIndicatorDocId) window.__pendingIndicatorDocId = (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()));
   const btn = document.getElementById("btnCreateIndicator");
   if (btn) { btn.disabled = true; btn.classList.add("opacity-60","cursor-not-allowed"); }
+  const releaseCreate = () => { window.__creatingIndicator = false; const b = document.getElementById("btnCreateIndicator"); if (b) { b.disabled = false; b.classList.remove("opacity-60","cursor-not-allowed"); } };
 
-  const releaseCreate = () => {
-    window.__creatingIndicator = false;
-    const b = document.getElementById("btnCreateIndicator");
-    if (b) { b.disabled = false; b.classList.remove("opacity-60","cursor-not-allowed"); }
-  };
-
-  const name = document.getElementById("newIndName").value;
-  const product = document.getElementById("newIndProduct").value;
-  const unit = document.getElementById("newIndUnit").value;
-  const rule = document.getElementById("newIndRule").value;
-  const type = document.getElementById("newIndType").value;
+  const get = id => document.getElementById(id)?.value ?? "";
+  const name = get("newIndName").trim();
+  const type = get("newIndType") || "other";
   const isPpa = type === "ppa";
+  const metaBase2026 = indicatorNumber(get("newIndMeta"));
 
-  // Meta base (sempre): o campo 'Meta 2026' do topo funciona para PPA e Outros
-  const metaBase2026 = Number(document.getElementById("newIndMeta").value || 0);
+  if (!name || !metaBase2026) { alert("Preencha ao menos o nome do indicador e a Meta 2026."); releaseCreate(); return; }
 
-  if (!name || !metaBase2026) {
-    alert("Preencha ao menos o nome do indicador e a Meta 2026.");
-    releaseCreate();
-    return;
-  }
-
-  // Para indicadores PPA, se o campo 'Meta 2026' do bloco PPA estiver preenchido, ele sobrescreve
-  const metaPpa2026 = Number(document.getElementById("newIndMeta2026")?.value || 0);
+  const metaPpa2026 = indicatorNumber(get("newIndMeta2026"));
   const m2026 = metaPpa2026 || metaBase2026;
-
-  // PPA (somente quando type === 'ppa')
-  let ppa = {};
-  let ppaRealized = {};
-
+  let ppa = {}, ppaRealized = {};
   if (isPpa) {
-    const m2024 = Number(document.getElementById("newIndMeta2024").value || 0);
-    const r2024 = Number(document.getElementById("newIndReal2024").value || 0);
-    const m2025 = Number(document.getElementById("newIndMeta2025").value || 0);
-    const r2025 = Number(document.getElementById("newIndReal2025").value || 0);
-    const m2027 = Number(document.getElementById("newIndMeta2027").value || 0);
-
-    // Campos opcionais de PPA (detalhado)
-    const ppa2025 = Number(document.getElementById("newIndPpa2025")?.value || 0);
-    const ppa2026 = Number(document.getElementById("newIndPpa2026")?.value || 0);
-    const ppaReal2025 = Number(document.getElementById("newIndPpaReal2025")?.value || 0);
-
-    ppa = {
-      "2024": m2024,
-      "2025": ppa2025 || m2025,
-      "2026": ppa2026 || m2026,
-      "2027": m2027
-    };
-
-    ppaRealized = {
-      "2024": r2024,
-      "2025": ppaReal2025 || r2025
-    };
+    ppa = { "2024": indicatorNumber(get("newIndMeta2024")), "2025": indicatorNumber(get("newIndMeta2025")), "2026": m2026, "2027": indicatorNumber(get("newIndMeta2027")) };
+    ppaRealized = { "2024": indicatorNumber(get("newIndReal2024")), "2025": indicatorNumber(get("newIndReal2025")) };
   }
 
-  // Acompanhamento mensal inicial (se preenchido)
-  const monthly_2025 = Array.from({ length: 12 }, (_, i) =>
-    Number(document.getElementById(`newIndMonth2025_${i}`)?.value || 0)
-  );
-  const monthly = Array.from({ length: 12 }, (_, i) =>
-    Number(document.getElementById(`newIndMonth2026_${i}`)?.value || 0)
-  );
+  const monthly_2025 = Array.from({ length: 12 }, (_, i) => indicatorNumber(get(`newIndMonth2025_${i}`)));
+  const monthly = Array.from({ length: 12 }, (_, i) => indicatorNumber(get(`newIndMonth2026_${i}`)));
 
   const newIndicator = {
     name,
-    product: product || "OUTROS INDICADORES",
-    unit: unit || "un",
-    rule: rule || "Soma",
+    product: get("newIndProduct").trim() || "Sem produto",
+    unit: get("newIndUnit").trim() || "un",
+    rule: get("newIndRule") || "Soma",
     type,
     meta: m2026,
-    code: (type === 'ppa') ? 'NOVO' : 'OUTRO',
+    code: get("newIndCode").trim() || (isPpa ? "PPA" : "GERENCIAL"),
+    owner: get("newIndOwner").trim(),
+    source: get("newIndSource").trim(),
+    formula: get("newIndFormula").trim(),
+    periodicity: get("newIndPeriodicity") || "Mensal",
+    direction: get("newIndDirection") || "Quanto maior, melhor",
     ppa,
     ppaRealized,
     monthly,
@@ -5096,23 +5013,10 @@ window.createIndicator = async function createIndicator() {
 
   try {
     const newId = window.__pendingIndicatorDocId;
-    await setDoc(
-      doc(db, "artifacts", appId, "public", "data", "indicators", newId),
-      newIndicator
-    );
-
-    // Fecha modal. A lista sera atualizada pelo onSnapshot (fonte de verdade) sem risco de duplicar cards.
+    await setDoc(doc(db, "artifacts", appId, "public", "data", "indicators", newId), newIndicator);
     toggleModal("newIndicatorModal");
-
-  } catch (err) {
-    console.error(err);
-    alert("Erro ao criar indicador. Veja o console.");
-  } finally {
-    window.__creatingIndicator = false;
-    window.__pendingIndicatorDocId = null;
-    const btn = document.getElementById("btnCreateIndicator");
-    if (btn) { btn.disabled = false; btn.classList.remove("opacity-60","cursor-not-allowed"); }
-  }
+  } catch (err) { console.error(err); alert("Erro ao criar indicador. Veja o console."); }
+  finally { window.__creatingIndicator = false; window.__pendingIndicatorDocId = null; const btn = document.getElementById("btnCreateIndicator"); if (btn) { btn.disabled = false; btn.classList.remove("opacity-60","cursor-not-allowed"); } }
 };
 
 /* =================== FIM DA CORRECAO =================== */
