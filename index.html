@@ -1428,6 +1428,687 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   }
 }
 
+
+
+/* ===============================
+   PORTARIA NORMATIVA – ATRIBUIÇÕES EM CARD FLUTUANTE
+   Mostra as atribuições ao passar o mouse, focar pelo teclado ou clicar no círculo.
+   =============================== */
+#portariaList {
+  overflow-x: hidden !important;
+  padding-bottom: 1rem;
+}
+.portaria-org-shell.circular {
+  display: block !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+.portaria-circular-board {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: 1500px !important;
+  overflow: visible !important;
+}
+.portaria-network-viewport {
+  min-height: 1420px !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+.portaria-network-inner {
+  left: 50% !important;
+  top: 0 !important;
+  margin-left: -750px !important;
+  margin-top: 0 !important;
+  transform: scale(.88) !important;
+  transform-origin: top center !important;
+  overflow: visible !important;
+}
+@media (max-width: 1440px) {
+  .portaria-circular-board { min-height: 1370px !important; }
+  .portaria-network-viewport { min-height: 1290px !important; }
+  .portaria-network-inner { transform: scale(.78) !important; }
+}
+@media (max-width: 1180px) {
+  .portaria-circular-board { min-height: 1210px !important; }
+  .portaria-network-viewport { min-height: 1130px !important; }
+  .portaria-network-inner { transform: scale(.68) !important; }
+}
+@media (max-width: 900px) {
+  .portaria-circular-board { min-height: 1000px !important; }
+  .portaria-network-viewport { min-height: 920px !important; }
+  .portaria-network-inner { transform: scale(.55) !important; }
+}
+.portaria-circle-node {
+  overflow: visible !important;
+  z-index: 8;
+}
+.portaria-circle-node:hover,
+.portaria-circle-node:focus-visible,
+.portaria-circle-node.active {
+  z-index: 90;
+}
+.portaria-node-popover {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 16px);
+  transform: translateY(-50%) scale(.96);
+  width: min(430px, 42vw);
+  max-height: 440px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  text-align: left;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(203,213,225,.95);
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 24px 54px rgba(15,23,42,.22);
+  backdrop-filter: blur(10px);
+  transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+  color: #0f172a;
+}
+.portaria-node-popover::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -8px;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%) rotate(45deg);
+  background: #ffffff;
+  border-left: 1px solid rgba(203,213,225,.95);
+  border-bottom: 1px solid rgba(203,213,225,.95);
+}
+.portaria-node-popover.popover-left {
+  left: auto;
+  right: calc(100% + 16px);
+}
+.portaria-node-popover.popover-left::before {
+  left: auto;
+  right: -8px;
+  border-left: 0;
+  border-bottom: 0;
+  border-right: 1px solid rgba(203,213,225,.95);
+  border-top: 1px solid rgba(203,213,225,.95);
+}
+.portaria-node-popover.popover-up {
+  top: auto;
+  bottom: calc(100% + 16px);
+  transform: translateX(-18%) scale(.96);
+}
+.portaria-node-popover.popover-up::before {
+  top: auto;
+  bottom: -8px;
+  left: 48px;
+  transform: rotate(45deg);
+  border: 0;
+  border-right: 1px solid rgba(203,213,225,.95);
+  border-bottom: 1px solid rgba(203,213,225,.95);
+}
+.portaria-circle-node:hover .portaria-node-popover,
+.portaria-circle-node:focus-visible .portaria-node-popover,
+.portaria-circle-node.active .portaria-node-popover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+}
+.portaria-circle-node:hover .portaria-node-popover.popover-up,
+.portaria-circle-node:focus-visible .portaria-node-popover.popover-up,
+.portaria-circle-node.active .portaria-node-popover.popover-up {
+  transform: translateX(-18%) scale(1);
+}
+.portaria-popover-head {
+  padding: .95rem 1rem .8rem;
+  border-radius: 1.2rem 1.2rem 0 0;
+  background: linear-gradient(135deg, #004077, #0067b1);
+  color: #ffffff;
+}
+.portaria-popover-type {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .28rem .52rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.25);
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.portaria-popover-title {
+  margin-top: .55rem;
+  font-size: .9rem;
+  line-height: 1.22;
+  font-weight: 900;
+}
+.portaria-popover-preamble {
+  margin-top: .35rem;
+  font-size: 11px;
+  line-height: 1.4;
+  color: rgba(255,255,255,.88);
+  font-weight: 700;
+}
+.portaria-popover-body {
+  padding: .85rem;
+  overflow-y: auto;
+}
+.portaria-popover-count {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  margin-bottom: .65rem;
+  padding: .32rem .55rem;
+  border-radius: 999px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  color: #1d4ed8;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.portaria-popover-list {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+.portaria-popover-item {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: .55rem;
+  align-items: start;
+  padding: .55rem;
+  border-radius: .85rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+.portaria-popover-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3e8ff;
+  color: #7e22ce;
+  font-size: 9px;
+  font-weight: 900;
+}
+.portaria-popover-text {
+  font-size: 11.3px;
+  line-height: 1.42;
+  color: #334155;
+  font-weight: 700;
+}
+@media (max-width: 760px) {
+  .portaria-node-popover {
+    width: 340px;
+    max-height: 420px;
+  }
+}
+
+
+
+/* ===============================
+   PORTARIA NORMATIVA – ORGANOGRAMA MAIS LARGO
+   Distribui os círculos em uma área horizontal maior, sem retomar a coluna lateral.
+   =============================== */
+#portariaList {
+  overflow-x: hidden !important;
+}
+.portaria-circular-board {
+  min-height: 1540px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.portaria-network-viewport {
+  min-height: 1460px !important;
+  overflow: visible !important;
+}
+.portaria-network-inner {
+  width: 1700px !important;
+  height: 1660px !important;
+  left: 50% !important;
+  margin-left: -850px !important;
+  transform: scale(.92) !important;
+  transform-origin: top center !important;
+}
+.portaria-network-svg {
+  width: 1700px !important;
+  height: 1660px !important;
+}
+.portaria-ring.r1 { left: 250px !important; top: 510px !important; width: 315px !important; height: 315px !important; }
+.portaria-ring.r2 { left: 85px !important; top: 230px !important; width: 1240px !important; height: 1190px !important; }
+.portaria-ring.r3 { left: 30px !important; top: 35px !important; width: 1580px !important; height: 1570px !important; opacity: .34 !important; }
+.portaria-center-mark { left: 367px !important; top: 617px !important; }
+@media (max-width: 1440px) {
+  .portaria-circular-board { min-height: 1450px !important; }
+  .portaria-network-viewport { min-height: 1370px !important; }
+  .portaria-network-inner { transform: scale(.84) !important; }
+}
+@media (max-width: 1180px) {
+  .portaria-circular-board { min-height: 1250px !important; }
+  .portaria-network-viewport { min-height: 1170px !important; }
+  .portaria-network-inner { transform: scale(.70) !important; }
+}
+@media (max-width: 900px) {
+  .portaria-circular-board { min-height: 1050px !important; }
+  .portaria-network-viewport { min-height: 970px !important; }
+  .portaria-network-inner { transform: scale(.56) !important; }
+}
+
+
+/* ===============================
+   PORTARIA NORMATIVA – MARGENS AMPLIADAS DO ORGANOGRAMA
+   Cria mais respiro nas laterais e no topo/base do mapa, mantendo o card flutuante.
+   =============================== */
+#portariaList {
+  padding-left: clamp(1rem, 2vw, 2rem) !important;
+  padding-right: clamp(1rem, 2vw, 2rem) !important;
+  padding-bottom: 2rem !important;
+}
+.portaria-circular-board {
+  padding: clamp(1.4rem, 2.4vw, 2.8rem) clamp(1.6rem, 3vw, 3.4rem) 2.8rem !important;
+  box-sizing: border-box !important;
+}
+.portaria-circular-topbar {
+  padding: 1.25rem 1.35rem 1rem !important;
+  margin-bottom: 1rem !important;
+}
+.portaria-network-viewport {
+  margin: 1rem clamp(1.2rem, 2.6vw, 2.8rem) 1.8rem !important;
+  width: calc(100% - clamp(2.4rem, 5.2vw, 5.6rem)) !important;
+  border-radius: 1.35rem !important;
+  box-sizing: border-box !important;
+}
+.portaria-network-inner {
+  margin-left: -850px !important;
+  transform: scale(.88) !important;
+}
+.portaria-map-legend {
+  left: clamp(2rem, 3.5vw, 3.75rem) !important;
+  bottom: clamp(2rem, 3.5vw, 3.75rem) !important;
+}
+@media (max-width: 1440px) {
+  .portaria-network-inner { transform: scale(.80) !important; }
+}
+@media (max-width: 1180px) {
+  #portariaList { padding-left: .75rem !important; padding-right: .75rem !important; }
+  .portaria-circular-board { padding-left: 1.2rem !important; padding-right: 1.2rem !important; }
+  .portaria-network-viewport {
+    margin-left: .9rem !important;
+    margin-right: .9rem !important;
+    width: calc(100% - 1.8rem) !important;
+  }
+  .portaria-network-inner { transform: scale(.67) !important; }
+}
+@media (max-width: 900px) {
+  .portaria-network-viewport { margin-left: .5rem !important; margin-right: .5rem !important; width: calc(100% - 1rem) !important; }
+  .portaria-network-inner { transform: scale(.54) !important; }
+}
+
+
+/* =====================================================
+   PORTARIA NORMATIVA 44 – REFINO VISUAL DO ORGANOGRAMA
+   Versão mais executiva: mapa amplo, hierarquia clara,
+   legenda fixa no canto inferior esquerdo e popovers limpos.
+   ===================================================== */
+#portariaView {
+  width: 100%;
+}
+#portariaList {
+  width: 100% !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+.portaria-org-shell.circular {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+.portaria-circular-board {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 1420px !important;
+  padding: 1.25rem !important;
+  border-radius: 2rem !important;
+  border: 1px solid rgba(203, 213, 225, .9) !important;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(0, 64, 119, .10), transparent 26%),
+    radial-gradient(circle at 82% 28%, rgba(91, 177, 232, .13), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, .08) !important;
+  overflow: hidden !important;
+}
+.portaria-circular-topbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  margin: 0 0 1rem !important;
+  padding: 1rem 1.1rem !important;
+  border: 1px solid rgba(226, 232, 240, .95) !important;
+  border-radius: 1.35rem !important;
+  background: rgba(255, 255, 255, .86) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .05) !important;
+  backdrop-filter: blur(10px) !important;
+}
+.portaria-circular-title {
+  position: relative !important;
+  margin: 0 !important;
+  padding-left: .85rem !important;
+  font-size: clamp(1.05rem, 1.5vw, 1.45rem) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -.035em !important;
+  color: #0f172a !important;
+}
+.portaria-circular-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .15rem;
+  bottom: .12rem;
+  width: 5px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #004077, #5bb1e8);
+}
+.portaria-circular-topbar .text-\[11px\] {
+  margin-top: .35rem !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+  font-weight: 700 !important;
+}
+.portaria-circular-actions { gap: .55rem !important; }
+.portaria-zoom-btn {
+  min-height: 38px !important;
+  border-radius: 999px !important;
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #004077 !important;
+  box-shadow: 0 6px 14px rgba(0, 64, 119, .08) !important;
+}
+.portaria-zoom-btn:hover {
+  background: #dbeafe !important;
+  border-color: #93c5fd !important;
+  transform: translateY(-1px) !important;
+}
+.portaria-network-viewport {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 1300px !important;
+  margin: 0 !important;
+  border-radius: 1.65rem !important;
+  border: 1px solid rgba(226, 232, 240, .95) !important;
+  background:
+    linear-gradient(90deg, rgba(148, 163, 184, .10) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(148, 163, 184, .10) 1px, transparent 1px),
+    radial-gradient(circle at 48% 48%, rgba(0, 64, 119, .05), transparent 34%),
+    rgba(255, 255, 255, .72) !important;
+  background-size: 76px 76px, 76px 76px, auto, auto !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+.portaria-network-inner {
+  width: 1700px !important;
+  height: 1660px !important;
+  left: 50% !important;
+  top: 0 !important;
+  margin-left: -850px !important;
+  margin-top: 0 !important;
+  transform: scale(.82) !important;
+  transform-origin: top center !important;
+  overflow: visible !important;
+}
+.portaria-network-svg { width: 1700px !important; height: 1660px !important; }
+.portaria-network-svg path {
+  stroke: rgba(100, 116, 139, .30) !important;
+  stroke-width: 1.35 !important;
+  stroke-dasharray: 8 8 !important;
+}
+.portaria-network-svg path.edge-active {
+  stroke: #004077 !important;
+  stroke-width: 2.8 !important;
+  stroke-dasharray: none !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 64, 119, .18));
+}
+.portaria-ring {
+  border: 1px dashed rgba(0, 64, 119, .18) !important;
+  background: rgba(255,255,255,.18) !important;
+}
+.portaria-ring.r1 { left: 250px !important; top: 510px !important; width: 315px !important; height: 315px !important; }
+.portaria-ring.r2 { left: 85px !important; top: 230px !important; width: 1240px !important; height: 1190px !important; }
+.portaria-ring.r3 { left: 30px !important; top: 35px !important; width: 1580px !important; height: 1570px !important; opacity: .30 !important; }
+.portaria-center-mark {
+  left: 367px !important;
+  top: 617px !important;
+  width: 96px !important;
+  height: 96px !important;
+  border-radius: 28px !important;
+  background: linear-gradient(135deg, #004077, #5bb1e8) !important;
+  opacity: .10 !important;
+}
+.portaria-circle-node {
+  width: var(--size) !important;
+  height: var(--size) !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, .16), 0 0 0 1px rgba(15, 23, 42, .05) !important;
+  transition: transform .22s ease, box-shadow .22s ease, opacity .18s ease, filter .18s ease !important;
+}
+.portaria-circle-node:hover,
+.portaria-circle-node:focus-visible {
+  transform: scale(1.10) !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, .22), 0 0 0 7px rgba(91, 177, 232, .17) !important;
+}
+.portaria-circle-node.active {
+  transform: scale(1.15) !important;
+  box-shadow: 0 22px 44px rgba(0, 64, 119, .28), 0 0 0 9px rgba(0, 64, 119, .16) !important;
+}
+.portaria-circle-node.type-Diretoria {
+  background: linear-gradient(135deg, #00345f, #004077 58%, #0067b1) !important;
+  width: 96px !important;
+  height: 96px !important;
+}
+.portaria-circle-node.type-Coordenadoria {
+  background: linear-gradient(135deg, #005a9c, #0072bc) !important;
+  width: 84px !important;
+  height: 84px !important;
+}
+.portaria-circle-node.type-Divisão {
+  background: linear-gradient(135deg, #5bb1e8, #0284c7) !important;
+  width: 70px !important;
+  height: 70px !important;
+}
+.portaria-circle-node.type-Serviço {
+  width: 58px !important;
+  height: 58px !important;
+  background: #ffffff !important;
+  color: #004077 !important;
+  border-color: #bfdbfe !important;
+  box-shadow: 0 8px 18px rgba(0, 64, 119, .12), 0 0 0 1px rgba(191, 219, 254, .95) !important;
+}
+.portaria-circle-node .acro {
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  letter-spacing: -.035em !important;
+}
+.portaria-circle-node.type-Serviço .acro { font-size: 10px !important; }
+.portaria-circle-node .small-label {
+  max-width: 118px !important;
+  margin-top: .18rem !important;
+  font-size: 8.4px !important;
+  line-height: 1.1 !important;
+  font-weight: 850 !important;
+}
+.portaria-circle-node .art,
+.portaria-circle-node.type-Serviço .art {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  top: calc(100% + 6px) !important;
+  min-width: 44px !important;
+  min-height: 17px !important;
+  padding: .13rem .42rem !important;
+  font-size: 7.5px !important;
+  line-height: 1 !important;
+  color: #334155 !important;
+  background: rgba(255,255,255,.96) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 3px 8px rgba(15,23,42,.09) !important;
+}
+.portaria-circle-node.is-dimmed { opacity: .20 !important; filter: grayscale(100%) !important; }
+.portaria-map-legend {
+  left: 1.1rem !important;
+  bottom: 1.1rem !important;
+  min-width: 210px !important;
+  padding: .9rem !important;
+  border-radius: 1.15rem !important;
+  background: rgba(255, 255, 255, .94) !important;
+  border: 1px solid rgba(226, 232, 240, .95) !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, .10) !important;
+  backdrop-filter: blur(10px) !important;
+}
+.portaria-map-legend strong { color: #004077 !important; }
+.portaria-legend-dot.diretoria { background: #004077 !important; }
+.portaria-legend-dot.coord { background: #0072bc !important; }
+.portaria-legend-dot.divisao { background: #5bb1e8 !important; }
+.portaria-legend-dot.servico { background: #ffffff !important; border: 1px solid #93c5fd !important; }
+.portaria-node-popover {
+  width: min(440px, 40vw) !important;
+  max-height: 460px !important;
+  border-radius: 1.25rem !important;
+  border: 1px solid rgba(203, 213, 225, .95) !important;
+  box-shadow: 0 26px 58px rgba(15, 23, 42, .24) !important;
+}
+.portaria-popover-head {
+  background: linear-gradient(135deg, #00345f, #004077 55%, #0072bc) !important;
+}
+.portaria-popover-title { font-size: .94rem !important; }
+.portaria-popover-item { background: #ffffff !important; border-color: #e2e8f0 !important; }
+.portaria-popover-num { background: #eff6ff !important; color: #004077 !important; }
+.portaria-popover-count { background: #eff6ff !important; border-color: #bfdbfe !important; color: #004077 !important; }
+@media (min-width: 1536px) {
+  .portaria-circular-board { min-height: 1500px !important; }
+  .portaria-network-viewport { min-height: 1380px !important; }
+  .portaria-network-inner { transform: scale(.87) !important; }
+}
+@media (max-width: 1440px) {
+  .portaria-circular-board { min-height: 1330px !important; }
+  .portaria-network-viewport { min-height: 1210px !important; }
+  .portaria-network-inner { transform: scale(.75) !important; }
+}
+@media (max-width: 1180px) {
+  .portaria-circular-board { min-height: 1180px !important; padding: 1rem !important; }
+  .portaria-network-viewport { min-height: 1060px !important; }
+  .portaria-network-inner { transform: scale(.64) !important; }
+  .portaria-circular-topbar { align-items: flex-start !important; flex-direction: column !important; }
+}
+@media (max-width: 900px) {
+  .portaria-circular-board { min-height: 1000px !important; }
+  .portaria-network-viewport { min-height: 890px !important; overflow-x: auto !important; overflow-y: visible !important; }
+  .portaria-network-inner { left: 0 !important; margin-left: 0 !important; transform: scale(.52) !important; transform-origin: top left !important; }
+  .portaria-map-legend { position: absolute !important; left: .9rem !important; bottom: .9rem !important; }
+  .portaria-node-popover { width: 340px !important; }
+}
+
+
+/* =====================================================
+   AJUSTE SOLICITADO – largura do organograma e estado inicial
+   O container do organograma passa a ocupar a mesma largura do card superior,
+   sem herdar a grade antiga de duas colunas da classe .portaria-org-shell.
+   ===================================================== */
+#portariaView > #portariaList {
+  display: block !important;
+  grid-template-columns: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+#portariaView > #portariaList > .portaria-org-shell.circular,
+#portariaView .portaria-circular-board,
+#portariaView .portaria-network-viewport {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+#portariaView .portaria-circular-board {
+  box-sizing: border-box !important;
+}
+
+
+/* =====================================================
+   AJUSTE FINO – limite inferior do card do organograma
+   Amplia a área útil na base para que os últimos nós e etiquetas
+   não fiquem cortados no limite inferior do card.
+   ===================================================== */
+#portariaView .portaria-circular-board {
+  min-height: 1510px !important;
+  padding-bottom: 4.5rem !important;
+}
+#portariaView .portaria-network-viewport {
+  min-height: 1390px !important;
+  padding-bottom: 90px !important;
+  box-sizing: border-box !important;
+}
+@media (min-width: 1536px) {
+  #portariaView .portaria-circular-board { min-height: 1590px !important; }
+  #portariaView .portaria-network-viewport { min-height: 1470px !important; }
+}
+@media (max-width: 1440px) {
+  #portariaView .portaria-circular-board { min-height: 1420px !important; }
+  #portariaView .portaria-network-viewport { min-height: 1300px !important; }
+}
+@media (max-width: 1180px) {
+  #portariaView .portaria-circular-board { min-height: 1270px !important; }
+  #portariaView .portaria-network-viewport { min-height: 1150px !important; }
+}
+@media (max-width: 900px) {
+  #portariaView .portaria-circular-board { min-height: 1080px !important; }
+  #portariaView .portaria-network-viewport { min-height: 970px !important; }
+}
+
+
+
+/* =====================================================
+   AJUSTE FINO – espaçamento entre card da Portaria e organograma
+   + cores fixas nos cards/pop-ups de atribuições
+   ===================================================== */
+#portariaView > #portariaList {
+  margin-top: 1.35rem !important;
+}
+
+#portariaView .portaria-org-shell.circular {
+  margin-top: 0 !important;
+}
+
+/* Cards/pop-ups de atribuições sem degradê */
+#portariaView .portaria-popover-head,
+#portariaView .portaria-attrib-modal-head,
+#portariaView .portaria-detail-panel.circular .portaria-detail-head {
+  background: #004077 !important;
+  background-image: none !important;
+}
+
+/* Mantém os cards internos das atribuições com cor fixa e limpa */
+#portariaView .portaria-popover-item,
+#portariaView .portaria-attrib-item,
+#portariaView .portaria-attrib-modal-card {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+#portariaView .portaria-popover-count,
+#portariaView .portaria-attrib-count {
+  background: #eff6ff !important;
+  background-image: none !important;
+}
+
 </style>
 </head>
 <body id="mainBody" class="bg-slate-50 text-slate-900 text-sm overflow-hidden">
@@ -4160,7 +4841,7 @@ window.toggleRiskInput();
                     { title: 'Coordenadoria de Educação para o Trânsito', acronym: 'CET', children: [
                         { title: 'Serviço de Integração da Educação', acronym: 'SIEDU' },
                         { title: 'Serviço de Operações de Educação', acronym: 'SOPED' },
-                        { title: 'Serviço de Promoção da Educação para o Trânsito no Ensino Fundamental', acronym: 'SETEF' },
+                        { title: 'Serviço de Promoção de Educação no Ensino Fundamental', acronym: 'SETEF' },
                         { title: 'Serviço de Desenvolvimento de Motoristas Profissionais', acronym: 'SDMP' },
                         { title: 'Serviço de Desenvolvimento de Agentes Públicos', acronym: 'SDAP' }
                     ]}
@@ -4207,39 +4888,39 @@ window.toggleRiskInput();
             return typeOk && (!search || hay.includes(search));
         }
         const PORTARIA_POSITIONS = {
-            'Diretoria de Segurança Viária': { x: 330, y: 660 },
-            'Escola Pública de Trânsito': { x: 590, y: 320 },
-            'Coordenadoria de Educação Corporativa': { x: 860, y: 190 },
-            'Serviço de Desenvolvimento de Competências Específicas': { x: 1100, y: 95 },
-            'Serviço de Desenvolvimento de Competências Gerais': { x: 1210, y: 190 },
-            'Serviço de Formação Profissional': { x: 1100, y: 285 },
-            'Coordenadoria de Educação para o Trânsito': { x: 860, y: 460 },
-            'Serviço de Integração da Educação': { x: 1085, y: 370 },
-            'Serviço de Operações de Educação': { x: 1235, y: 435 },
-            'Serviço de Promoção de Educação no Ensino Fundamental': { x: 1235, y: 525 },
-            'Serviço de Desenvolvimento de Motoristas Profissionais': { x: 1085, y: 615 },
-            'Serviço de Desenvolvimento de Agentes Públicos': { x: 930, y: 620 },
-            'Coordenadoria Geral de Segurança Viária': { x: 590, y: 1040 },
-            'Coordenadoria do Observatório de Segurança no Trânsito': { x: 850, y: 920 },
-            'Divisão de Estatísticas de Trânsito': { x: 1085, y: 815 },
-            'Serviço de Análise de Sinistro de Trânsito': { x: 1290, y: 765 },
-            'Serviço de Integração da Informação': { x: 1290, y: 855 },
-            'Divisão de Redução de Mortes e Lesões no Trânsito': { x: 1090, y: 960 },
-            'Serviço de Estratégia de Segurança Viária': { x: 1290, y: 955 },
-            'Serviço de Monitoramento': { x: 1290, y: 1045 },
-            'Divisão de Estudos para Segurança no Trânsito': { x: 1040, y: 1105 },
-            'Serviço de Estudos e Pesquisas': { x: 1225, y: 1150 },
-            'Serviço de Tecnologia em Segurança Viária': { x: 1180, y: 1280 },
-            'Coordenadoria de Integração dos Sistemas de Trânsito': { x: 850, y: 1240 },
-            'Divisão de Integração para Segurança no Trânsito': { x: 1080, y: 1350 },
-            'Serviço de Integração para Segurança Viária': { x: 1290, y: 1350 },
-            'Divisão do Plano Estadual de Segurança Viária': { x: 850, y: 1460 },
-            'Serviço de Integração com os Municípios': { x: 1050, y: 1525 },
-            'Serviço de Gestão de Recursos': { x: 850, y: 1565 },
-            'Serviço de Análise Técnica': { x: 650, y: 1525 },
-            'Divisão de Engenharia de Trânsito': { x: 590, y: 1340 },
-            'Serviço de Engenharia de Trânsito': { x: 420, y: 1420 },
-            'Serviço de Fiscalização de Intervenções': { x: 420, y: 1260 }
+            'Diretoria de Segurança Viária': { x: 410, y: 660 },
+            'Escola Pública de Trânsito': { x: 720, y: 320 },
+            'Coordenadoria de Educação Corporativa': { x: 1030, y: 185 },
+            'Serviço de Desenvolvimento de Competências Específicas': { x: 1320, y: 90 },
+            'Serviço de Desenvolvimento de Competências Gerais': { x: 1460, y: 190 },
+            'Serviço de Formação Profissional': { x: 1320, y: 290 },
+            'Coordenadoria de Educação para o Trânsito': { x: 1030, y: 465 },
+            'Serviço de Integração da Educação': { x: 1260, y: 370 },
+            'Serviço de Operações de Educação': { x: 1450, y: 430 },
+            'Serviço de Promoção de Educação no Ensino Fundamental': { x: 1450, y: 525 },
+            'Serviço de Desenvolvimento de Motoristas Profissionais': { x: 1450, y: 620 },
+            'Serviço de Desenvolvimento de Agentes Públicos': { x: 1260, y: 620 },
+            'Coordenadoria Geral de Segurança Viária': { x: 720, y: 1040 },
+            'Coordenadoria do Observatório de Segurança no Trânsito': { x: 1030, y: 920 },
+            'Divisão de Estatísticas de Trânsito': { x: 1250, y: 815 },
+            'Serviço de Análise de Sinistro de Trânsito': { x: 1510, y: 765 },
+            'Serviço de Integração da Informação': { x: 1510, y: 855 },
+            'Divisão de Redução de Mortes e Lesões no Trânsito': { x: 1255, y: 960 },
+            'Serviço de Estratégia de Segurança Viária': { x: 1510, y: 955 },
+            'Serviço de Monitoramento': { x: 1510, y: 1045 },
+            'Divisão de Estudos para Segurança no Trânsito': { x: 1230, y: 1105 },
+            'Serviço de Estudos e Pesquisas': { x: 1460, y: 1150 },
+            'Serviço de Tecnologia em Segurança Viária': { x: 1410, y: 1280 },
+            'Coordenadoria de Integração dos Sistemas de Trânsito': { x: 1030, y: 1240 },
+            'Divisão de Integração para Segurança no Trânsito': { x: 1260, y: 1350 },
+            'Serviço de Integração para Segurança Viária': { x: 1510, y: 1350 },
+            'Divisão do Plano Estadual de Segurança Viária': { x: 1030, y: 1460 },
+            'Serviço de Integração com os Municípios': { x: 1260, y: 1525 },
+            'Serviço de Gestão de Recursos': { x: 1030, y: 1565 },
+            'Serviço de Análise Técnica': { x: 790, y: 1525 },
+            'Divisão de Engenharia de Trânsito': { x: 720, y: 1340 },
+            'Serviço de Engenharia de Trânsito': { x: 510, y: 1420 },
+            'Serviço de Fiscalização de Intervenções': { x: 510, y: 1260 }
         };
 
         function flattenPortariaTree(node, parent = null, depth = 0, arr = [], edges = []) {
@@ -4277,7 +4958,7 @@ window.toggleRiskInput();
             if (!from || !to) return '';
             const cx = (from.x + to.x) / 2 - 20;
             const cy = (from.y + to.y) / 2;
-            const active = portariaIsInSelectedPath(edge.from, selectedTitle) && portariaIsInSelectedPath(edge.to, selectedTitle);
+            const active = !!selectedTitle && portariaIsInSelectedPath(edge.from, selectedTitle) && portariaIsInSelectedPath(edge.to, selectedTitle);
             return `<path class="${active ? 'edge-active' : ''}" d="M ${from.x} ${from.y} Q ${cx} ${cy} ${to.x} ${to.y}" />`;
         }
 
@@ -4288,6 +4969,14 @@ window.toggleRiskInput();
             const active = selectedTitle === node.title;
             const safeTitle = encodeURIComponent(node.title);
             const size = item.type === 'Diretoria' ? '92px' : item.type === 'Coordenadoria' ? '82px' : item.type === 'Divisão' ? '68px' : '58px';
+            const popSide = node.x > 1120 ? 'popover-left' : 'popover-right';
+            const popVertical = node.y > 1260 ? 'popover-up' : '';
+            const attribHtml = (item.items || []).map((sub, idx) => `
+                <div class="portaria-popover-item">
+                    <span class="portaria-popover-num">${romanPortaria(idx)}</span>
+                    <span class="portaria-popover-text">${escapeHtml(sub)}</span>
+                </div>
+            `).join('');
             return `<button type="button"
                         class="portaria-circle-node type-${escapeHtml(item.type)} ${active ? 'active' : ''} ${dim ? 'is-dimmed' : ''}"
                         style="--x:${node.x};--y:${node.y};--size:${size};"
@@ -4296,6 +4985,17 @@ window.toggleRiskInput();
                     <span class="acro">${escapeHtml(node.acronym || item.title.substring(0, 3).toUpperCase())}</span>
                     <span class="small-label">${escapeHtml(item.title)}</span>
                     <span class="art">${escapeHtml(item.art)}</span>
+                    <span class="portaria-node-popover ${popSide} ${popVertical}" aria-hidden="true">
+                        <span class="portaria-popover-head">
+                            <span class="portaria-popover-type"><i class="fas fa-sitemap"></i>${escapeHtml(item.type)} · ${escapeHtml(item.art)}</span>
+                            <span class="portaria-popover-title">${escapeHtml(item.title)}</span>
+                            <span class="portaria-popover-preamble">${escapeHtml(item.preamble)}</span>
+                        </span>
+                        <span class="portaria-popover-body">
+                            <span class="portaria-popover-count"><i class="fas fa-list-check"></i>${(item.items || []).length} atribuições</span>
+                            <span class="portaria-popover-list">${attribHtml}</span>
+                        </span>
+                    </span>
                 </button>`;
         }
 
@@ -4323,6 +5023,33 @@ window.toggleRiskInput();
             </aside>`;
         }
 
+        function renderPortariaAttribPopup(item) {
+            if (!item) return '';
+            const itemsHtml = (item.items || []).map((sub, idx) => `
+                <div class="portaria-attrib-modal-card">
+                    <div class="portaria-attrib-modal-num">${romanPortaria(idx)}</div>
+                    <div class="portaria-attrib-modal-text">${escapeHtml(sub)}</div>
+                </div>
+            `).join('');
+            return `<div class="portaria-attrib-modal-backdrop" onclick="closePortariaPopup()">
+                <section class="portaria-attrib-modal" role="dialog" aria-modal="true" aria-label="Atribuições da Portaria" onclick="event.stopPropagation()">
+                    <div class="portaria-attrib-modal-head">
+                        <button type="button" class="portaria-attrib-modal-close" onclick="closePortariaPopup()" aria-label="Fechar pop-up"><i class="fas fa-times"></i></button>
+                        <span class="portaria-attrib-modal-type"><i class="fas fa-sitemap"></i>${escapeHtml(item.type)} · ${escapeHtml(item.art)}</span>
+                        <div class="portaria-attrib-modal-title">${escapeHtml(item.title)}</div>
+                        <div class="portaria-attrib-modal-preamble">${escapeHtml(item.preamble)}</div>
+                    </div>
+                    <div class="portaria-attrib-modal-body">
+                        <div class="portaria-attrib-toolbar">
+                            <h4 class="text-xs font-black uppercase tracking-widest text-slate-500">Atribuições da Portaria</h4>
+                            <span class="portaria-attrib-count"><i class="fas fa-list-check"></i>${(item.items || []).length} itens</span>
+                        </div>
+                        <div class="portaria-attrib-modal-grid">${itemsHtml}</div>
+                    </div>
+                </section>
+            </div>`;
+        }
+
         function getPortariaZoomFor(item) {
             return 1;
         }
@@ -4330,19 +5057,21 @@ window.toggleRiskInput();
         function renderPortariaCircularMap(search, filter, selected) {
             const layout = flattenPortariaTree(PORTARIA_ORG_TREE);
             const nodesByTitle = Object.fromEntries(layout.nodes.map(n => [n.title, n]));
-            const selectedMeta = nodesByTitle[selected.title] || nodesByTitle['Diretoria de Segurança Viária'];
-            const zoom = getPortariaZoomFor(selected);
-            const edgeHtml = layout.edges.map(edge => renderPortariaEdge(edge, nodesByTitle, selected.title)).join('');
-            const nodeHtml = layout.nodes.map(node => renderPortariaCircleNode(node, search, filter, selected.title)).join('');
+            const selectedTitle = selected ? selected.title : null;
+            const selectedMeta = selectedTitle ? (nodesByTitle[selectedTitle] || nodesByTitle['Diretoria de Segurança Viária']) : nodesByTitle['Diretoria de Segurança Viária'];
+            const zoom = selected ? getPortariaZoomFor(selected) : 1;
+            const edgeHtml = layout.edges.map(edge => renderPortariaEdge(edge, nodesByTitle, selectedTitle)).join('');
+            const nodeHtml = layout.nodes.map(node => renderPortariaCircleNode(node, search, filter, selectedTitle)).join('');
             const isZoomed = zoom > 1;
             return `
                 <section class="portaria-circular-board">
                     <div class="portaria-circular-topbar">
                         <div>
                             <div class="portaria-circular-title">Diretoria de Segurança Viária</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1">Organograma interativo da estrutura da DSV, com atribuições por unidade ao passar o mouse ou clicar nos círculos.</div>
                         </div>
                         <div class="portaria-circular-actions">
-                            <button type="button" class="portaria-zoom-btn" onclick="selectPortariaNode('Diretoria de Segurança Viária')"><i class="fas fa-compress mr-1"></i> Visão geral</button>
+                            <button type="button" class="portaria-zoom-btn" onclick="resetPortariaView()"><i class="fas fa-compress mr-1"></i> Visão geral</button>
                         </div>
                     </div>
                     <div class="portaria-network-viewport">
@@ -4351,7 +5080,7 @@ window.toggleRiskInput();
                             <div class="portaria-ring r2"></div>
                             <div class="portaria-ring r3"></div>
                             <div class="portaria-center-mark"></div>
-                            <svg class="portaria-network-svg" viewBox="0 0 1500 1660" aria-hidden="true">
+                            <svg class="portaria-network-svg" viewBox="0 0 1700 1660" aria-hidden="true">
                                 ${edgeHtml}
                             </svg>
                             ${nodeHtml}
@@ -4378,7 +5107,17 @@ window.toggleRiskInput();
             window.selectPortariaNode(meta && meta.parent ? meta.parent : 'Diretoria de Segurança Viária');
         };
 
-        window.selectPortariaNode = (title) => { window.selectedPortariaTitle = title; window.renderPortaria(); };
+        window.selectPortariaNode = (title) => {
+            window.selectedPortariaTitle = title;
+            window.renderPortaria();
+        };
+        window.closePortariaPopup = () => {
+            window.renderPortaria();
+        };
+        window.resetPortariaView = () => {
+            window.selectedPortariaTitle = null;
+            window.renderPortaria();
+        };
         window.setPortariaFilter = (type) => {
             currentPortariaFilter = type;
             document.querySelectorAll('.portaria-filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -4391,11 +5130,10 @@ window.toggleRiskInput();
             if (!container) return;
             const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
             const filter = currentPortariaFilter || 'all';
-            const selected = findPortariaItemByTitle(window.selectedPortariaTitle || 'Diretoria de Segurança Viária');
+            const selected = window.selectedPortariaTitle ? findPortariaItemByTitle(window.selectedPortariaTitle) : null;
             container.innerHTML = `
                 <div class="portaria-org-shell circular">
                     ${renderPortariaCircularMap(search, filter, selected)}
-                    ${renderPortariaDetail(selected)}
                 </div>
             `;
         };
@@ -6173,6 +6911,161 @@ const filenameBase = (safeTitle || 'pauta')
     </div>
   </div>
 </div>
+
+
+<style id="portaria-ajustes-finais-v2">
+/* Ajustes finais da aba Portaria */
+#portariaView .portaria-circular-board {
+  overflow: visible !important;
+}
+#portariaView .portaria-network-viewport {
+  overflow: visible !important;
+  padding-top: .35rem !important;
+}
+#portariaView .portaria-detail-panel.circular {
+  top: 5.25rem !important;
+  max-height: calc(100vh - 6.25rem) !important;
+}
+#portariaView .portaria-node-popover {
+  z-index: 160 !important;
+}
+#portariaView .portaria-node-popover.popover-down {
+  top: calc(100% + 18px) !important;
+  bottom: auto !important;
+  transform: translateY(0) scale(.96) !important;
+}
+#portariaView .portaria-node-popover.popover-down::before {
+  top: -8px !important;
+  bottom: auto !important;
+  left: 42px !important;
+  right: auto !important;
+  transform: rotate(45deg) !important;
+  background: #ffffff !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(203,213,225,.95) !important;
+  border-top: 1px solid rgba(203,213,225,.95) !important;
+}
+#portariaView .portaria-circle-node:hover .portaria-node-popover.popover-down,
+#portariaView .portaria-circle-node:focus-visible .portaria-node-popover.popover-down,
+#portariaView .portaria-circle-node.active .portaria-node-popover.popover-down {
+  transform: translateY(0) scale(1) !important;
+}
+#portariaView .portaria-context-node {
+  background: linear-gradient(135deg, #004077, #0067b1) !important;
+  color: #ffffff !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, .16), 0 0 0 1px rgba(15, 23, 42, .05) !important;
+  pointer-events: none !important;
+}
+#portariaView .portaria-context-node .acro {
+  font-size: 18px !important;
+  font-weight: 900 !important;
+}
+#portariaView .portaria-context-node::after {
+  content: '';
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  width: 60px;
+  height: 1px;
+  background: rgba(100, 116, 139, .35);
+}
+</style>
+<script id="portaria-ajustes-finais-v2-script">
+(function(){
+  const origRenderPortariaDetail = window.renderPortariaDetail;
+
+  renderPortariaCircleNode = function(node, search, filter, selectedTitle) {
+      const item = node.item || findPortariaItemByTitle(node.title);
+      const hasSearchOrFilter = !!search || filter !== 'all';
+      const dim = hasSearchOrFilter && !portariaHasDescendantMatch(node, search, filter) && !portariaMatches(item, search, filter);
+      const active = selectedTitle === node.title;
+      const safeTitle = encodeURIComponent(node.title);
+      const size = item.type === 'Diretoria' ? '92px' : item.type === 'Coordenadoria' ? '82px' : item.type === 'Divisão' ? '68px' : '58px';
+      const popSide = node.x > 1120 ? 'popover-left' : 'popover-right';
+      const popVertical = node.y > 1260 ? 'popover-up' : (node.y < 280 ? 'popover-down' : '');
+      const attribHtml = (item.items || []).map((sub, idx) => `
+          <div class="portaria-popover-item">
+              <span class="portaria-popover-num">${romanPortaria(idx)}</span>
+              <span class="portaria-popover-text">${escapeHtml(sub)}</span>
+          </div>
+      `).join('');
+      return `<button type="button"
+                  class="portaria-circle-node type-${escapeHtml(item.type)} ${active ? 'active' : ''} ${dim ? 'is-dimmed' : ''}"
+                  style="--x:${node.x};--y:${node.y};--size:${size};"
+                  onclick="selectPortariaNodeDecoded('${safeTitle}')"
+                  title="${escapeHtml(item.title)}">
+              <span class="acro">${escapeHtml(node.acronym || item.title.substring(0, 3).toUpperCase())}</span>
+              <span class="small-label">${escapeHtml(item.title)}</span>
+              <span class="art">${escapeHtml(item.art)}</span>
+              <span class="portaria-node-popover ${popSide} ${popVertical}" aria-hidden="true">
+                  <span class="portaria-popover-head">
+                      <span class="portaria-popover-type"><i class="fas fa-sitemap"></i>${escapeHtml(item.type)} · ${escapeHtml(item.art)}</span>
+                      <span class="portaria-popover-title">${escapeHtml(item.title)}</span>
+                      <span class="portaria-popover-preamble">${escapeHtml(item.preamble)}</span>
+                  </span>
+                  <span class="portaria-popover-body">
+                      <span class="portaria-popover-count"><i class="fas fa-list-check"></i>${(item.items || []).length} atribuições</span>
+                      <span class="portaria-popover-list">${attribHtml}</span>
+                  </span>
+              </span>
+          </button>`;
+  };
+
+  renderPortariaCircularMap = function(search, filter, selected) {
+      const layout = flattenPortariaTree(PORTARIA_ORG_TREE);
+      const nodesByTitle = Object.fromEntries(layout.nodes.map(n => [n.title, n]));
+      const selectedTitle = selected ? selected.title : null;
+      const selectedMeta = selectedTitle ? (nodesByTitle[selectedTitle] || nodesByTitle['Diretoria de Segurança Viária']) : nodesByTitle['Diretoria de Segurança Viária'];
+      const zoom = selected ? getPortariaZoomFor(selected) : 1;
+      const edgeHtml = layout.edges.map(edge => renderPortariaEdge(edge, nodesByTitle, selectedTitle)).join('');
+      const nodeHtml = layout.nodes.map(node => renderPortariaCircleNode(node, search, filter, selectedTitle)).join('');
+      const contextHtml = `
+          <div class="portaria-circle-node context portaria-context-node" style="--x:245;--y:620;--size:84px;" aria-hidden="true">
+              <span class="acro">PR</span>
+          </div>
+          <div class="portaria-circle-node context portaria-context-node" style="--x:245;--y:720;--size:84px;" aria-hidden="true">
+              <span class="acro">VP</span>
+          </div>`;
+      const isZoomed = zoom > 1;
+      return `
+          <section class="portaria-circular-board">
+              <div class="portaria-circular-topbar">
+                  <div>
+                      <div class="portaria-circular-title">Diretoria de Segurança Viária</div>
+                      <div class="text-[11px] font-bold text-slate-500 mt-1">Organograma interativo da estrutura da DSV, com atribuições por unidade ao passar o mouse ou clicar nos círculos.</div>
+                  </div>
+                  <div class="portaria-circular-actions">
+                      <button type="button" class="portaria-zoom-btn" onclick="resetPortariaView()"><i class="fas fa-compress mr-1"></i> Visão geral</button>
+                  </div>
+              </div>
+              <div class="portaria-network-viewport">
+                  <div class="portaria-network-inner ${isZoomed ? 'is-zoomed' : ''}" style="--focus-x:${selectedMeta.x}px;--focus-y:${selectedMeta.y}px;--zoom-scale:${zoom};">
+                      <div class="portaria-ring r1"></div>
+                      <div class="portaria-ring r2"></div>
+                      <div class="portaria-ring r3"></div>
+                      <div class="portaria-center-mark"></div>
+                      <svg class="portaria-network-svg" viewBox="0 0 1700 1660" aria-hidden="true">${edgeHtml}</svg>
+                      ${contextHtml}
+                      ${nodeHtml}
+                  </div>
+                  <div class="portaria-map-legend">
+                      <strong>Legenda</strong>
+                      <span class="portaria-legend-line"><i class="portaria-legend-dot diretoria"></i>Direção Setorial</span>
+                      <span class="portaria-legend-line"><i class="portaria-legend-dot coord"></i>Coordenadorias Gerais</span>
+                      <span class="portaria-legend-line"><i class="portaria-legend-dot divisao"></i>Coordenações / Divisões</span>
+                      <span class="portaria-legend-line"><i class="portaria-legend-dot servico"></i>Serviços</span>
+                  </div>
+              </div>
+          </section>
+          ${renderPortariaDetail(selected || findPortariaItemByTitle('Diretoria de Segurança Viária'))}`;
+  };
+
+  if (document.getElementById('portariaView') && !document.getElementById('portariaView').classList.contains('hidden')) {
+    try { window.renderPortaria(); } catch (e) { console.error(e); }
+  }
+})();
+</script>
 
 </body>
 </html>
