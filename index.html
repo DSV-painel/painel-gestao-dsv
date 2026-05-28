@@ -2109,7 +2109,86 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   background-image: none !important;
 }
 
+
+/* =====================================================
+   AJUSTE FINAL – PR/VP visíveis e pop-ups sem corte
+   ===================================================== */
+#portariaView .portaria-circular-board,
+#portariaView .portaria-network-viewport,
+#portariaView .portaria-network-inner {
+  overflow: visible !important;
+}
+#portariaView .portaria-node-popover {
+  z-index: 220 !important;
+}
+#portariaView .portaria-node-popover.popover-down {
+  top: calc(100% + 18px) !important;
+  bottom: auto !important;
+  transform: translateY(0) scale(.96) !important;
+}
+#portariaView .portaria-node-popover.popover-down::before {
+  top: -8px !important;
+  bottom: auto !important;
+  left: 42px !important;
+  right: auto !important;
+  transform: rotate(45deg) !important;
+  background: #ffffff !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(203,213,225,.95) !important;
+  border-top: 1px solid rgba(203,213,225,.95) !important;
+}
+#portariaView .portaria-circle-node:hover .portaria-node-popover.popover-down,
+#portariaView .portaria-circle-node:focus-visible .portaria-node-popover.popover-down,
+#portariaView .portaria-circle-node.active .portaria-node-popover.popover-down {
+  transform: translateY(0) scale(1) !important;
+}
+#portariaView .portaria-context-node {
+  position: absolute !important;
+  left: calc(var(--x) * 1px) !important;
+  top: calc(var(--y) * 1px) !important;
+  width: var(--size) !important;
+  height: var(--size) !important;
+  margin-left: calc(var(--size) / -2) !important;
+  margin-top: calc(var(--size) / -2) !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: column !important;
+  background: #0067b1 !important;
+  color: #ffffff !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 12px 26px rgba(0, 64, 119, .24), 0 0 0 1px rgba(15,23,42,.06) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 7 !important;
+  pointer-events: none !important;
+}
+#portariaView .portaria-context-node .acro {
+  font-size: 19px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #ffffff !important;
+}
+#portariaView .portaria-context-node.pr { border-radius: 999px 0 0 999px !important; }
+#portariaView .portaria-context-node.vp { border-radius: 999px 0 0 999px !important; }
+#portariaView .portaria-context-line {
+  position: absolute !important;
+  left: 250px !important;
+  top: 660px !important;
+  width: 150px !important;
+  height: 1px !important;
+  background: rgba(0,64,119,.38) !important;
+  z-index: 2 !important;
+}
+
 </style>
+
+<style id="portaria-sem-pr-vp-final">
+#portariaView .portaria-context-node,
+#portariaView .portaria-context-line { display: none !important; }
+</style>
+
 </head>
 <body id="mainBody" class="bg-slate-50 text-slate-900 text-sm overflow-hidden">
     <!-- Login Gate (Firebase Auth: Email/Senha) -->
@@ -2447,6 +2526,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
                     <div class="flex flex-col">
                         <label class="field-label">Descrição do Item (na pauta)</label>
+                        <textarea id="editDispatchItemDesc" rows="5" class="input-style resize-y" placeholder="Descrição que aparecerá na pauta"></textarea>
                         <p class="text-xs text-slate-400 mt-1">Essa descrição substitui a descrição original apenas dentro da pauta.</p>
                     </div>
                 </div>
@@ -4718,7 +4798,7 @@ Item: ${itemLabel}`,
             const itemIndex = parseInt(document.getElementById('editDispatchItemIndex').value, 10);
 
             const title = (document.getElementById('editDispatchItemTitle').value || '').trim();
-            const desc = (document.getElementById('editDispatchItemDesc').value || '').trim();
+            const desc = ((document.getElementById('editDispatchItemDesc')?.value) || '').trim();
 
             const orderValRaw = document.getElementById('editDispatchItemOrder')?.value;
             const order = Math.max(1, parseInt(orderValRaw, 10) || 1);
@@ -4970,7 +5050,7 @@ window.toggleRiskInput();
             const safeTitle = encodeURIComponent(node.title);
             const size = item.type === 'Diretoria' ? '92px' : item.type === 'Coordenadoria' ? '82px' : item.type === 'Divisão' ? '68px' : '58px';
             const popSide = node.x > 1120 ? 'popover-left' : 'popover-right';
-            const popVertical = node.y > 1260 ? 'popover-up' : '';
+            const popVertical = node.y > 1260 ? 'popover-up' : (node.y < 280 ? 'popover-down' : '');
             const attribHtml = (item.items || []).map((sub, idx) => `
                 <div class="portaria-popover-item">
                     <span class="portaria-popover-num">${romanPortaria(idx)}</span>
@@ -5062,6 +5142,7 @@ window.toggleRiskInput();
             const zoom = selected ? getPortariaZoomFor(selected) : 1;
             const edgeHtml = layout.edges.map(edge => renderPortariaEdge(edge, nodesByTitle, selectedTitle)).join('');
             const nodeHtml = layout.nodes.map(node => renderPortariaCircleNode(node, search, filter, selectedTitle)).join('');
+            const contextHtml = '';
             const isZoomed = zoom > 1;
             return `
                 <section class="portaria-circular-board">
@@ -5413,7 +5494,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                     const __orderedItems = (meeting.items || []).map((it,i)=>({ ...it, __idx: i, order: (it.order ?? it.itemNumber ?? (i+1)) })).sort((a,b)=>(a.order||0)-(b.order||0));
                     __orderedItems.forEach((item, idx) => { const liveItem = dataStore[item.collection]?.find(i => i.id === item.itemId) || {}; const originLabel = { projects: 'PROJETO', contracts: 'CONTRATO', operational: 'OPERACIONAL', dispatchCustomItems: 'AVULSO' }[item.collection] || item.collection; const originColor = { projects: 'bg-blue-100 text-blue-700', contracts: 'bg-purple-100 text-purple-700', operational: 'bg-orange-100 text-orange-700', dispatchCustomItems: 'bg-slate-100 text-slate-700' }[item.collection] || 'bg-slate-100';
                         const row = document.createElement('div'); row.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4 relative group dispatch-detail-card";
-                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${item.name}</h4><div class="text-sm text-slate-600 leading-relaxed mb-3 markdown-content">${md((item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : liveItem.desc, 'Sem descrição detalhada.')}</div><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><div class="text-sm text-red-700 font-medium leading-snug markdown-content">${md(liveItem.risks)}</div></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${getDocLinksArray(item).length} Arquivos</span></div><div class="space-y-2 mb-3">${getDocLinksArray(item).map((link, linkIdx) => renderMeetingDocLink(link, meeting.id, item.__idx, linkIdx)).join('')}${getDocLinksArray(item).length === 0 ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${item.__idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); addMeetingItemDoc('${meeting.id}', ${item.__idx}, this.value); this.value=''; }"><button onclick="addMeetingItemDoc('${meeting.id}', ${item.__idx}, document.getElementById('newDoc_${meeting.id}_${item.__idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${item.__idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${item.__idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Use Markdown. Ex: **Deliberação:** ...
+                        row.innerHTML = `<div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2"><div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase px-1.5 py-0.5 rounded ${originColor}">${originLabel}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded uppercase">${liveItem.coord || 'N/A'}</span>${liveItem.priority === 'Urgente' ? '<span class="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded animate-pulse">URGENTE</span>' : ''}</div><div class="flex items-center gap-3"><span class="text-xs text-slate-400 font-bold uppercase">Item #${item.order}</span><button onclick="removeMeetingItem('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-red-500 transition-colors" title="Remover da Pauta"><i class="fas fa-minus-circle"></i></button><button onclick="openEditMeetingItemModal('${meeting.id}', ${item.__idx})" class="text-slate-300 hover:text-blue-600 transition-colors ml-2" title="Editar item da pauta"><i class="fas fa-pen"></i></button></div></div><div class="mb-4"><h4 class="font-bold text-slate-800 text-lg mb-1">${(item.pautaTitle && item.pautaTitle.trim()) ? item.pautaTitle : item.name}</h4><div class="text-sm text-slate-600 leading-relaxed mb-3 markdown-content">${md((item.pautaDesc && item.pautaDesc.trim()) ? item.pautaDesc : liveItem.desc, 'Sem descrição detalhada.')}</div><div class="grid grid-cols-2 gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100"><div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Prazo / Status Atual</p><p class="text-sm font-bold text-slate-700 flex items-center gap-1"><i class="far fa-calendar text-[10px]"></i> ${liveItem.prazo ? new Date(liveItem.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'} <span class="text-slate-300">|</span> <span class="${window.getStatusColor(liveItem.status || 'Backlog').split(' ')[0]}">${liveItem.status || 'Backlog'}</span></p></div>${(activeTab === 'despachos' && selectedMeetingId) ? '' : ('<div><p class="text-[10px] font-black text-slate-400 uppercase mb-0.5">Gestor</p><p class="text-sm font-bold text-slate-700 truncate">' + (liveItem.manager || 'Não informado') + '</p></div>')}${liveItem.risks ? `<div class="col-span-2 pt-2 mt-2 border-t border-red-100"><p class="text-xs font-black text-red-600 uppercase flex items-center gap-1"><i class="fas fa-exclamation-triangle mr-1"></i> Ponto de Atenção</p><div class="text-sm text-red-700 font-medium leading-snug markdown-content">${md(liveItem.risks)}</div></div>` : ''}</div></div><div class="mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100 transition-colors hover:border-blue-200"><div class="flex justify-between items-center mb-2"><p class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-2"><i class="fas fa-folder-open"></i> Materiais de Apoio</p><span class="text-[9px] font-bold text-slate-300 uppercase">${getDocLinksArray(item).length} Arquivos</span></div><div class="space-y-2 mb-3">${getDocLinksArray(item).map((link, linkIdx) => renderMeetingDocLink(link, meeting.id, item.__idx, linkIdx)).join('')}${getDocLinksArray(item).length === 0 ? '<p class="text-[10px] text-slate-400 italic pl-1">Nenhum documento anexado.</p>' : ''}</div><div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 transition-all shadow-sm"><i class="fas fa-plus text-slate-300 ml-1.5 text-xs"></i><input type="text" id="newDoc_${meeting.id}_${item.__idx}" class="flex-1 bg-transparent border-none text-xs font-medium text-slate-600 placeholder-slate-400 focus:ring-0 p-1" placeholder="Adicionar novo link (Cole a URL e aperte Enter)..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); addMeetingItemDoc('${meeting.id}', ${item.__idx}, this.value); this.value=''; }"><button onclick="addMeetingItemDoc('${meeting.id}', ${item.__idx}, document.getElementById('newDoc_${meeting.id}_${item.__idx}').value)" class="px-3 py-1 rounded-md bg-slate-100 text-slate-500 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase transition-colors">Adicionar</button></div></div><div class="bg-blue-50/50 rounded-lg p-3 border border-blue-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-black text-blue-700 uppercase flex items-center gap-1"><i class="fas fa-pen-nib"></i> Deliberação / Encaminhamento</label><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase text-slate-400">Status na Pauta:</span><select onchange="saveMeetingItemStatus('${meeting.id}', ${item.__idx}, this.value)" class="text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 outline-none text-slate-700 cursor-pointer"><option value="Pendente" ${item.status === 'Pendente' ? 'selected' : ''}>Pendente</option><option value="Deliberado" ${item.status === 'Deliberado' ? 'selected' : ''}>Deliberado</option><option value="Retirado" ${item.status === 'Retirado' ? 'selected' : ''}>Retirado</option></select></div></div><textarea id="outcome_${meeting.id}_${item.__idx}" rows="3" class="w-full bg-white border border-blue-200 rounded-lg p-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none shadow-sm mb-2" placeholder="Use Markdown. Ex: **Deliberação:** ...
 - [ ] Responsável — prazo" onblur="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, this.value)">${item.outcome || ''}</textarea><div class="flex justify-end"><button onclick="saveMeetingItemOutcome('${meeting.id}', ${item.__idx}, document.getElementById('outcome_${meeting.id}_${item.__idx}').value, this)" class="text-[10px] font-bold uppercase bg-blue-100 text-blue-600 hover:bg-blue-200 px-3 py-1.5 rounded transition-colors flex items-center shadow-sm"><i class="fas fa-save mr-1"></i> Salvar Escrita</button></div></div>`;
                         mainContent.appendChild(row); }); } }
         };
@@ -6913,159 +6994,57 @@ const filenameBase = (safeTitle || 'pauta')
 </div>
 
 
-<style id="portaria-ajustes-finais-v2">
-/* Ajustes finais da aba Portaria */
+<style id="portaria-popover-acima-cabecalho">
+/* Faz o card de atribuições flutuar acima do cabeçalho interno do organograma */
+#portariaView,
+#portariaView > *,
+#portariaView #portariaList,
+#portariaView .portaria-org-shell.circular,
 #portariaView .portaria-circular-board {
   overflow: visible !important;
 }
-#portariaView .portaria-network-viewport {
+
+#portariaView .portaria-circular-board {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+#portariaView .portaria-circular-topbar {
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+#portariaView .portaria-network-viewport,
+#portariaView .portaria-network-inner {
+  position: relative !important;
+  z-index: 40 !important;
   overflow: visible !important;
-  padding-top: .35rem !important;
 }
-#portariaView .portaria-detail-panel.circular {
-  top: 5.25rem !important;
-  max-height: calc(100vh - 6.25rem) !important;
+
+#portariaView .portaria-circle-node:hover,
+#portariaView .portaria-circle-node:focus-visible,
+#portariaView .portaria-circle-node.active {
+  z-index: 9990 !important;
 }
+
 #portariaView .portaria-node-popover {
-  z-index: 160 !important;
+  z-index: 9999 !important;
+  isolation: isolate !important;
 }
+
+/* Serviços próximos ao topo: abre o card para baixo, acima da barra do cabeçalho */
 #portariaView .portaria-node-popover.popover-down {
-  top: calc(100% + 18px) !important;
+  top: calc(100% + 22px) !important;
   bottom: auto !important;
   transform: translateY(0) scale(.96) !important;
 }
-#portariaView .portaria-node-popover.popover-down::before {
-  top: -8px !important;
-  bottom: auto !important;
-  left: 42px !important;
-  right: auto !important;
-  transform: rotate(45deg) !important;
-  background: #ffffff !important;
-  border: 0 !important;
-  border-left: 1px solid rgba(203,213,225,.95) !important;
-  border-top: 1px solid rgba(203,213,225,.95) !important;
-}
+
 #portariaView .portaria-circle-node:hover .portaria-node-popover.popover-down,
 #portariaView .portaria-circle-node:focus-visible .portaria-node-popover.popover-down,
 #portariaView .portaria-circle-node.active .portaria-node-popover.popover-down {
   transform: translateY(0) scale(1) !important;
 }
-#portariaView .portaria-context-node {
-  background: linear-gradient(135deg, #004077, #0067b1) !important;
-  color: #ffffff !important;
-  border: 3px solid #ffffff !important;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, .16), 0 0 0 1px rgba(15, 23, 42, .05) !important;
-  pointer-events: none !important;
-}
-#portariaView .portaria-context-node .acro {
-  font-size: 18px !important;
-  font-weight: 900 !important;
-}
-#portariaView .portaria-context-node::after {
-  content: '';
-  position: absolute;
-  left: calc(100% + 8px);
-  top: 50%;
-  width: 60px;
-  height: 1px;
-  background: rgba(100, 116, 139, .35);
-}
 </style>
-<script id="portaria-ajustes-finais-v2-script">
-(function(){
-  const origRenderPortariaDetail = window.renderPortariaDetail;
-
-  renderPortariaCircleNode = function(node, search, filter, selectedTitle) {
-      const item = node.item || findPortariaItemByTitle(node.title);
-      const hasSearchOrFilter = !!search || filter !== 'all';
-      const dim = hasSearchOrFilter && !portariaHasDescendantMatch(node, search, filter) && !portariaMatches(item, search, filter);
-      const active = selectedTitle === node.title;
-      const safeTitle = encodeURIComponent(node.title);
-      const size = item.type === 'Diretoria' ? '92px' : item.type === 'Coordenadoria' ? '82px' : item.type === 'Divisão' ? '68px' : '58px';
-      const popSide = node.x > 1120 ? 'popover-left' : 'popover-right';
-      const popVertical = node.y > 1260 ? 'popover-up' : (node.y < 280 ? 'popover-down' : '');
-      const attribHtml = (item.items || []).map((sub, idx) => `
-          <div class="portaria-popover-item">
-              <span class="portaria-popover-num">${romanPortaria(idx)}</span>
-              <span class="portaria-popover-text">${escapeHtml(sub)}</span>
-          </div>
-      `).join('');
-      return `<button type="button"
-                  class="portaria-circle-node type-${escapeHtml(item.type)} ${active ? 'active' : ''} ${dim ? 'is-dimmed' : ''}"
-                  style="--x:${node.x};--y:${node.y};--size:${size};"
-                  onclick="selectPortariaNodeDecoded('${safeTitle}')"
-                  title="${escapeHtml(item.title)}">
-              <span class="acro">${escapeHtml(node.acronym || item.title.substring(0, 3).toUpperCase())}</span>
-              <span class="small-label">${escapeHtml(item.title)}</span>
-              <span class="art">${escapeHtml(item.art)}</span>
-              <span class="portaria-node-popover ${popSide} ${popVertical}" aria-hidden="true">
-                  <span class="portaria-popover-head">
-                      <span class="portaria-popover-type"><i class="fas fa-sitemap"></i>${escapeHtml(item.type)} · ${escapeHtml(item.art)}</span>
-                      <span class="portaria-popover-title">${escapeHtml(item.title)}</span>
-                      <span class="portaria-popover-preamble">${escapeHtml(item.preamble)}</span>
-                  </span>
-                  <span class="portaria-popover-body">
-                      <span class="portaria-popover-count"><i class="fas fa-list-check"></i>${(item.items || []).length} atribuições</span>
-                      <span class="portaria-popover-list">${attribHtml}</span>
-                  </span>
-              </span>
-          </button>`;
-  };
-
-  renderPortariaCircularMap = function(search, filter, selected) {
-      const layout = flattenPortariaTree(PORTARIA_ORG_TREE);
-      const nodesByTitle = Object.fromEntries(layout.nodes.map(n => [n.title, n]));
-      const selectedTitle = selected ? selected.title : null;
-      const selectedMeta = selectedTitle ? (nodesByTitle[selectedTitle] || nodesByTitle['Diretoria de Segurança Viária']) : nodesByTitle['Diretoria de Segurança Viária'];
-      const zoom = selected ? getPortariaZoomFor(selected) : 1;
-      const edgeHtml = layout.edges.map(edge => renderPortariaEdge(edge, nodesByTitle, selectedTitle)).join('');
-      const nodeHtml = layout.nodes.map(node => renderPortariaCircleNode(node, search, filter, selectedTitle)).join('');
-      const contextHtml = `
-          <div class="portaria-circle-node context portaria-context-node" style="--x:245;--y:620;--size:84px;" aria-hidden="true">
-              <span class="acro">PR</span>
-          </div>
-          <div class="portaria-circle-node context portaria-context-node" style="--x:245;--y:720;--size:84px;" aria-hidden="true">
-              <span class="acro">VP</span>
-          </div>`;
-      const isZoomed = zoom > 1;
-      return `
-          <section class="portaria-circular-board">
-              <div class="portaria-circular-topbar">
-                  <div>
-                      <div class="portaria-circular-title">Diretoria de Segurança Viária</div>
-                      <div class="text-[11px] font-bold text-slate-500 mt-1">Organograma interativo da estrutura da DSV, com atribuições por unidade ao passar o mouse ou clicar nos círculos.</div>
-                  </div>
-                  <div class="portaria-circular-actions">
-                      <button type="button" class="portaria-zoom-btn" onclick="resetPortariaView()"><i class="fas fa-compress mr-1"></i> Visão geral</button>
-                  </div>
-              </div>
-              <div class="portaria-network-viewport">
-                  <div class="portaria-network-inner ${isZoomed ? 'is-zoomed' : ''}" style="--focus-x:${selectedMeta.x}px;--focus-y:${selectedMeta.y}px;--zoom-scale:${zoom};">
-                      <div class="portaria-ring r1"></div>
-                      <div class="portaria-ring r2"></div>
-                      <div class="portaria-ring r3"></div>
-                      <div class="portaria-center-mark"></div>
-                      <svg class="portaria-network-svg" viewBox="0 0 1700 1660" aria-hidden="true">${edgeHtml}</svg>
-                      ${contextHtml}
-                      ${nodeHtml}
-                  </div>
-                  <div class="portaria-map-legend">
-                      <strong>Legenda</strong>
-                      <span class="portaria-legend-line"><i class="portaria-legend-dot diretoria"></i>Direção Setorial</span>
-                      <span class="portaria-legend-line"><i class="portaria-legend-dot coord"></i>Coordenadorias Gerais</span>
-                      <span class="portaria-legend-line"><i class="portaria-legend-dot divisao"></i>Coordenações / Divisões</span>
-                      <span class="portaria-legend-line"><i class="portaria-legend-dot servico"></i>Serviços</span>
-                  </div>
-              </div>
-          </section>
-          ${renderPortariaDetail(selected || findPortariaItemByTitle('Diretoria de Segurança Viária'))}`;
-  };
-
-  if (document.getElementById('portariaView') && !document.getElementById('portariaView').classList.contains('hidden')) {
-    try { window.renderPortaria(); } catch (e) { console.error(e); }
-  }
-})();
-</script>
 
 </body>
 </html>
