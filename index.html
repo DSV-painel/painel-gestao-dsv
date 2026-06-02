@@ -2182,7 +2182,38 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   z-index: 2 !important;
 }
 
-</style>
+
+/* ===============================
+   PCA 2027 – Aba de planejamento
+   =============================== */
+.pca-kpi-grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:1rem;}
+@media(min-width:720px){.pca-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.pca-kpi-card{background:#fff;border:1px solid #e2e8f0;border-radius:1.25rem;padding:1rem;box-shadow:0 1px 2px rgba(15,23,42,.04);position:relative;overflow:hidden;}
+.pca-kpi-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#004077;}
+.pca-kpi-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:.35rem;}
+.pca-kpi-value{font-size:1.45rem;font-weight:900;color:#0f172a;line-height:1.15;}
+.pca-kpi-note{font-size:11px;font-weight:700;color:#94a3b8;margin-top:.35rem;}
+.pca-summary-grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:.8rem;}
+@media(min-width:760px){.pca-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(min-width:1220px){.pca-summary-grid{grid-template-columns:repeat(5,minmax(0,1fr));}}
+.pca-summary-card{background:#fff;border:1px solid #e2e8f0;border-radius:1rem;padding:.9rem;box-shadow:0 1px 2px rgba(15,23,42,.04);}
+.pca-summary-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:.35rem;}
+.pca-summary-value{font-size:1rem;font-weight:900;color:#0f172a;line-height:1.2;}
+.pca-summary-note{font-size:11px;font-weight:750;color:#64748b;margin-top:.25rem;}
+.pca-table-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:1.25rem;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.04);}
+.pca-table-scroll{overflow:auto;max-height:calc(100vh - 390px);}
+.pca-table{width:100%;border-collapse:separate;border-spacing:0;min-width:1120px;}
+.pca-table th{position:sticky;top:0;z-index:2;background:#004077;color:#fff;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:.8rem .75rem;border-right:1px solid rgba(255,255,255,.16);}
+.pca-table td{vertical-align:top;padding:.75rem;border-bottom:1px solid #e2e8f0;border-right:1px solid #f1f5f9;font-size:12px;line-height:1.45;color:#334155;}
+.pca-table tr:hover td{background:#f8fafc;}
+.pca-num{font-weight:900;color:#004077;text-align:center;width:58px;}
+.pca-area-badge{display:inline-flex;align-items:center;min-height:24px;border-radius:999px;padding:.25rem .55rem;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.pca-object{font-weight:850;color:#0f172a;min-width:260px;}
+.pca-just{min-width:420px;}
+.pca-value{font-weight:900;color:#0f172a;white-space:nowrap;text-align:right;min-width:150px;}
+.pca-note-box{border:1px solid #dbeafe;background:#eff6ff;border-radius:1rem;padding:.9rem;color:#1e3a8a;font-size:12px;font-weight:700;line-height:1.55;}
+
+    </style>
 
 <style id="portaria-sem-pr-vp-final">
 #portariaView .portaria-context-node,
@@ -3023,6 +3054,9 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                         <button onclick="switchTab('gantt')" id="tab-gantt" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
                             <i class="fas fa-stream w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Cronograma</span>
                         </button>
+                        <button onclick="switchTab('pca2027')" id="tab-pca2027" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
+                            <i class="fas fa-clipboard-check w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">PCA 2027</span>
+                        </button>
                         <button onclick="switchTab('indicators')" id="tab-indicators" class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap">
                             <i class="fas fa-chart-line w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Indicadores</span>
                         </button>
@@ -3289,6 +3323,498 @@ textarea.input-style { min-height: 92px; resize: vertical; }
             </div>
 
             <!-- NOVA ABA: INDICADORES -->
+
+            <!-- NOVA ABA: PCA 2027 -->
+            <div id="pca2027View" class="hidden flex-1 flex flex-col p-4 md:p-6 bg-slate-50 space-y-6 overflow-y-auto pb-20 md:pb-6">
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                        <div>
+                            <p class="text-[11px] font-black uppercase tracking-widest text-blue-700 mb-2">Plano de contratação anual</p>
+                            <h3 class="text-2xl font-black text-slate-900 tracking-tight">PCA 2027 | Itens solicitados pela DSV</h3>
+                            <p class="text-sm text-slate-500 font-semibold mt-2 w-full">Tabela com os 64 itens informados para o planejamento de 2027, organizada por área solicitante, objeto, justificativa e valor total previsto.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="pca-table-wrap">
+                    <div class="px-5 py-4 border-b border-slate-200 bg-white flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                        <div class="w-full">
+                            <h3 class="text-base font-black text-slate-900 uppercase tracking-tight">Itens PCA 2027</h3>
+                            <p class="text-xs text-slate-500 font-bold mt-1 w-full">Área solicitante, objeto, justificativa e valor total.</p>
+                        </div>
+                        <span class="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 border border-slate-200 rounded-full px-3 py-2">
+                            <i class="fas fa-table"></i> 64 registros
+                        </span>
+                    </div>
+                    <div class="pca-table-scroll">
+                        <table class="pca-table">
+                            <thead>
+                                <tr>
+                                    <th>Nº</th>
+                                    <th>Área solicitante</th>
+                                    <th>Nome da futura contratação</th>
+                                    <th>Justificativa para a contratação</th>
+                                    <th>Valor total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">1</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Programa Respeito à Vida - nova modelagem</td>
+        <td class="pca-just">Definição de trilhas para destinação de recursos para investimento em ações de segurança viária junto a municípios e entidades estaduais.</td>
+        <td class="pca-value">R$ 160.000.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT/CET">
+        <td class="pca-num">2</td>
+        <td><span class="pca-area-badge">EPT/CET</span></td>
+        <td class="pca-object">Contratação de Serviços Gráficos e de Impressão de Materiais Institucionais e Educativos para Ações de Segurança Viária do Detran-SP</td>
+        <td class="pca-just">Produção de materiais institucionais e educativos para campanhas, oficinas, eventos e ações de educação para o trânsito.</td>
+        <td class="pca-value">R$ 150.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">3</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Inscrição em curso de Gestão da Mobilidade Urbana voltado à capacitação técnica da equipe</td>
+        <td class="pca-just">Capacitação técnica para apoiar o planejamento urbano e a gestão de políticas públicas de mobilidade e segurança viária.</td>
+        <td class="pca-value">R$ 4.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">4</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Inscrição em curso de capacitação em Power BI para análise e integração de dados institucionais</td>
+        <td class="pca-just">Qualificação da equipe para análise, integração, tratamento e visualização de dados institucionais.</td>
+        <td class="pca-value">R$ 2.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">5</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Prestação de serviço de confecção de giveaways para identificação e ações educacionais</td>
+        <td class="pca-just">Apoio às ações educativas e institucionais da Escola Pública de Trânsito.</td>
+        <td class="pca-value">R$ 200.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">6</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Contratação de serviço de cerimonial</td>
+        <td class="pca-just">Suporte à organização de eventos públicos, cerimônias e ações institucionais.</td>
+        <td class="pca-value">R$ 12.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/COST">
+        <td class="pca-num">7</td>
+        <td><span class="pca-area-badge">CGSV/COST</span></td>
+        <td class="pca-object">Inscrição em curso de Gestão da Mobilidade Urbana voltado à capacitação técnica da equipe</td>
+        <td class="pca-just">Capacitação técnica para qualificar a atuação da equipe em mobilidade urbana e segurança viária.</td>
+        <td class="pca-value">R$ 18.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/COST">
+        <td class="pca-num">8</td>
+        <td><span class="pca-area-badge">CGSV/COST</span></td>
+        <td class="pca-object">Inscrição em curso de Python aplicado ao geoprocessamento</td>
+        <td class="pca-just">Capacitação para análise espacial, integração de bases e automação de processos geoespaciais.</td>
+        <td class="pca-value">R$ 7.485,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/COST">
+        <td class="pca-num">9</td>
+        <td><span class="pca-area-badge">CGSV/COST</span></td>
+        <td class="pca-object">Inscrição em curso Dados e Política Urbana - Insper</td>
+        <td class="pca-just">Aprimoramento técnico em análise de dados urbanos e políticas públicas aplicadas à segurança viária.</td>
+        <td class="pca-value">R$ 39.365,84</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">10</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Inscrição para participação em eventos</td>
+        <td class="pca-just">Participação institucional da EPT em eventos técnicos, científicos e culturais ligados à educação para o trânsito.</td>
+        <td class="pca-value">R$ 108.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">11</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Prorrogação de licenças para uso dos softwares do Microsoft Office 365 Desktop</td>
+        <td class="pca-just">Continuidade do uso de ferramentas de produtividade, colaboração e comunicação institucional.</td>
+        <td class="pca-value">Valor anual para 37 licenças: R$ 10.584,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">12</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de licença para o uso dos softwares do Microsoft Office 365 Desktop</td>
+        <td class="pca-just">Disponibilização de ferramentas para criação, edição, análise e colaboração em documentos institucionais.</td>
+        <td class="pca-value">Valor anual para as 5 licenças: R$ 7.560,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">13</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de licenças para o uso do software Notion Enterprise</td>
+        <td class="pca-just">Gestão de projetos, tarefas, registros de reunião e acompanhamento de processos institucionais.</td>
+        <td class="pca-value">Valor anual para as 4 licenças: R$ 16.610,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">14</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de licenças para o uso do software Notion Enterprise</td>
+        <td class="pca-just">Organização de projetos, registros, processos e planejamento das frentes educacionais da EPT.</td>
+        <td class="pca-value">Valor anual para as 4 licenças: R$ 45.677,50</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">15</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de licenças para o uso do software Miro</td>
+        <td class="pca-just">Mapas conceituais, fluxos, organização de atividades e facilitação de processos decisórios.</td>
+        <td class="pca-value">Valor total anual para 3 licenças: R$ 4.632,60</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">16</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de licenças para o uso do software Adobe Creative Cloud</td>
+        <td class="pca-just">Desenvolvimento gráfico e audiovisual para materiais de comunicação, projetos e ações institucionais.</td>
+        <td class="pca-value">Valor total anual para 5 licenças: R$ 22.200,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">17</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de licenças para o uso do software Adobe Creative Cloud</td>
+        <td class="pca-just">Criação de peças, apresentações, ilustrações, materiais gráficos e conteúdos educativos.</td>
+        <td class="pca-value">Valor total anual promocional para 4 licenças: R$ 17.760,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">18</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de licenças para uso do software Canva</td>
+        <td class="pca-just">Criação ágil de peças visuais e materiais gráficos para comunicação e ações institucionais.</td>
+        <td class="pca-value">Valor total anual para 3 licenças: R$ 1.764,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">19</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de licença para uso do software Canva</td>
+        <td class="pca-just">Produção de peças para comunicação, materiais pedagógicos e divulgação de ações da EPT.</td>
+        <td class="pca-value">Valor total anual para 9 licenças: R$ 5.292,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">20</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de licenças para o uso do software Padlet</td>
+        <td class="pca-just">Apoio a atividades colaborativas, organização de conteúdos e interação em ações formativas.</td>
+        <td class="pca-value">Valor total anual para 05 licenças: R$ 1.695,50</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">21</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Criação de sistema de adesão, gestão e monitoramento do Programa Respeito à Vida</td>
+        <td class="pca-just">Gestão da adesão, liberação de recursos, monitoramento de ações e atualização do programa.</td>
+        <td class="pca-value">R$ 5.000.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">22</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Contratação de serviços de computação em nuvem para disponibilização de plataforma de educação para o trânsito</td>
+        <td class="pca-just">Hospedagem, integração e disponibilização de plataforma educacional para ações de educação no trânsito.</td>
+        <td class="pca-value">R$ 3.000.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">23</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Prestação de serviços para criação de materiais educativos e campanhas de educação para o trânsito</td>
+        <td class="pca-just">Criação de materiais, campanhas educativas e produtos pedagógicos de educação para o trânsito.</td>
+        <td class="pca-value">R$ 1.500.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">24</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Prestação de serviço de simulação gamificada em realidade virtual para educação no trânsito</td>
+        <td class="pca-just">Experiências imersivas e simuladas para aprendizagem sobre segurança e comportamento no trânsito.</td>
+        <td class="pca-value">R$ 500.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">25</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Prestação de serviço de solução mobile em realidade aumentada para educação viária</td>
+        <td class="pca-just">Aplicativo mobile em realidade aumentada para educação viária, ações e oficinas.</td>
+        <td class="pca-value">R$ 500.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">26</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Prestação de serviços de suporte e atualização de plataformas AVA e conteúdos educacionais</td>
+        <td class="pca-just">Manutenção, atualização e suporte de ambientes virtuais de aprendizagem e conteúdos educacionais.</td>
+        <td class="pca-value">R$ 3.000.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">27</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de Serviço para elaboração de plataforma de Monitoramento do PSV-SP</td>
+        <td class="pca-just">Construção de plataforma para monitoramento, gestão e transparência do Plano de Segurança Viária.</td>
+        <td class="pca-value">R$ 3.000.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/COST">
+        <td class="pca-num">28</td>
+        <td><span class="pca-area-badge">CGSV/COST</span></td>
+        <td class="pca-object">Serviços Auxiliares de Tecnologia Informação e Comunicação</td>
+        <td class="pca-just">Apoio técnico de TIC para operação, manutenção, desenvolvimento e aprimoramento de sistemas e dados.</td>
+        <td class="pca-value">R$ 23.336.700,57</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">29</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Contratação de plataforma digital para facilitação participativa e colaborativa</td>
+        <td class="pca-just">Apoio a oficinas, consultas, fóruns e dinâmicas colaborativas em ambiente digital.</td>
+        <td class="pca-value">R$ 2.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">30</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Contratação de ferramenta de automação e gestão de comunicação institucional</td>
+        <td class="pca-just">Automação, organização e gestão de fluxos de comunicação institucional.</td>
+        <td class="pca-value">R$ 24.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">31</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Prorrogação da contratação de licença de software CAD 2D/3D</td>
+        <td class="pca-just">Elaboração, visualização, revisão e compatibilização de desenhos técnicos, plantas e projetos.</td>
+        <td class="pca-value">R$ 25.350,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">32</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de óculos de realidade virtual para ações educativas de trânsito</td>
+        <td class="pca-just">Experiências educativas imersivas e simulações para ações de educação no trânsito.</td>
+        <td class="pca-value">R$ 504.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">33</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de headsets de áudio para experiências educativas imersivas e atividades pedagógicas</td>
+        <td class="pca-just">Apoio a experiências imersivas, conteúdos audiovisuais e atividades pedagógicas.</td>
+        <td class="pca-value">R$ 75.600,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">34</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de tablets para ações educativas de trânsito</td>
+        <td class="pca-just">Apoio operacional e pedagógico às ações educativas, oficinas e atividades em campo.</td>
+        <td class="pca-value">R$ 525.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">35</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de lousas interativas para gestão e sala de aula</td>
+        <td class="pca-just">Modernização de salas, oficinas e espaços formativos com recursos interativos.</td>
+        <td class="pca-value">R$ 50.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">36</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de sistema de sonorização para ambiente educacional</td>
+        <td class="pca-just">Melhoria de áudio em formações, oficinas e atividades educativas.</td>
+        <td class="pca-value">R$ 3.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">37</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de kit portátil de videoconferência para reuniões híbridas e atividades institucionais</td>
+        <td class="pca-just">Realização de reuniões híbridas, capacitações e atividades institucionais.</td>
+        <td class="pca-value">R$ 10.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">38</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de tablet para apoio a reuniões externas e atividades institucionais</td>
+        <td class="pca-just">Apoio a registros, organização e participação em reuniões e eventos externos.</td>
+        <td class="pca-value">R$ 2.500,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/COST">
+        <td class="pca-num">39</td>
+        <td><span class="pca-area-badge">CGSV/COST</span></td>
+        <td class="pca-object">Aquisição de equipamento de informática de alto desempenho, corporativo, na modalidade desktop ou notebook/workstation</td>
+        <td class="pca-just">Suporte a processamento de dados, geoprocessamento, análise técnica e atividades especializadas.</td>
+        <td class="pca-value">R$ 39.375,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT e CGSV/CIST">
+        <td class="pca-num">40</td>
+        <td><span class="pca-area-badge">EPT e CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de Materiais de Papelaria para Apoio às Ações Institucionais e Educativas de Trânsito</td>
+        <td class="pca-just">Apoio a atividades técnicas, administrativas e educativas da DSV e da EPT.</td>
+        <td class="pca-value">R$ 10.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">41</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Mini Cidade</td>
+        <td class="pca-just">Espaço pedagógico de simulação para ações de educação de trânsito.</td>
+        <td class="pca-value">R$ 250.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">42</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de cavalete tipo H para estruturação de atividades</td>
+        <td class="pca-just">Materiais de apoio para sinalização, organização e segurança de atividades externas e internas.</td>
+        <td class="pca-value">R$ 1.200,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">43</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de trenas de medição para uso administrativo e institucional</td>
+        <td class="pca-just">Instrumentos de medição para apoio a levantamentos, vistorias e atividades técnicas.</td>
+        <td class="pca-value">R$ 51,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">44</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de trenas de medição para uso administrativo e institucional</td>
+        <td class="pca-just">Instrumentos de medição para apoio a levantamentos, vistorias e atividades técnicas.</td>
+        <td class="pca-value">R$ 360,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">45</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de prancheta portátil de madeira para uso administrativo e institucional</td>
+        <td class="pca-just">Apoio a anotações, registros de campo e organização de documentos em atividades externas.</td>
+        <td class="pca-value">R$ 45,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">46</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de veículo inservível para uso administrativo e institucional</td>
+        <td class="pca-just">Apoio a atividades demonstrativas, treinamentos e ações institucionais.</td>
+        <td class="pca-value">R$ 5.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">47</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de máquina fotográfica digital para uso administrativo e institucional</td>
+        <td class="pca-just">Registro fotográfico de vistorias, eventos, projetos e ações técnicas.</td>
+        <td class="pca-value">R$ 1.200,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">48</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de capacetes de segurança (EPI) para uso administrativo e institucional</td>
+        <td class="pca-just">Equipamentos de proteção para uso em atividades externas e de campo.</td>
+        <td class="pca-value">R$ 45,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">49</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de coletes refletivos (EPI) para uso administrativo e institucional</td>
+        <td class="pca-just">Equipamentos de proteção e identificação para atividades externas e de campo.</td>
+        <td class="pca-value">R$ 120,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">50</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de botas de segurança (EPI) para uso administrativo e institucional</td>
+        <td class="pca-just">Equipamentos de proteção para atividades externas e de campo.</td>
+        <td class="pca-value">R$ 210,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">51</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de contraste magnético/sintético para uso administrativo e institucional</td>
+        <td class="pca-just">Apoio a atividades técnicas e institucionais em campo.</td>
+        <td class="pca-value">R$ 90,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">52</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de medidor portátil de velocidade para uso administrativo e institucional</td>
+        <td class="pca-just">Apoio a levantamentos, diagnósticos e atividades técnicas de segurança viária.</td>
+        <td class="pca-value">R$ 200,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">53</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Aquisição de aparelho GPS portátil para uso administrativo e institucional</td>
+        <td class="pca-just">Apoio a georreferenciamento, levantamento de campo e registros técnicos.</td>
+        <td class="pca-value">R$ 5.200,00</td>
+      </tr>
+      <tr class="pca-row" data-area="CGSV/CIST">
+        <td class="pca-num">54</td>
+        <td><span class="pca-area-badge">CGSV/CIST</span></td>
+        <td class="pca-object">Púlpito móvel para auditório</td>
+        <td class="pca-just">Apoio à realização de eventos, reuniões e apresentações institucionais.</td>
+        <td class="pca-value">R$ 3.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">55</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de suporte para banners para uso administrativo e institucional</td>
+        <td class="pca-just">Apoio à comunicação visual em eventos, campanhas e ações educativas.</td>
+        <td class="pca-value">R$ 6.040,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">56</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de amplificador de voz portátil para uso administrativo e institucional</td>
+        <td class="pca-just">Apoio à condução de oficinas, palestras e eventos educativos.</td>
+        <td class="pca-value">R$ 800,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">57</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de semáforo educativo mini para ações de educação para o trânsito</td>
+        <td class="pca-just">Recurso didático para simulações e ações educativas de trânsito.</td>
+        <td class="pca-value">R$ 10.500,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">58</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de totens demonstrativos de sinalização para ações educativas de trânsito</td>
+        <td class="pca-just">Recurso educativo para demonstração de sinalização e regras de trânsito.</td>
+        <td class="pca-value">R$ 5.670,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">59</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de quadro branco com tripé para ações educativas e capacitação</td>
+        <td class="pca-just">Apoio a oficinas, capacitações, palestras e atividades pedagógicas.</td>
+        <td class="pca-value">R$ 7.360,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">60</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de lupa ótica educativa para atividades práticas e experiências</td>
+        <td class="pca-just">Recurso didático para atividades práticas e experiências em ações educativas.</td>
+        <td class="pca-value">R$ 6.300,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">61</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de mini semáforos portáteis para ações educativas e simulações</td>
+        <td class="pca-just">Simulações de travessia, mobilidade e comportamento seguro no trânsito.</td>
+        <td class="pca-value">R$ 5.250,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">62</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de coletes refletivos infantis para ações educativas de trânsito</td>
+        <td class="pca-just">Identificação e segurança de crianças em ações educativas e simulações.</td>
+        <td class="pca-value">R$ 21.000,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">63</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de kit de equipamentos de segurança para ciclista para ações educativas de trânsito</td>
+        <td class="pca-just">Demonstração de equipamentos de proteção e segurança para ciclistas.</td>
+        <td class="pca-value">R$ 8.820,00</td>
+      </tr>
+      <tr class="pca-row" data-area="EPT">
+        <td class="pca-num">64</td>
+        <td><span class="pca-area-badge">EPT</span></td>
+        <td class="pca-object">Aquisição de apoios para ações educativas</td>
+        <td class="pca-just">Itens de apoio logístico para atividades educativas.</td>
+        <td class="pca-value">R$ 1.050,00</td>
+      </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div id="indicatorsView" class="hidden flex-1 flex flex-col p-4 md:p-6 bg-slate-50 space-y-6 overflow-y-auto pb-20 md:pb-6">
                 <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex flex-col xl:flex-row xl:items-center justify-between gap-5">
                     <div class="flex items-start gap-4">
@@ -5218,14 +5744,14 @@ window.toggleRiskInput();
                 </div>
             `;
         };
-        window.switchTab = (tab) => { if (tab === 'operational') tab = 'projects'; activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
-            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = (tab === 'projects') ? 'flex' : 'none'; const filterServiceLabel = document.querySelector('#operationalFilters label'); if (filterServiceLabel) filterServiceLabel.innerText = tab === 'projects' ? 'Filtrar por Divisão/Serviço responsável' : 'Filtrar por Serviço'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
+        window.switchTab = (tab) => { if (tab === 'operational') tab = 'projects'; activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600", pca2027: "bg-blue-700" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('pca2027View').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
+            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } else if (tab === 'pca2027') { document.getElementById('viewTitle').innerText = 'PCA 2027'; document.getElementById('pca2027View').classList.remove('hidden'); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = (tab === 'projects') ? 'flex' : 'none'; const filterServiceLabel = document.querySelector('#operationalFilters label'); if (filterServiceLabel) filterServiceLabel.innerText = tab === 'projects' ? 'Filtrar por Divisão/Serviço responsável' : 'Filtrar por Serviço'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
             if (coordWrapper) {
               const showCoord = ['projects','contracts','gantt'].includes(tab);
               // Use inline display to avoid any Tailwind utility precedence issues (e.g., flex vs hidden)
               coordWrapper.style.display = showCoord ? '' : 'none';
               coordWrapper.classList.toggle('hidden', !showCoord);
-            } if(tab !== 'portaria' && tab !== 'calendar' && tab !== 'indicators' && tab !== 'despachos' && tab !== 'gantt') window.renderData(); };
+            } if(tab !== 'portaria' && tab !== 'calendar' && tab !== 'indicators' && tab !== 'despachos' && tab !== 'gantt' && tab !== 'pca2027') window.renderData(); };
         window.setGanttFilter = (filter) => { currentGanttFilter = filter; document.getElementById('btnGanttAll').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'all' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; document.getElementById('btnGanttProj').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'projects' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; document.getElementById('btnGanttContr').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'contracts' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; window.renderGantt(); };
         window.renderGantt = () => { const container = document.getElementById('ganttBodyContainer'); container.innerHTML = ''; let items = []; if (currentGanttFilter === 'all' || currentGanttFilter === 'projects') { items = [...items, ...dataStore.projects.map(i => ({...i, type: 'project'}))]; } if (currentGanttFilter === 'all' || currentGanttFilter === 'contracts') { items = [...items, ...dataStore.contracts.map(i => ({...i, type: 'contract'}))]; } items = items.filter(i => i.prazo);
             // Filtro por coordenação (menu lateral)
