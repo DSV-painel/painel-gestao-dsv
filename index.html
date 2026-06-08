@@ -684,6 +684,160 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
 
 
+
+/* Ajuste visual – card de Decisão Necessária com a mesma largura dos blocos de Divisões/Serviços */
+.decision-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  align-items: stretch;
+}
+.decision-summary-grid .summary-box {
+  width: 100%;
+  min-height: 108px;
+}
+
+
+
+/* ===============================
+   RESPONSIVIDADE – cards executivos / decisão necessária
+   Mantém Decisão Necessária alinhada aos blocos de Divisões em desktop e mobile
+   =============================== */
+.card-summary-stack,
+.card-summary-section,
+.decision-summary-grid,
+.summary-inline-note {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.card-summary-section,
+.decision-summary-grid .summary-box,
+.summary-inline-note {
+  box-sizing: border-box;
+}
+
+.decision-summary-grid .summary-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+
+.decision-summary-grid .summary-box-body,
+.decision-summary-grid .summary-meta,
+.decision-summary-grid .summary-meta-chip {
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.decision-summary-grid .summary-meta-chip {
+  white-space: normal;
+  text-align: left;
+}
+
+@media (max-width: 900px) {
+  .card-header-layout,
+  .card-click-area,
+  .card-content-line,
+  .card-main-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .card-content-line {
+    align-items: stretch;
+  }
+
+  .card-status-strip {
+    height: auto;
+    min-height: 2.5rem;
+  }
+
+  .card-summary-section,
+  .decision-summary-grid .summary-box,
+  .summary-inline-note {
+    padding: 0.85rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .accordion-row > .px-5 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .card-content-line {
+    gap: 0.75rem;
+  }
+
+  .card-status-strip {
+    width: 0.28rem;
+    min-width: 0.28rem;
+  }
+
+  .card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .card-footer-meta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .card-footer-meta > div:last-child {
+    justify-content: flex-end;
+  }
+
+  .services-grid .unit-badge,
+  .decision-summary-grid .summary-box {
+    min-height: auto;
+  }
+
+  .summary-box-title,
+  .card-summary-section-title {
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 420px) {
+  .card-content-line {
+    gap: 0.55rem;
+  }
+
+  .card-status-strip {
+    display: none;
+  }
+
+  .card-badge-row {
+    gap: 0.25rem;
+  }
+
+  .card-badge-row span {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .summary-meta {
+    align-items: stretch;
+  }
+
+  .summary-meta-chip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+
 /* ===============================
    PDF EXPORT – evitar quebras ruins
    =============================== */
@@ -2213,7 +2367,148 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 .pca-value{font-weight:900;color:#0f172a;white-space:nowrap;text-align:right;min-width:150px;}
 .pca-note-box{border:1px solid #dbeafe;background:#eff6ff;border-radius:1rem;padding:.9rem;color:#1e3a8a;font-size:12px;font-weight:700;line-height:1.55;}
 
-    </style>
+    
+
+/* ===============================
+   AJUSTE RESPONSIVO – margens iguais nos blocos do card
+   Evita estouro dos chips de Divisões/Serviços e alinha Decisão Necessária
+   =============================== */
+.card-summary-stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.card-summary-stack > .card-summary-section,
+.card-summary-stack > .decision-summary-grid,
+.card-summary-stack > .summary-inline-note {
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+.card-summary-section,
+.decision-summary-grid .summary-box {
+  border-radius: 1rem;
+  box-sizing: border-box;
+}
+.services-grid {
+  width: 100%;
+  max-width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;
+}
+.services-grid .unit-badge {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.services-grid .unit-badge span {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.decision-summary-grid .summary-box {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .card-summary-stack {
+    gap: 0.75rem;
+  }
+  .card-summary-section,
+  .decision-summary-grid .summary-box,
+  .summary-inline-note {
+    padding: 0.85rem;
+  }
+  .services-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .services-grid .unit-badge,
+  .decision-summary-grid .summary-meta-chip {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .accordion-row > .px-5 {
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+  }
+  .card-summary-section,
+  .decision-summary-grid .summary-box,
+  .summary-inline-note {
+    padding: 0.75rem;
+    border-radius: 0.95rem;
+  }
+  .services-grid .unit-badge {
+    padding: 0.55rem 0.6rem;
+  }
+}
+
+
+/* ===============================
+   AJUSTE FINAL – textos sem estouro nos cards-resumo
+   Garante quebra de palavras longas e preserva margens internas
+   =============================== */
+.card-summary-stack,
+.card-summary-section,
+.decision-summary-grid,
+.decision-summary-grid .summary-box,
+.summary-inline-note {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.summary-box-title,
+.card-summary-section-title,
+.summary-box-body,
+.summary-inline-note .summary-box-body,
+.summary-box-body.markdown-content,
+.summary-inline-note .markdown-content,
+.services-grid .unit-badge,
+.services-grid .unit-badge span,
+.summary-meta-chip {
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+  box-sizing: border-box;
+}
+
+.summary-box-body.clamp-2,
+.summary-inline-note .clamp-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-inline-note .markdown-content p,
+.summary-inline-note .markdown-content li,
+.decision-summary-grid .markdown-content p,
+.decision-summary-grid .markdown-content li {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 640px) {
+  .summary-inline-note,
+  .decision-summary-grid .summary-box,
+  .card-summary-section {
+    padding-left: 0.95rem;
+    padding-right: 0.95rem;
+  }
+}
+
+</style>
 
 <style id="portaria-sem-pr-vp-final">
 #portariaView .portaria-context-node,
@@ -6701,7 +6996,7 @@ Object.keys(cols).forEach(key => {
                                     </div>
                                     <div class="card-summary-stack">
                                         ${servicesBadgeHtml}
-                                        ${decisionResumoHtml ? `<div class="exec-summary-grid">${decisionResumoHtml}</div>` : ''}
+                                        ${decisionResumoHtml ? `<div class="decision-summary-grid">${decisionResumoHtml}</div>` : ''}
                                         ${encaminhamentosResumoHtml}
                                     </div>
                                 </div>
@@ -6737,7 +7032,7 @@ Object.keys(cols).forEach(key => {
                     <div class="py-5 space-y-5">
                         <div class="space-y-5">
                             <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><div class="text-sm text-slate-700 leading-relaxed font-medium markdown-content">${md(item.desc, 'Sem descrição.')}</div></div>
-                            ${activeTab === 'projects' && (item.decisionNeeded === 'Sim' || item.decisionDesc) ? `<div class="bg-amber-50 p-4 rounded-xl border border-amber-200"><p class="text-xs font-semibold text-slate-500 text-amber-700 uppercase mb-2"><i class="fas fa-gavel mr-1"></i> Decisão necessária ${item.decisionLevel ? `— ${item.decisionLevel}` : ''}</p><div class="text-sm text-slate-700 leading-relaxed font-bold markdown-content">${md(item.decisionDesc, 'Decisão indicada, mas sem descrição.')}</div></div>` : ''}
+                            ${activeTab === 'projects' && (item.decisionNeeded === 'Sim' || item.decisionDesc) ? `<div class="w-full bg-amber-50 p-4 rounded-xl border border-amber-200"><p class="text-xs font-semibold text-slate-500 text-amber-700 uppercase mb-2"><i class="fas fa-gavel mr-1"></i> Decisão necessária ${item.decisionLevel ? `— ${item.decisionLevel}` : ''}</p><div class="text-sm text-slate-700 leading-relaxed font-bold markdown-content">${md(item.decisionDesc, 'Decisão indicada, mas sem descrição.')}</div></div>` : ''}
                             ${shouldShowEncaminhamentosResumo ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><div class="text-sm text-slate-700 leading-relaxed font-bold markdown-content">${md(encaminhamentosResumoText)}</div></div>` : ''}
                             ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><div class="text-sm text-red-700 leading-relaxed font-bold markdown-content">${md(item.risks)}</div></div>` : ''}
                             ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><div class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 markdown-content">${md(item.obs)}</div></div>` : ''}
@@ -7602,6 +7897,135 @@ const filenameBase = (safeTitle || 'pauta')
 #portariaView .portaria-circle-node:focus-visible .portaria-node-popover.popover-down,
 #portariaView .portaria-circle-node.active .portaria-node-popover.popover-down {
   transform: translateY(0) scale(1) !important;
+}
+
+
+/* ===============================
+   AJUSTE FINAL – cards-resumo mais largos
+   Faz os blocos de Divisões, Decisão e Encaminhamentos ocuparem a largura útil
+   do card principal, respeitando as margens esquerda e direita.
+   =============================== */
+.accordion-row .card-header-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  width: 100%;
+}
+.accordion-row .card-click-area,
+.accordion-row .card-content-line,
+.accordion-row .card-main-content,
+.accordion-row .card-summary-stack,
+.accordion-row .card-summary-section,
+.accordion-row .decision-summary-grid,
+.accordion-row .decision-summary-grid .summary-box,
+.accordion-row .summary-inline-note {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+.accordion-row .card-content-line {
+  display: flex;
+  align-items: stretch;
+}
+.accordion-row .card-main-content {
+  flex: 1 1 auto;
+  align-self: stretch;
+}
+.accordion-row .card-summary-stack {
+  align-self: stretch;
+}
+.accordion-row .card-summary-section,
+.accordion-row .decision-summary-grid .summary-box,
+.accordion-row .summary-inline-note {
+  display: block;
+}
+.accordion-row .card-actions {
+  flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+  .accordion-row .card-header-layout {
+    grid-template-columns: 1fr;
+  }
+  .accordion-row .card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 420px) {
+  .accordion-row .card-content-line {
+    gap: 0.6rem;
+  }
+}
+</style>
+
+
+
+<style id="ajuste-cards-mais-largos">
+/* ===============================
+   AJUSTE – cards-resumo ainda mais largos
+   Faz os blocos internos usarem a largura total do card principal.
+   Os botões ficam no canto superior direito no desktop, sem reduzir a largura
+   dos blocos de Divisões, Decisão e Encaminhamentos.
+   =============================== */
+@media (min-width: 861px) {
+  .accordion-row .card-header-layout {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  .accordion-row .card-click-area,
+  .accordion-row .card-content-line,
+  .accordion-row .card-main-content,
+  .accordion-row .card-summary-stack,
+  .accordion-row .card-summary-section,
+  .accordion-row .decision-summary-grid,
+  .accordion-row .decision-summary-grid .summary-box,
+  .accordion-row .summary-inline-note {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .accordion-row .card-actions.card-top-actions {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    z-index: 5 !important;
+    width: auto !important;
+  }
+
+  .accordion-row .card-main-title-block {
+    padding-right: 9.5rem !important;
+  }
+
+  .accordion-row .card-summary-stack {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .accordion-row .card-header-layout {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .accordion-row .card-actions.card-top-actions {
+    position: static !important;
+    width: 100% !important;
+    justify-content: flex-end !important;
+    margin-top: 0.25rem !important;
+  }
+
+  .accordion-row .card-main-title-block {
+    padding-right: 0 !important;
+  }
 }
 </style>
 
