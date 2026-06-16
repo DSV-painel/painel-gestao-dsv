@@ -336,6 +336,15 @@
         @media (min-width: 640px) { .responsive-stats-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 1280px) { .responsive-stats-grid { grid-template-columns: repeat(5, 1fr); } }
 
+        /* Status cards – duas linhas: Total/Concluído e demais status */
+        .status-filter-stack { display: flex; flex-direction: column; gap: 1rem; }
+        .status-filter-stack.hidden { display: none !important; }
+        .status-filter-row { display: grid; gap: 1rem; width: 100%; }
+        .status-filter-row-top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .status-filter-row-bottom { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        @media (max-width: 900px) { .status-filter-row-bottom { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 520px) { .status-filter-row-top, .status-filter-row-bottom { grid-template-columns: 1fr; } }
+
         /* Estilo Indicadores */
         .indicator-card { background: white; border: 1px solid #fbcfe8; border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; position: relative; overflow: hidden; }
         .indicator-card:hover { box-shadow: 0 10px 15px -3px rgba(190, 24, 93, 0.1), 0 4px 6px -4px rgba(190, 24, 93, 0.1); border-color: #f9a8d4; transform: translateY(-2px); cursor: pointer; }
@@ -485,6 +494,17 @@
         
         .gantt-today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: #ef4444; z-index: 5; opacity: 0.6; pointer-events: none; border-right: 1px dashed #fecaca; }
         .gantt-today-label { position: absolute; top: -20px; transform: translateX(-50%); background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-bold; z-index: 30; white-space: nowrap; }
+
+        .gantt-control-panel { display: grid; grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.6fr); gap: 1rem; align-items: stretch; }
+        .gantt-role-card { background: white; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1rem; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
+        .gantt-role-card-title { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: #047857; margin-bottom: .45rem; display:flex; align-items:center; gap:.4rem; }
+        .gantt-workload-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: .6rem; }
+        .gantt-workload-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: .9rem; padding: .75rem; min-height: 72px; display:flex; flex-direction:column; justify-content:space-between; }
+        .gantt-workload-card.top { background: #ecfdf5; border-color: #a7f3d0; }
+        .gantt-workload-role { font-size: 10px; font-weight: 900; color: #334155; text-transform: uppercase; letter-spacing:.04em; line-height: 1.25; }
+        .gantt-workload-count { margin-top: .35rem; font-size: 1.15rem; font-weight: 900; color: #0f172a; line-height: 1; }
+        .gantt-workload-note { margin-top: .2rem; font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
+        @media (max-width: 900px) { .gantt-control-panel { grid-template-columns: 1fr; } }
 
         .btn-theme-gantt { color: #94a3b8; } .btn-theme-gantt:hover { color: #059669; border-color: #6ee7b7; }
     
@@ -2393,8 +2413,81 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 #pca2027View .pca-table-wrap > .px-5{padding:.75rem 1rem!important;}
 #pca2027View .pca-object{min-width:240px!important;}
 #pca2027View .pca-just{min-width:420px!important;}
-#authStatusBadge{left:14px!important;right:auto!important;max-width:360px!important;transform:scale(.88);transform-origin:left bottom;}
-@media (max-width: 900px){#pca2027View .pca-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}#authStatusBadge{left:8px!important;right:8px!important;max-width:none!important;transform:none!important;}}
+/* Autenticação no cabeçalho: informação do usuário logado ao lado da busca */
+.header-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:.75rem;
+  width:100%;
+}
+.auth-inline-badge{
+  display:none;
+  align-items:center;
+  gap:.65rem;
+  min-width:0;
+  max-width:360px;
+  padding:.58rem .68rem;
+  border-radius:1rem;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  box-shadow:0 1px 2px rgba(15,23,42,.05);
+  color:#0f172a;
+}
+.auth-inline-dot{
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 0 3px rgba(34,197,94,.14);
+  flex:0 0 auto;
+}
+.auth-inline-text{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  line-height:1.12;
+}
+.auth-inline-label{
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#64748b;
+}
+.auth-inline-email{
+  margin-top:.12rem;
+  font-size:12px;
+  font-weight:850;
+  color:#0f172a;
+  max-width:210px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.auth-inline-logout{
+  height:30px;
+  padding:0 .72rem;
+  border-radius:.8rem;
+  border:1px solid #0f172a;
+  background:#0f172a;
+  color:#fff;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all .18s ease;
+  flex:0 0 auto;
+}
+.auth-inline-logout:hover{background:#1e293b;transform:translateY(-1px);}
+@media (min-width: 768px){.header-actions{width:auto;}}
+@media (max-width: 900px){#pca2027View .pca-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}}
+@media (max-width: 640px){
+  .header-actions{flex-direction:column;align-items:stretch;}
+  .auth-inline-badge{width:100%;max-width:none;}
+  .auth-inline-email{max-width:none;}
+} 
 
 
     
@@ -2548,6 +2641,109 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 #pca2027View .pca-object strong{font-weight:900;color:#0f172a;}
 #pca2027View .pca-just{white-space:normal;}
 #pca2027View .pca-just br{display:block;content:"";margin-top:.25rem;}
+
+
+/* =====================================================
+   PORTARIA Nº 44/2025 – ajustes solicitados
+   Filtros com paleta institucional, círculos apenas com siglas
+   e detalhamento das competências em três linhas claras.
+   ===================================================== */
+#portariaFilters {
+  gap: .62rem !important;
+}
+#portariaFilters .portaria-filter-btn {
+  min-height: 46px !important;
+  height: 46px !important;
+  border-radius: .8rem !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  box-shadow: 0 8px 18px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.18) !important;
+  letter-spacing: .075em !important;
+  text-shadow: 0 1px 2px rgba(15,23,42,.18) !important;
+}
+#portariaFilters .portaria-filter-btn:hover {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 12px 24px rgba(15,23,42,.14), inset 0 1px 0 rgba(255,255,255,.22) !important;
+}
+#portariaFilters .portaria-filter-btn.active {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: translateY(-1px) !important;
+  border: 2px solid rgba(255,255,255,.86) !important;
+  outline: 2px solid rgba(0,64,119,.22) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 16px 30px rgba(15,23,42,.18), inset 0 1px 0 rgba(255,255,255,.26) !important;
+}
+#portariaFilters .filter-all { background: #004077 !important; color: #ffffff !important; }
+#portariaFilters .filter-diretoria { background: #3f4d5f !important; color: #ffffff !important; }
+#portariaFilters .filter-coordenadoria { background: #7f8aa0 !important; color: #ffffff !important; }
+#portariaFilters .filter-divisao { background: #8c879f !important; color: #ffffff !important; }
+#portariaFilters .filter-servico { background: #8da19a !important; color: #ffffff !important; }
+
+/* Nas bolas do organograma: manter somente a sigla. */
+#portariaView .portaria-circle-node .small-label,
+#portariaView .portaria-circle-node:hover .small-label,
+#portariaView .portaria-circle-node:focus-visible .small-label,
+#portariaView .portaria-circle-node.active .small-label {
+  display: none !important;
+}
+#portariaView .portaria-circle-node .acro {
+  display: block !important;
+  text-align: center !important;
+  width: 100% !important;
+  padding: 0 .15rem !important;
+}
+#portariaView .portaria-circle-node.type-Serviço .acro {
+  font-size: 10.5px !important;
+  line-height: 1.05 !important;
+}
+
+/* Detalhamento das competências: tag, nome completo e mote do compete em linhas separadas. */
+#portariaView .portaria-popover-head,
+#portariaView .portaria-attrib-modal-head,
+#portariaView .portaria-detail-head {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: .45rem !important;
+}
+#portariaView .portaria-popover-type,
+#portariaView .portaria-attrib-modal-type,
+#portariaView .portaria-detail-type {
+  display: inline-flex !important;
+  align-items: center !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+#portariaView .portaria-popover-title,
+#portariaView .portaria-attrib-modal-title,
+#portariaView .portaria-detail-title {
+  display: block !important;
+  margin-top: .1rem !important;
+  width: 100% !important;
+  line-height: 1.24 !important;
+}
+#portariaView .portaria-popover-preamble,
+#portariaView .portaria-attrib-modal-preamble,
+#portariaView .portaria-detail-preamble {
+  display: block !important;
+  margin-top: 0 !important;
+  width: 100% !important;
+  line-height: 1.42 !important;
+}
+@media (max-width: 640px) {
+  #portariaFilters {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+  #portariaFilters .portaria-filter-btn {
+    grid-column: span 12 / span 12 !important;
+  }
+}
+
 </style>
 <style id="portaria-sem-pr-vp-final">
 #portariaView .portaria-context-node,
@@ -2596,44 +2792,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
             </p>
 </div>
 </div>
-<!-- Indicador de autenticação (mostra quando usuário estiver logado) -->
-<div id="authStatusBadge" style="
-        position: fixed;
-        bottom: 14px;
-        top: auto;
-        right: 14px;
-        z-index: 999998;
-        max-width: calc(100vw - 28px);
-        display: none;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 14px;
-        background: rgba(255,255,255,0.92);
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.10);
-        backdrop-filter: blur(8px);
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
-    ">
-<span style="width:10px;height:10px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,0.15);"></span>
-<div style="display:flex;flex-direction:column;line-height:1.15;">
-<span style="font-size:10px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#64748b;">LOGADO</span>
-<span id="authUserEmail" style="font-size:12px;font-weight:800;color:#0f172a;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
-</div>
-<button id="authLogoutBtn" style="
-            height: 32px;
-            padding: 0 10px;
-            border-radius: 12px;
-            border: 1px solid #0f172a;
-            background: #0f172a;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            cursor: pointer;
-        " title="Sair" type="button">Sair</button>
-</div>
+<!-- Indicador de autenticação movido para o cabeçalho, ao lado da pesquisa -->
 <!-- ... (Modais e Sidebar iguais, sem alterações) ... -->
 <!-- Modal Novo Indicador -->
 <div class="items-center justify-center p-2 sm:p-4" id="newIndicatorModal" style="display: none;">
@@ -3143,6 +3302,14 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </optgroup>
 </select>
 </div>
+<div class="flex flex-col hidden-field" id="cargoField">
+<label class="field-label" id="cargoFieldLabel">Cargos envolvidos no cronograma</label>
+<div class="tag-container bg-white mb-2 min-h-[44px] flex-wrap gap-2" id="cargoTagsContainer"></div>
+<select class="input-style" id="projCargoAdder" onchange="addCargoTag(this.value); this.value='';">
+<option value="">+ Adicionar cargo envolvido...</option>
+</select>
+<p class="text-[11px] text-slate-400 font-medium mt-1">Use este campo para medir a carga de demandas por cargo na aba Cronograma.</p>
+</div>
 <div class="hidden-field space-y-5 pt-3 border-t border-slate-100" id="projectActionDecisionField">
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 <div class="flex flex-col">
@@ -3381,24 +3548,37 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <i class="fas fa-info-circle mr-1"></i> Matriz PMG
                     </button>
 </div>
+<div class="header-actions">
+<div class="auth-inline-badge" id="authStatusBadge" title="Usuário autenticado">
+<span class="auth-inline-dot"></span>
+<div class="auth-inline-text">
+<span class="auth-inline-label">Logado</span>
+<span class="auth-inline-email" id="authUserEmail"></span>
+</div>
+<button class="auth-inline-logout" id="authLogoutBtn" title="Sair" type="button">Sair</button>
+</div>
 <div class="relative w-full md:w-72">
 <i class="fas fa-search absolute left-3 top-3 text-slate-300 text-sm"></i>
 <input class="w-full bg-slate-50 border border-slate-100 rounded-xl pl-10 pr-3 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-100 transition-all font-medium" id="searchInput" oninput="renderData();" placeholder="Pesquisar..." type="text"/>
+</div>
 </div>
 </header>
 <!-- Container Principal -->
 <div class="flex-1 flex flex-col transition-colors duration-300 pb-20 md:pb-0" id="standardView">
 <div class="px-4 md:px-6 pt-6 flex flex-col xl:flex-row gap-6" id="statsWrapper">
-<div class="flex-1 responsive-stats-grid transition-all duration-500" id="statsRow1">
+<div class="flex-1 status-filter-stack transition-all duration-500" id="statsRow1">
 <!-- Stats Cards -->
+<div class="status-filter-row status-filter-row-top">
 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm stat-card active-filter" id="cardTotal" onclick="setListFilter('all')">
 <p class="text-[10px] text-slate-400 uppercase font-black mb-1">Total</p><div class="text-2xl font-black text-slate-800" id="statTotal">0</div>
 </div>
-<div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm stat-card" id="cardBacklog" onclick="setListFilter('Backlog')">
-<p class="text-[10px] text-slate-500 uppercase font-black mb-1">Backlog</p><div class="text-2xl font-black text-slate-700" id="statBacklog">0</div>
+<div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-sm stat-card" id="cardConcluido" onclick="setListFilter('Concluído')">
+<p class="text-[10px] text-emerald-600 uppercase font-black mb-1">Concluído</p><div class="text-2xl font-black text-slate-800" id="statConcluido">0</div>
 </div>
-<div class="bg-white p-4 rounded-xl border border-indigo-200 shadow-sm stat-card" id="cardPlanejado" onclick="setListFilter('Em Planejamento')">
-<p class="text-[10px] text-indigo-600 uppercase font-black mb-1 truncate">Em Planejamento</p><div class="text-2xl font-black text-slate-800" id="statPlanejado">0</div>
+</div>
+<div class="status-filter-row status-filter-row-bottom">
+<div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm stat-card" id="cardBacklog" onclick="setListFilter('Backlog')">
+<p class="text-[10px] text-slate-500 uppercase font-black mb-1 leading-tight">Backlog</p><div class="text-2xl font-black text-slate-800" id="statBacklog">0</div>
 </div>
 <div class="bg-white p-4 rounded-xl border border-green-200 shadow-sm stat-card" id="cardExecucao" onclick="setListFilter('Em Execução')">
 <p class="text-[10px] text-green-600 uppercase font-black mb-1">Em Execução</p><div class="text-2xl font-black text-slate-800" id="statExecucao">0</div>
@@ -3409,8 +3589,6 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <div class="bg-white p-4 rounded-xl border border-slate-300 shadow-sm stat-card" id="cardCancelado" onclick="setListFilter('Cancelado')">
 <p class="text-[10px] text-slate-500 uppercase font-black mb-1">Cancelado</p><div class="text-2xl font-black text-slate-800" id="statCancelado">0</div>
 </div>
-<div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-sm stat-card" id="cardConcluido" onclick="setListFilter('Concluído')">
-<p class="text-[10px] text-emerald-600 uppercase font-black mb-1">Concluído</p><div class="text-2xl font-black text-slate-800" id="statConcluido">0</div>
 </div>
 </div>
 <!-- Chart Section -->
@@ -4176,6 +4354,21 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <button class="px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-400 hover:text-slate-600" id="btnGanttContr" onclick="setGanttFilter('contracts')">Contratos</button>
 </div>
 </div>
+<div class="gantt-control-panel shrink-0">
+<div class="gantt-role-card">
+<label class="gantt-role-card-title" for="ganttRoleFilter"><i class="fas fa-id-badge"></i> Filtrar por cargo envolvido</label>
+<select class="input-style" id="ganttRoleFilter" onchange="setGanttRoleFilter(this.value)">
+<option value="all">Todos os cargos</option>
+</select>
+<p class="text-[11px] text-slate-400 font-semibold mt-2">O filtro considera os cargos vinculados no cadastro de projetos e contratos.</p>
+</div>
+<div class="gantt-role-card">
+<div class="gantt-role-card-title"><i class="fas fa-weight-hanging"></i> Carga de demandas por cargo</div>
+<div class="gantt-workload-grid" id="ganttWorkloadSummary">
+<div class="text-xs text-slate-400 italic">Sem dados para consolidar.</div>
+</div>
+</div>
+</div>
 <div class="flex items-center gap-6 px-2 shrink-0">
 <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-blue-500"></div><span class="text-[10px] font-bold text-slate-500 uppercase">Projeto</span></div>
 <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-purple-500"></div><span class="text-[10px] font-bold text-slate-500 uppercase">Contrato</span></div>
@@ -4264,17 +4457,18 @@ textarea.input-style { min-height: 92px; resize: vertical; }
         let currentPriorityFilter = 'all';
         let currentPortariaFilter = 'all';
         let currentGanttFilter = 'all';
+        let currentGanttRoleFilter = 'all';
         let currentDate = new Date();
         let selectedCalendarDay = null; 
         let selectedMeetingId = null; 
         let selectedBacklogItems = new Set();
         
         const areasList = ["DSV", "EPT", "CEC", "CET", "CGSV", "COST", "CIST", "SCCE", "SDCG", "SFP", "SIEDU", "SOPED", "SETEF", "SDMP", "SDAP", "SAST", "RENAEST", "SESV", "SMO", "SEP", "STSV", "SISV", "SIM", "SGR", "SAT", "SENT", "SFI"];
-        const UNIFIED_STATUS = ["Backlog", "Em Planejamento", "Em Execução", "Em Execução (com risco)", "Cancelado", "Concluído"];
+        const UNIFIED_STATUS = ["Backlog", "Em Execução", "Em Execução (com risco)", "Cancelado", "Concluído"];
         const CONTRACT_STATUS = [...UNIFIED_STATUS];
         const PROJECT_STATUS = [...UNIFIED_STATUS];
-        const STATUS_COLORS_HEX = { "Backlog": "#cbd5e1", "Em Planejamento": "#6366f1", "Em Execução": "#22c55e", "Em Execução (com risco)": "#f97316", "Cancelado": "#64748b", "Concluído": "#059669" };
-        const STATUS_COLORS_TW_BG = { "Backlog": "bg-slate-300", "Em Planejamento": "bg-indigo-500", "Em Execução": "bg-green-500", "Em Execução (com risco)": "bg-orange-500", "Concluído": "bg-emerald-600", "Cancelado": "bg-slate-500" };
+        const STATUS_COLORS_HEX = { "Backlog": "#cbd5e1", "Em Execução": "#22c55e", "Em Execução (com risco)": "#f97316", "Cancelado": "#64748b", "Concluído": "#059669" };
+        const STATUS_COLORS_TW_BG = { "Backlog": "bg-slate-300", "Em Execução": "bg-green-500", "Em Execução (com risco)": "bg-orange-500", "Concluído": "bg-emerald-600", "Cancelado": "bg-slate-500" };
         // Normalização de status (corrige variações de escrita que quebram a contagem/filters)
         function normalizeStatus(raw) {
             let s = (raw ?? '').toString().trim();
@@ -4283,7 +4477,8 @@ textarea.input-style { min-height: 92px; resize: vertical; }
             s = s.replace(/\s+/g, ' ');
             // Variações comuns (legado)
             const map = {
-                'Iniciado': 'Em Planejamento',
+                'Iniciado': 'Backlog',
+                'Em Planejamento': 'Backlog',
                 'Em Execução (Dentro do Planejado)': 'Em Execução',
                 'Em Execução (Atenção)': 'Em Execução',
                 'Em Execução (Em Risco / Atrasado)': 'Em Execução (com risco)',
@@ -4298,6 +4493,36 @@ textarea.input-style { min-height: 92px; resize: vertical; }
             };
             if (map[s]) s = map[s];
             return s;
+        }
+
+        const legacyPlanningMigrationAttempts = new Set();
+        function normalizeStoredStatusOnItem(item) {
+            if (!item) return item;
+            const normalized = normalizeStatus(item.status);
+            return normalized && normalized !== item.status ? { ...item, status: normalized } : item;
+        }
+
+        async function migrateLegacyPlanningToBacklog(colName, snapshot) {
+            if (!['projects', 'contracts'].includes(colName) || !snapshot || snapshot.metadata?.hasPendingWrites) return;
+            try {
+                const docsToUpdate = snapshot.docs.filter(d => {
+                    const raw = (d.data()?.status ?? '').toString().trim().replace(/\s+/g, ' ');
+                    return raw === 'Em Planejamento' && !legacyPlanningMigrationAttempts.has(`${colName}:${d.id}`);
+                });
+                if (!docsToUpdate.length) return;
+                const batch = writeBatch(db);
+                docsToUpdate.forEach(d => {
+                    legacyPlanningMigrationAttempts.add(`${colName}:${d.id}`);
+                    batch.set(d.ref, {
+                        status: 'Backlog',
+                        migratedStatusFrom: 'Em Planejamento',
+                        migratedStatusAt: new Date().toISOString()
+                    }, { merge: true });
+                });
+                await batch.commit();
+            } catch (err) {
+                console.warn('Não foi possível migrar automaticamente Em Planejamento para Backlog:', err);
+            }
         }
 
         // --- Auditoria de cadastro/atualização (Firebase Auth) ---
@@ -4543,6 +4768,67 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
         let dataStore = { projects: [], contracts: [], operational: [], calendarEvents: [], indicators: [], dispatchMeetings: [], dispatchCustomItems: [] };
         
+        const CARGO_OPTIONS = [
+            { value: 'Diretoria de Segurança Viária', acronym: 'DSV', label: 'Diretoria de Segurança Viária' },
+            { value: 'Escola Pública de Trânsito', acronym: 'EPT', label: 'Escola Pública de Trânsito' },
+            { value: 'Coordenadoria de Educação Corporativa', acronym: 'CEC', label: 'Coordenadoria de Educação Corporativa' },
+            { value: 'Serviço de Desenvolvimento de Competências Específicas', acronym: 'SDCE', label: 'Serviço de Desenvolvimento de Competências Específicas' },
+            { value: 'Serviço de Desenvolvimento de Competências Gerais', acronym: 'SDCG', label: 'Serviço de Desenvolvimento de Competências Gerais' },
+            { value: 'Serviço de Formação Profissional', acronym: 'SFP', label: 'Serviço de Formação Profissional' },
+            { value: 'Coordenadoria de Educação para o Trânsito', acronym: 'CET', label: 'Coordenadoria de Educação para o Trânsito' },
+            { value: 'Serviço de Integração da Educação', acronym: 'SIEDU', label: 'Serviço de Integração da Educação' },
+            { value: 'Serviço de Operações de Educação', acronym: 'SOPED', label: 'Serviço de Operações de Educação' },
+            { value: 'Serviço de Promoção de Educação no Ensino Fundamental', acronym: 'SETEF', label: 'Serviço de Promoção de Educação no Ensino Fundamental' },
+            { value: 'Serviço de Desenvolvimento de Motoristas Profissionais', acronym: 'SDMP', label: 'Serviço de Desenvolvimento de Motoristas Profissionais' },
+            { value: 'Serviço de Desenvolvimento de Agentes Públicos', acronym: 'SDAP', label: 'Serviço de Desenvolvimento de Agentes Públicos' },
+            { value: 'Coordenadoria Geral de Segurança Viária', acronym: 'CGSV', label: 'Coordenadoria Geral de Segurança Viária' },
+            { value: 'Coordenadoria do Observatório de Segurança no Trânsito', acronym: 'COST', label: 'Coordenadoria do Observatório de Segurança no Trânsito' },
+            { value: 'Divisão de Estatísticas de Trânsito', acronym: 'DEST', label: 'Divisão de Estatísticas de Trânsito' },
+            { value: 'Serviço de Análise de Sinistro de Trânsito', acronym: 'SAST', label: 'Serviço de Análise de Sinistro de Trânsito' },
+            { value: 'Serviço de Integração da Informação', acronym: 'RENAEST', label: 'Serviço de Integração da Informação' },
+            { value: 'Divisão de Redução de Mortes e Lesões no Trânsito', acronym: 'DRMLT', label: 'Divisão de Redução de Mortes e Lesões no Trânsito' },
+            { value: 'Serviço de Estratégia de Segurança Viária', acronym: 'SESV', label: 'Serviço de Estratégia de Segurança Viária' },
+            { value: 'Serviço de Monitoramento', acronym: 'SMO', label: 'Serviço de Monitoramento' },
+            { value: 'Divisão de Estudos para Segurança no Trânsito', acronym: 'DESEG', label: 'Divisão de Estudos para Segurança no Trânsito' },
+            { value: 'Serviço de Estudos e Pesquisas', acronym: 'SEP', label: 'Serviço de Estudos e Pesquisas' },
+            { value: 'Serviço de Tecnologia em Segurança Viária', acronym: 'STSV', label: 'Serviço de Tecnologia em Segurança Viária' },
+            { value: 'Coordenadoria de Integração dos Sistemas de Trânsito', acronym: 'CIST', label: 'Coordenadoria de Integração dos Sistemas de Trânsito' },
+            { value: 'Divisão de Integração para Segurança no Trânsito', acronym: 'DIST', label: 'Divisão de Integração para Segurança no Trânsito' },
+            { value: 'Serviço de Integração para Segurança Viária', acronym: 'SISV', label: 'Serviço de Integração para Segurança Viária' },
+            { value: 'Divisão do Plano Estadual de Segurança Viária', acronym: 'DPESV', label: 'Divisão do Plano Estadual de Segurança Viária' },
+            { value: 'Serviço de Integração com os Municípios', acronym: 'SIM', label: 'Serviço de Integração com os Municípios' },
+            { value: 'Serviço de Gestão de Recursos', acronym: 'SGR', label: 'Serviço de Gestão de Recursos' },
+            { value: 'Serviço de Análise Técnica', acronym: 'SAT', label: 'Serviço de Análise Técnica' },
+            { value: 'Divisão de Engenharia de Trânsito', acronym: 'DENT', label: 'Divisão de Engenharia de Trânsito' },
+            { value: 'Serviço de Engenharia de Trânsito', acronym: 'SENT', label: 'Serviço de Engenharia de Trânsito' },
+            { value: 'Serviço de Fiscalização de Intervenções', acronym: 'SFI', label: 'Serviço de Fiscalização de Intervenções' }
+        ];
+
+        const getCargoAcronym = (value) => {
+            const found = CARGO_OPTIONS.find(c => c.value === value || c.label === value || c.acronym === value);
+            return found ? found.acronym : String(value || '').split(' — ')[0] || 'N/A';
+        };
+        const getCargoFullName = (value) => {
+            const found = CARGO_OPTIONS.find(c => c.value === value || c.label === value || c.acronym === value);
+            return found ? found.label : String(value || 'Sem cargo definido');
+        };
+        const normalizeCargoList = (item = {}) => {
+            const raw = [];
+            if (Array.isArray(item.involvedRoles)) raw.push(...item.involvedRoles);
+            if (Array.isArray(item.cargosEnvolvidos)) raw.push(...item.cargosEnvolvidos);
+            if (item.involvedRole) raw.push(item.involvedRole);
+            if (item.cargoEnvolvido) raw.push(item.cargoEnvolvido);
+            if (item.cargo) raw.push(item.cargo);
+            return [...new Set(raw.map(v => String(v || '').trim()).filter(Boolean))];
+        };
+        window.populateCargoOptions = () => {
+            const select = document.getElementById('projCargoAdder');
+            if (!select) return;
+            const current = select.value || '';
+            select.innerHTML = '<option value="">+ Adicionar cargo envolvido...</option>' + CARGO_OPTIONS.map(c => `<option value="${escapeHtml(c.value)}">${escapeHtml(c.acronym)} — ${escapeHtml(c.label)}</option>`).join('');
+            select.value = current;
+        };
+        
         // ... (Constantes PORTARIA_DATA e INITIAL_INDICATORS mantidas) ...
         const PORTARIA_DATA = [
             { art: 'Art. 256', title: 'Diretoria de Segurança Viária', type: 'Diretoria', preamble: 'Compete dirigir, planejar, coordenar, controlar, executar e avaliar as atividades referentes a:', items: ['Segurança viária e educação para o trânsito', 'Educação corporativa e governança da aprendizagem', 'Aplicação e repasse de valores arrecadados para segurança viária', 'Estatística, estudos, pesquisas e integração de informações para segurança viária', 'Diretrizes para a fiscalização de trânsito e, em conjunto com a Polícia Militar, para o policiamento ostensivo de trânsito', 'Integração e atuação em rede com os órgãos do Sistema Estadual de Trânsito (SISTRAN)'] },
@@ -4771,7 +5057,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', colName), (snapshot) => {
                     // IMPORTANTE: garante que o id do Firestore prevaleça mesmo que exista um campo "id" no documento
                     // (isso evita comportamentos estranhos como cards duplicando/colidindo por id sobrescrito).
-                    let items = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+                    let items = snapshot.docs.map(d => normalizeStoredStatusOnItem({ ...d.data(), id: d.id }));
                     
                     if (colName === 'indicators' && items.length === 0) {
                         dataStore[storeKey] = INITIAL_INDICATORS;
@@ -4780,6 +5066,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                     }
                     
                     window.updateStatusUI(snapshot.metadata.hasPendingWrites ? 'syncing' : 'online');
+                    migrateLegacyPlanningToBacklog(colName, snapshot);
 
                     // Atualiza a view correta sem depender de trocar de aba/recarregar
                     if (colName === 'indicators') {
@@ -4885,13 +5172,16 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
             document.getElementById('editId').value = '';
             document.getElementById('roadmapContainer').innerHTML = '';
-            document.getElementById('serviceTagsContainer').innerHTML = ''; 
-            document.querySelectorAll('.actor-tag').forEach(el => el.remove());
+            document.getElementById('serviceTagsContainer').innerHTML = '';
+            const cargoTags = document.getElementById('cargoTagsContainer');
+            if (cargoTags) cargoTags.innerHTML = '';
+            if (typeof window.populateCargoOptions === 'function') window.populateCargoOptions();
 
             const typeField = document.getElementById('contractTypeField');
             const resourceField = document.getElementById('resourceLogicField');
             const relField = document.getElementById('relationalField');
             const serviceField = document.getElementById('serviceField');
+            const cargoField = document.getElementById('cargoField');
             const durationField = document.getElementById('operationalDurationField');
             const complexityField = document.getElementById('complexityField');
             const projectActionDecisionField = document.getElementById('projectActionDecisionField');
@@ -4902,6 +5192,7 @@ typeField.classList.add('hidden-field');
             resourceField.classList.add('hidden-field');
             relField.classList.add('hidden-field');
             serviceField.classList.add('hidden-field');
+            if (cargoField) cargoField.classList.add('hidden-field');
             durationField.classList.add('hidden-field'); 
             complexityField.classList.add('hidden-field');
             if (projectActionDecisionField) projectActionDecisionField.classList.add('hidden-field');
@@ -4930,7 +5221,8 @@ document.getElementById('projRisks').value = '';
                 complexityField.classList.remove('hidden-field');
                 serviceField.classList.remove('hidden-field');
                 if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
-                if (projectActionDecisionField) projectActionDecisionField.classList.remove('hidden-field'); 
+                if (projectActionDecisionField) projectActionDecisionField.classList.remove('hidden-field');
+                if (cargoField) cargoField.classList.remove('hidden-field');
             } else if (activeTab === 'contracts') {
                 document.getElementById('modalTitle').innerText = 'Novo Contrato / Convênio';
                 typeField.classList.remove('hidden-field');
@@ -4940,6 +5232,7 @@ document.getElementById('projRisks').value = '';
                 document.getElementById('contractProgram').value = '';
                 document.getElementById('contractComponent').value = '';
                 toggleContractProgramFields();
+                if (cargoField) cargoField.classList.remove('hidden-field');
 } else if (activeTab === 'operational') {
                 document.getElementById('modalTitle').innerText = 'Nova Atividade Operacional';
                 relField.classList.remove('hidden-field');
@@ -5031,6 +5324,7 @@ document.getElementById('projRisks').value = '';
         const getTagsFromContainer = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); };
         const createTag = (text, containerId, inputId, colorClass = 'tag-blue') => { const container = document.getElementById(containerId); const input = inputId ? document.getElementById(inputId) : null; if(!container) return; const tag = document.createElement('div'); tag.className = `actor-tag ${colorClass}`; tag.innerHTML = `<span>${text}</span><i class="fas fa-times cursor-pointer hover:opacity-75" onclick="this.parentElement.remove()"></i>`; if(input) { container.insertBefore(tag, input); } else { container.appendChild(tag); } };
         window.addServiceTag = (val) => { if(!val) return; const container = document.getElementById('serviceTagsContainer'); const existing = Array.from(container.querySelectorAll('span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'serviceTagsContainer', null, 'tag-orange'); };
+        window.addCargoTag = (val) => { if(!val) return; const container = document.getElementById('cargoTagsContainer'); if(!container) return; const existing = Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'cargoTagsContainer', null, 'tag-purple'); };
         const setupTagInput = (inputId, containerId, colorClass) => { const input = document.getElementById(inputId); if(!input) return; input.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); const val = this.value.trim().replace(',', ''); if(val) { createTag(val, containerId, inputId, colorClass); this.value = ''; } } }); };
         
         window.addRoadmapRow = (data = '', etapa = '', noDate = false) => {
@@ -5223,9 +5517,10 @@ document.getElementById('projRisks').value = '';
             const roadmap = [];
             document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmap.push({ data: noDate ? '' : d, etapa: e, noDate }); });
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
+            const cargosList = Array.from(document.querySelectorAll('#cargoTagsContainer .actor-tag span')).map(s => s.innerText);
             const existingForAudit = (dataStore[activeTab] || []).find(i => i.id === id) || null;
             const data = {
-                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não', decisionLevel: document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '', decisionDesc: document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value : '', services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
+                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não', decisionLevel: document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '', decisionDesc: document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value : '', services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
             };
             if (activeTab === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (activeTab === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
             // Confirmação ao marcar como Concluído
@@ -5622,6 +5917,7 @@ Item: ${itemLabel}`,
                 document.getElementById('contractTypeField').classList.remove('hidden-field');
                 document.getElementById('resourceLogicField').classList.remove('hidden-field');
                 document.getElementById('contractRelationWrapper').classList.remove('hidden-field');
+                const cargoFieldEdit = document.getElementById('cargoField'); if (cargoFieldEdit) cargoFieldEdit.classList.remove('hidden-field');
                 document.getElementById('complexityField').classList.add('hidden-field');
                             document.getElementById('contractProgramField').classList.remove('hidden-field');
                 toggleContractProgramFields();
@@ -5631,6 +5927,7 @@ Item: ${itemLabel}`,
                 document.getElementById('serviceField').classList.remove('hidden-field');
                 document.getElementById('operationalDurationField').classList.remove('hidden-field');
                 document.getElementById('complexityField').classList.add('hidden-field');
+                const cargoFieldEditOp = document.getElementById('cargoField'); if (cargoFieldEditOp) cargoFieldEditOp.classList.add('hidden-field');
                 const services = item.services || (item.service ? [item.service] : []);
                 services.forEach(s => window.addServiceTag(s));
                 if (item.originType) { const radio = document.querySelector(`input[name="originType"][value="${item.originType}"]`); if(radio) { radio.checked = true; window.toggleOriginInput(); setTimeout(() => { if(item.projRelation) document.getElementById('projRelation').value = item.projRelation; }, 50); } }
@@ -5638,6 +5935,7 @@ Item: ${itemLabel}`,
                  document.getElementById('modalTitle').innerText = 'Editar Projeto Estratégico';
                  document.getElementById('complexityField').classList.remove('hidden-field');
                  document.getElementById('serviceField').classList.remove('hidden-field');
+                 const cargoFieldEditProj = document.getElementById('cargoField'); if (cargoFieldEditProj) cargoFieldEditProj.classList.remove('hidden-field');
                  if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
                  const projectActionDecisionFieldEdit = document.getElementById('projectActionDecisionField');
                  if (projectActionDecisionFieldEdit) projectActionDecisionFieldEdit.classList.remove('hidden-field');
@@ -5663,7 +5961,10 @@ Item: ${itemLabel}`,
             document.getElementById('projSei').value = item.sei || '';
             document.getElementById('projPrazo').value = item.prazo || '';
             document.getElementById('projCoord').value = item.coord || '';
-            document.getElementById('projStatus').value = item.status || 'Backlog';
+            if (typeof window.populateCargoOptions === 'function') window.populateCargoOptions();
+            const itemCargos = normalizeCargoList(item);
+            itemCargos.forEach(c => window.addCargoTag(c));
+            document.getElementById('projStatus').value = normalizeStatus(item.status) || 'Backlog';
             document.getElementById('projPriority').value = item.priority || 'Média';
             // Documentos (multi-links)
             const docsC = document.getElementById('projDocsContainer');
@@ -5841,7 +6142,6 @@ window.toggleRiskInput();
                         onclick="selectPortariaNodeDecoded('${safeTitle}')"
                         title="${escapeHtml(item.title)}">
                     <span class="acro">${escapeHtml(node.acronym || item.title.substring(0, 3).toUpperCase())}</span>
-                    <span class="small-label">${escapeHtml(item.title)}</span>
                     <span class="art">${escapeHtml(item.art)}</span>
                     <span class="portaria-node-popover ${popSide} ${popVertical}" aria-hidden="true">
                         <span class="portaria-popover-head">
@@ -6004,11 +6304,158 @@ window.toggleRiskInput();
               coordWrapper.style.display = showCoord ? '' : 'none';
               coordWrapper.classList.toggle('hidden', !showCoord);
             } if(tab !== 'portaria' && tab !== 'calendar' && tab !== 'indicators' && tab !== 'despachos' && tab !== 'gantt' && tab !== 'pca2027') window.renderData(); };
-        window.setGanttFilter = (filter) => { currentGanttFilter = filter; document.getElementById('btnGanttAll').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'all' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; document.getElementById('btnGanttProj').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'projects' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; document.getElementById('btnGanttContr').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'contracts' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`; window.renderGantt(); };
-        window.renderGantt = () => { const container = document.getElementById('ganttBodyContainer'); container.innerHTML = ''; let items = []; if (currentGanttFilter === 'all' || currentGanttFilter === 'projects') { items = [...items, ...dataStore.projects.map(i => ({...i, type: 'project'}))]; } if (currentGanttFilter === 'all' || currentGanttFilter === 'contracts') { items = [...items, ...dataStore.contracts.map(i => ({...i, type: 'contract'}))]; } items = items.filter(i => i.prazo);
-            // Filtro por coordenação (menu lateral)
-            if (currentFilter !== 'all') { items = items.filter(i => (i.coord || '') === currentFilter); }
- items.sort((a,b) => a.prazo.localeCompare(b.prazo)); const ganttYear = 2026; const yearStart = new Date(ganttYear, 0, 1).getTime(); const yearEnd = new Date(ganttYear, 11, 31, 23, 59, 59, 999).getTime(); const yearDuration = yearEnd - yearStart; const todayDate = new Date(); const today = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 12, 0, 0, 0).getTime(); const timelineOffsetPx = 250; const timelineWidthPx = 1200; if(items.length === 0) { container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026.</p>'; return; } items.forEach(item => { const deadlineDate = new Date(item.prazo + 'T12:00:00').getTime(); let startDate = yearStart; if (item.roadmap && item.roadmap.length > 0) { const datedRoadmap = item.roadmap.filter(r => r.data && !r.noDate); const sorted = [...datedRoadmap].sort((a,b) => a.data.localeCompare(b.data)); if (sorted.length) startDate = new Date(sorted[0].data + 'T12:00:00').getTime(); } const safeStart = Math.max(startDate, yearStart); const safeEnd = Math.min(deadlineDate, yearEnd); if (safeEnd < safeStart) return; const left = ((safeStart - yearStart) / yearDuration) * 100; const width = ((safeEnd - safeStart) / yearDuration) * 100; const colorClass = item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'; const row = document.createElement('div'); row.className = 'gantt-row'; let milestonesHtml = ''; if (item.roadmap) { item.roadmap.filter(r => r.data && !r.noDate).forEach(r => { const mDate = new Date(r.data + 'T12:00:00').getTime(); if (mDate >= yearStart && mDate <= yearEnd) { const mPos = ((mDate - yearStart) / yearDuration) * 100; const mColor = item.type === 'project' ? 'bg-blue-400' : 'bg-purple-400'; const fmtDate = new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); milestonesHtml += `<div class="gantt-milestone-wrapper" style="left: ${mPos}%"><div class="gantt-milestone-diamond ${mColor}"></div><div class="gantt-milestone-tooltip"><div class="font-bold text-emerald-300 mb-0.5 uppercase tracking-wider">${fmtDate}</div><div class="font-medium text-white text-[11px] leading-tight">${r.etapa}</div></div></div>`; } }); } row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${item.coord || 'N/A'}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${item.name}">${item.name}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${item.type === 'project' ? 'projects' : 'contracts'}')"><span class="gantt-bar-label">${item.status}</span></div>${milestonesHtml}</div>`; container.appendChild(row); }); if (today >= yearStart && today <= yearEnd) { const todayRatio = (today - yearStart) / yearDuration; const todayLeftPx = timelineOffsetPx + (timelineWidthPx * todayRatio); const line = document.createElement('div'); line.className = 'gantt-today-line'; line.style.left = `${todayLeftPx}px`; line.innerHTML = `<div class="gantt-today-label">Hoje</div>`; container.appendChild(line); } };
+        window.setGanttFilter = (filter) => {
+            currentGanttFilter = filter;
+            document.getElementById('btnGanttAll').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'all' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`;
+            document.getElementById('btnGanttProj').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'projects' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`;
+            document.getElementById('btnGanttContr').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'contracts' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`;
+            window.renderGantt();
+        };
+
+        window.setGanttRoleFilter = (role) => {
+            currentGanttRoleFilter = role || 'all';
+            window.renderGantt();
+        };
+
+        function getGanttBaseItems() {
+            let items = [];
+            if (currentGanttFilter === 'all' || currentGanttFilter === 'projects') {
+                items = [...items, ...(dataStore.projects || []).map(i => ({ ...i, type: 'project' }))];
+            }
+            if (currentGanttFilter === 'all' || currentGanttFilter === 'contracts') {
+                items = [...items, ...(dataStore.contracts || []).map(i => ({ ...i, type: 'contract' }))];
+            }
+            items = items.filter(i => i.prazo);
+            if (currentFilter !== 'all') items = items.filter(i => (i.coord || '') === currentFilter);
+            return items;
+        }
+
+        window.populateGanttRoleFilter = (items = []) => {
+            const select = document.getElementById('ganttRoleFilter');
+            if (!select) return;
+            const dynamic = [];
+            items.forEach(item => normalizeCargoList(item).forEach(c => dynamic.push(c)));
+            const allRoles = [...new Set([...CARGO_OPTIONS.map(c => c.value), ...dynamic])];
+            const existingValues = new Set(['all', '__none__', ...allRoles]);
+            if (!existingValues.has(currentGanttRoleFilter)) currentGanttRoleFilter = 'all';
+            select.innerHTML = '<option value="all">Todos os cargos</option>'
+                + allRoles.map(role => `<option value="${escapeHtml(role)}">${escapeHtml(getCargoAcronym(role))} — ${escapeHtml(getCargoFullName(role))}</option>`).join('')
+                + '<option value="__none__">Sem cargo definido</option>';
+            select.value = currentGanttRoleFilter;
+        };
+
+        window.renderGanttWorkload = (items = []) => {
+            const el = document.getElementById('ganttWorkloadSummary');
+            if (!el) return;
+            const counts = new Map();
+            items.forEach(item => {
+                const roles = normalizeCargoList(item);
+                if (!roles.length) {
+                    counts.set('__none__', (counts.get('__none__') || 0) + 1);
+                } else {
+                    roles.forEach(role => counts.set(role, (counts.get(role) || 0) + 1));
+                }
+            });
+            const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1] || getCargoAcronym(a[0]).localeCompare(getCargoAcronym(b[0])));
+            if (!sorted.length) {
+                el.innerHTML = '<div class="text-xs text-slate-400 italic">Nenhum projeto ou contrato com prazo para consolidar.</div>';
+                return;
+            }
+            const topCount = sorted[0][1];
+            el.innerHTML = sorted.slice(0, 8).map(([role, count]) => {
+                const isNone = role === '__none__';
+                const acronym = isNone ? 'S/C' : getCargoAcronym(role);
+                const name = isNone ? 'Sem cargo definido' : getCargoFullName(role);
+                const isTop = count === topCount && !isNone;
+                return `<button type="button" class="gantt-workload-card ${isTop ? 'top' : ''} text-left" onclick="setGanttRoleFilter('${escapeHtml(role)}')" title="${escapeHtml(name)}">
+                    <div class="gantt-workload-role">${escapeHtml(acronym)}</div>
+                    <div class="gantt-workload-count">${count}</div>
+                    <div class="gantt-workload-note">${count === 1 ? 'demanda' : 'demandas'}${isTop ? ' • maior carga' : ''}</div>
+                </button>`;
+            }).join('');
+        };
+
+        window.renderGantt = () => {
+            const container = document.getElementById('ganttBodyContainer');
+            container.innerHTML = '';
+
+            const baseItems = getGanttBaseItems();
+            window.populateGanttRoleFilter(baseItems);
+            window.renderGanttWorkload(baseItems);
+
+            let items = [...baseItems];
+            if (currentGanttRoleFilter === '__none__') {
+                items = items.filter(i => normalizeCargoList(i).length === 0);
+            } else if (currentGanttRoleFilter !== 'all') {
+                items = items.filter(i => normalizeCargoList(i).includes(currentGanttRoleFilter));
+            }
+
+            items.sort((a,b) => a.prazo.localeCompare(b.prazo));
+            const ganttYear = 2026;
+            const yearStart = new Date(ganttYear, 0, 1).getTime();
+            const yearEnd = new Date(ganttYear, 11, 31, 23, 59, 59, 999).getTime();
+            const yearDuration = yearEnd - yearStart;
+            const todayDate = new Date();
+            const today = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 12, 0, 0, 0).getTime();
+            const timelineOffsetPx = 250;
+            const timelineWidthPx = 1200;
+
+            if (items.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026 com os filtros atuais.</p>';
+                return;
+            }
+
+            items.forEach(item => {
+                const deadlineDate = new Date(item.prazo + 'T12:00:00').getTime();
+                let startDate = yearStart;
+                if (item.roadmap && item.roadmap.length > 0) {
+                    const datedRoadmap = item.roadmap.filter(r => r.data && !r.noDate);
+                    const sorted = [...datedRoadmap].sort((a,b) => a.data.localeCompare(b.data));
+                    if (sorted.length) startDate = new Date(sorted[0].data + 'T12:00:00').getTime();
+                }
+                const safeStart = Math.max(startDate, yearStart);
+                const safeEnd = Math.min(deadlineDate, yearEnd);
+                if (safeEnd < safeStart) return;
+                const left = ((safeStart - yearStart) / yearDuration) * 100;
+                const width = ((safeEnd - safeStart) / yearDuration) * 100;
+                const colorClass = item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500';
+                const row = document.createElement('div');
+                row.className = 'gantt-row';
+
+                let milestonesHtml = '';
+                if (item.roadmap) {
+                    item.roadmap.filter(r => r.data && !r.noDate).forEach(r => {
+                        const mDate = new Date(r.data + 'T12:00:00').getTime();
+                        if (mDate >= yearStart && mDate <= yearEnd) {
+                            const mPos = ((mDate - yearStart) / yearDuration) * 100;
+                            const mColor = item.type === 'project' ? 'bg-blue-400' : 'bg-purple-400';
+                            const fmtDate = new Date(r.data + 'T00:00:00').toLocaleDateString('pt-BR');
+                            milestonesHtml += `<div class="gantt-milestone-wrapper" style="left: ${mPos}%"><div class="gantt-milestone-diamond ${mColor}"></div><div class="gantt-milestone-tooltip"><div class="font-bold text-emerald-300 mb-0.5 uppercase tracking-wider">${fmtDate}</div><div class="font-medium text-white text-[11px] leading-tight">${escapeHtml(r.etapa)}</div></div></div>`;
+                        }
+                    });
+                }
+
+                const itemRoles = normalizeCargoList(item);
+                const roleText = itemRoles.length ? itemRoles.map(getCargoAcronym).join(', ') : 'Sem cargo';
+                const roleTitle = itemRoles.length ? itemRoles.map(getCargoFullName).join(' • ') : 'Sem cargo definido';
+                const itemName = escapeHtml(item.name || 'Sem título');
+                const itemStatus = escapeHtml(normalizeStatus(item.status) || 'Sem status');
+                const collectionName = item.type === 'project' ? 'projects' : 'contracts';
+
+                row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${escapeHtml(item.coord || 'N/A')}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${itemName}">${itemName}</div><div class="mt-1 text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-md px-1.5 py-0.5 truncate" title="${escapeHtml(roleTitle)}">Cargo: ${escapeHtml(roleText)}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${collectionName}')"><span class="gantt-bar-label">${itemStatus}</span></div>${milestonesHtml}</div>`;
+                container.appendChild(row);
+            });
+
+            if (today >= yearStart && today <= yearEnd) {
+                const todayRatio = (today - yearStart) / yearDuration;
+                const todayLeftPx = timelineOffsetPx + (timelineWidthPx * todayRatio);
+                const line = document.createElement('div');
+                line.className = 'gantt-today-line';
+                line.style.left = `${todayLeftPx}px`;
+                line.innerHTML = `<div class="gantt-today-label">Hoje</div>`;
+                container.appendChild(line);
+            }
+        };
         
         // ==========================
         // DESPACHOS – ITENS AVULSOS
@@ -6629,7 +7076,8 @@ window.openAddBacklogItemModal = (meetingId) => {
             const counts = {}; statusList.forEach(s => counts[s] = 0);
             filtered.forEach(item => { const st = normalizeStatus(item.status); if (counts[st] !== undefined) counts[st]++; });
             document.getElementById('statTotal').innerText = filtered.length;
-            const map = {'Backlog':'statBacklog','Em Planejamento':'statPlanejado','Em Execução':'statExecucao','Em Execução (com risco)':'statExecucaoRisco','Cancelado':'statCancelado','Concluído':'statConcluido'};
+            const map = {'Em Execução':'statExecucao','Em Execução (com risco)':'statExecucaoRisco','Cancelado':'statCancelado','Concluído':'statConcluido'};
+            if(document.getElementById('statBacklog')) document.getElementById('statBacklog').innerText = counts['Backlog'] || 0;
             Object.keys(map).forEach(k => { if(document.getElementById(map[k])) document.getElementById(map[k]).innerText = counts[k] || 0; });
             if (activeTab === 'contracts') {
                 let totalResource = 0;
@@ -6678,7 +7126,12 @@ window.openAddBacklogItemModal = (meetingId) => {
             // Concluídos e cancelados: ficam ocultos no board e aparecem apenas em caixas/modais próprias
             if (currentListFilter === 'Concluído') { if (typeof window.openCompletedModal === 'function') window.openCompletedModal(); return; }
             if (currentListFilter === 'Cancelado') { if (typeof window.openCanceledModal === 'function') window.openCanceledModal(); return; }
-            if(currentListFilter !== 'all') filtered = filtered.filter(i => normalizeStatus(i.status) === currentListFilter);
+            if(currentListFilter !== 'all') {
+                filtered = filtered.filter(i => {
+                    const st = normalizeStatus(i.status);
+                    return st === currentListFilter;
+                });
+            }
             filtered = filtered.filter(i => {
                 const status = normalizeStatus(i.status);
                 return status !== 'Concluído' && status !== 'Cancelado';
@@ -6704,7 +7157,7 @@ window.openAddBacklogItemModal = (meetingId) => {
             
             // ... (Lógica charts status mantida) ...
             const total = filtered.length || 1;
-            if (!document.getElementById('statusChartWrapper').classList.contains('hidden')) { let ca = 0, gs = 'conic-gradient(', lh = ''; statusList.forEach((st) => { const c = counts[st], p = (c / total) * 100, color = STATUS_COLORS_HEX[st]; if (c > 0) { gs += `${color} ${ca}% ${ca + p}%, `; ca += p; } lh += `<div onclick="setListFilter('${st}')" class="chart-legend-item flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer mb-1 ${currentListFilter === st ? 'active-legend' : ''}"><span class="w-2 h-2 rounded-full ${STATUS_COLORS_TW_BG[st]} shrink-0"></span> <span class="truncate">${st.replace('Em Execução ', '')} (${c})</span></div>`; }); document.getElementById('statusChart').style.background = (total === 0 || filtered.length === 0) ? '#e2e8f0' : gs.slice(0, -2) + ')'; document.getElementById('statusLegendContainer').innerHTML = lh; }
+            if (!document.getElementById('statusChartWrapper').classList.contains('hidden')) { let ca = 0, gs = 'conic-gradient(', lh = ''; statusList.forEach((st) => { const c = counts[st], p = (c / total) * 100, color = STATUS_COLORS_HEX[st]; if (c > 0) { gs += `${color} ${ca}% ${ca + p}%, `; ca += p; } lh += `<div onclick="setListFilter('${st}')" class="chart-legend-item flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer mb-1 ${normalizeStatus(currentListFilter) === st ? 'active-legend' : ''}"><span class="w-2 h-2 rounded-full ${STATUS_COLORS_TW_BG[st]} shrink-0"></span> <span class="truncate">${st.replace('Em Execução ', '')} (${c})</span></div>`; }); document.getElementById('statusChart').style.background = (total === 0 || filtered.length === 0) ? '#e2e8f0' : gs.slice(0, -2) + ')'; document.getElementById('statusLegendContainer').innerHTML = lh; }
             if (!document.getElementById('priorityChartWrapper').classList.contains('hidden')) { const urg = filtered.filter(p => p.priority === 'Urgente').length, high = filtered.filter(p => p.priority === 'Alta').length, mid = filtered.filter(p => p.priority === 'Média').length; const pU = Math.round((urg/total)*100), pH = Math.round((high/total)*100), pM = Math.round((mid/total)*100); document.getElementById('priorityChart').style.background = `conic-gradient(#ef4444 0% ${pU}%, #f97316 ${pU}% ${pU+pH}%, #eab308 ${pU+pH}% ${pU+pH+pM}%, #22c55e ${pU+pH+pM}% 100%)`; document.getElementById('count-prio-urg').innerText = `(${urg})`; document.getElementById('count-prio-high').innerText = `(${high})`; document.getElementById('count-prio-mid').innerText = `(${mid})`; document.getElementById('count-prio-low').innerText = `(${filtered.filter(p => p.priority === 'Baixa').length})`; }
             
             const today = new Date().toISOString().split('T')[0];
@@ -6907,12 +7360,12 @@ Object.keys(cols).forEach(key => {
                     <div class="card-header-layout">
                         <div class="card-click-area" onclick="this.closest('.accordion-row').classList.toggle('active')">
                             <div class="card-content-line">
-                                <div class="card-status-strip ${window.getStatusColorBg(item.status)}"></div>
+                                <div class="card-status-strip ${window.getStatusColorBg(normalizeStatus(item.status))}"></div>
                                 <div class="card-main-content">
                                     <div class="card-main-title-block">
                                         <div class="card-badge-row">
                                             <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-black uppercase tracking-wider">${item.coord || 'N/A'}</span>
-                                            <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black ${window.getStatusColor(item.status)}">${item.status || 'Sem status'}</span>
+                                            <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black ${window.getStatusColor(normalizeStatus(item.status))}">${normalizeStatus(item.status) || 'Sem status'}</span>
                                             ${priorityBadgeHtml}
                                             ${respectBadge}
                                         </div>
@@ -7128,7 +7581,7 @@ Object.keys(cols).forEach(key => {
             }
         };
 
-        window.getStatusColorBg = s => ({"Backlog":"bg-slate-300","Em Planejamento":"bg-indigo-500","Em Execução":"bg-green-500","Em Execução (com risco)":"bg-orange-500","Concluído":"bg-emerald-600","Cancelado":"bg-slate-500"}[s] || "bg-slate-200");
+        window.getStatusColorBg = s => ({"Backlog":"bg-slate-300","Em Execução":"bg-green-500","Em Execução (com risco)":"bg-orange-500","Concluído":"bg-emerald-600","Cancelado":"bg-slate-500"}[normalizeStatus(s)] || "bg-slate-200");
         window.getStatusColor = (s) => {
         const status = String(s ?? "");
         if (status === "Cancelado") return "text-slate-600 bg-slate-100 border-slate-300";
@@ -7137,7 +7590,7 @@ Object.keys(cols).forEach(key => {
         if (status === "Backlog") return "text-slate-600 bg-slate-50 border-slate-200";
         return "text-slate-600 bg-slate-50 border-slate-200";
       };
-window.setListFilter = f => { if(f === 'Concluído' && typeof window.openCompletedModal === 'function') { window.openCompletedModal(); return; } if(f === 'Cancelado' && typeof window.openCanceledModal === 'function') { window.openCanceledModal(); return; } currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Em Planejamento':'cardPlanejado','Em Execução':'cardExecucao','Em Execução (com risco)':'cardExecucaoRisco','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f]) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
+window.setListFilter = f => { f = normalizeStatus(f); if(f === 'Concluído' && typeof window.openCompletedModal === 'function') { window.openCompletedModal(); return; } if(f === 'Cancelado' && typeof window.openCanceledModal === 'function') { window.openCanceledModal(); return; } currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Em Execução':'cardExecucao','Em Execução (com risco)':'cardExecucaoRisco','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f] && document.getElementById(map[f])) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
         window.setPriorityFilter = p => { currentPriorityFilter = (currentPriorityFilter === p) ? 'all' : p; document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); if(currentPriorityFilter !== 'all') { const map = {'Urgente':'urg', 'Alta':'high', 'Média':'mid', 'Baixa':'low'}; document.getElementById('legend-prio-'+map[currentPriorityFilter]).classList.add('active-legend'); } window.renderData(); };
         window.setFilter = f => { currentFilter = f; const btns = document.querySelectorAll('.coord-btn'); btns.forEach(b => b.classList.remove('active-coord')); if(f !== 'all') { document.getElementById('coordBtnContainer').classList.add('coord-list-active'); const b = document.getElementById('coord-'+f); if(b) b.classList.add('active-coord'); } else document.getElementById('coordBtnContainer').classList.remove('coord-list-active'); if (activeTab === 'gantt') window.renderGantt(); else window.renderData(); };
         window.updateStatusUI = s => { document.getElementById('sysStatusDot').className = `w-2 h-2 rounded-full ${s === 'online' ? 'bg-emerald-400' : 'bg-red-500'}`; document.getElementById('sysStatusText').innerText = s === 'online' ? 'Online' : 'Sincronizando...'; };
