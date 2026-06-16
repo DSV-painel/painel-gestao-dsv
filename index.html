@@ -495,7 +495,7 @@
         .gantt-today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: #ef4444; z-index: 5; opacity: 0.6; pointer-events: none; border-right: 1px dashed #fecaca; }
         .gantt-today-label { position: absolute; top: -20px; transform: translateX(-50%); background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-bold; z-index: 30; white-space: nowrap; }
 
-        .gantt-control-panel { display: grid; grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.6fr); gap: 1rem; align-items: stretch; }
+        .gantt-control-panel { display: grid; grid-template-columns: minmax(260px, 520px); gap: 1rem; align-items: stretch; }
         .gantt-role-card { background: white; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1rem; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
         .gantt-role-card-title { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: #047857; margin-bottom: .45rem; display:flex; align-items:center; gap:.4rem; }
         .gantt-workload-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: .6rem; }
@@ -4354,12 +4354,6 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </select>
 <p class="text-[11px] text-slate-400 font-semibold mt-2">O filtro considera as divisões/serviços responsáveis cadastrados nos projetos e contratos.</p>
 </div>
-<div class="gantt-role-card">
-<div class="gantt-role-card-title"><i class="fas fa-weight-hanging"></i> Carga de demandas por divisão/serviço</div>
-<div class="gantt-workload-grid" id="ganttWorkloadSummary">
-<div class="text-xs text-slate-400 italic">Sem dados para consolidar.</div>
-</div>
-</div>
 </div>
 <div class="flex items-center gap-6 px-2 shrink-0">
 <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-blue-500"></div><span class="text-[10px] font-bold text-slate-500 uppercase">Projeto</span></div>
@@ -6389,7 +6383,7 @@ window.toggleRiskInput();
                 return;
             }
             const topCount = sorted[0][1];
-            el.innerHTML = sorted.slice(0, 8).map(([role, count]) => {
+            el.innerHTML = sorted.map(([role, count]) => {
                 const isNone = role === '__none__';
                 const acronym = isNone ? 'S/C' : getCargoAcronym(role);
                 const name = isNone ? 'Sem divisão/serviço definido' : getCargoFullName(role);
@@ -6408,8 +6402,6 @@ window.toggleRiskInput();
 
             const baseItems = getGanttBaseItems();
             window.populateGanttRoleFilter(baseItems);
-            window.renderGanttWorkload(baseItems);
-
             let items = [...baseItems];
             if (currentGanttRoleFilter === '__none__') {
                 items = items.filter(i => normalizeCargoList(i).length === 0);
@@ -6425,7 +6417,6 @@ window.toggleRiskInput();
             const todayDate = new Date();
             const today = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 12, 0, 0, 0).getTime();
             const timelineOffsetPx = 250;
-            const timelineWidthPx = 1200;
 
             if (items.length === 0) {
                 container.innerHTML = '<p class="text-slate-400 italic text-center py-10">Nenhum item com prazo definido para 2026 com os filtros atuais.</p>';
@@ -6463,23 +6454,33 @@ window.toggleRiskInput();
                 }
 
                 const itemRoles = normalizeCargoList(item);
-                const roleText = itemRoles.length ? itemRoles.map(getCargoAcronym).join(', ') : 'Sem divisão/serviço';
-                const roleTitle = itemRoles.length ? itemRoles.map(getCargoFullName).join(' • ') : 'Sem divisão/serviço definido';
+                const hasResponsibleDivision = itemRoles.length > 0;
+                const roleText = hasResponsibleDivision ? itemRoles.map(getCargoAcronym).join(', ') : 'Sem divisão/serviço';
+                const roleTitle = hasResponsibleDivision ? itemRoles.map(getCargoFullName).join(' • ') : 'Sem divisão/serviço definido';
+                const roleBadgeClass = hasResponsibleDivision
+                    ? 'text-emerald-700 bg-emerald-50 border border-emerald-100'
+                    : 'text-red-700 bg-red-50 border border-red-200';
                 const itemName = escapeHtml(item.name || 'Sem título');
                 const itemStatus = escapeHtml(normalizeStatus(item.status) || 'Sem status');
                 const collectionName = item.type === 'project' ? 'projects' : 'contracts';
 
-                row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${escapeHtml(item.coord || 'N/A')}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${itemName}">${itemName}</div><div class="mt-1 text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-md px-1.5 py-0.5 truncate" title="${escapeHtml(roleTitle)}">Divisão/Serviço: ${escapeHtml(roleText)}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${collectionName}')"><span class="gantt-bar-label">${itemStatus}</span></div>${milestonesHtml}</div>`;
+                row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${escapeHtml(item.coord || 'N/A')}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${itemName}">${itemName}</div><div class="mt-1 text-[9px] font-black uppercase ${roleBadgeClass} rounded-md px-1.5 py-0.5 truncate" title="${escapeHtml(roleTitle)}">Divisão/Serviço: ${escapeHtml(roleText)}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${collectionName}')"><span class="gantt-bar-label">${itemStatus}</span></div>${milestonesHtml}</div>`;
                 container.appendChild(row);
             });
 
             if (today >= yearStart && today <= yearEnd) {
                 const todayRatio = (today - yearStart) / yearDuration;
-                const todayLeftPx = timelineOffsetPx + (timelineWidthPx * todayRatio);
+                const timelineArea = container.querySelector('.gantt-row .gantt-timeline-area');
+                const containerRect = container.getBoundingClientRect();
+                const timelineRect = timelineArea ? timelineArea.getBoundingClientRect() : null;
+                const timelineLeftPx = timelineRect ? (timelineRect.left - containerRect.left) : timelineOffsetPx;
+                const timelineWidthPx = timelineRect ? timelineRect.width : Math.max(0, (containerRect.width || 1450) - timelineOffsetPx);
+                const todayLeftPx = timelineLeftPx + (timelineWidthPx * todayRatio);
+                const todayLabel = todayDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
                 const line = document.createElement('div');
                 line.className = 'gantt-today-line';
                 line.style.left = `${todayLeftPx}px`;
-                line.innerHTML = `<div class="gantt-today-label">Hoje</div>`;
+                line.innerHTML = `<div class="gantt-today-label">Hoje • ${todayLabel}</div>`;
                 container.appendChild(line);
             }
         };
