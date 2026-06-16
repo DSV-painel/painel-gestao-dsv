@@ -4441,6 +4441,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
         // ... (Variaveis Globais e Constantes mantidas) ...
         let currentUser = null;
         let activeTab = 'projects';
+        let currentProjectCollection = 'projects';
         let draggedDispatchKey = null;
         function getDispatchBacklogOrder(){
             try { const v = JSON.parse(localStorage.getItem('dispatchBacklogOrder') || '[]'); return Array.isArray(v) ? v : []; } catch(e){ return []; }
@@ -4804,22 +4805,49 @@ textarea.input-style { min-height: 92px; resize: vertical; }
             { value: 'Serviço de Fiscalização de Intervenções', acronym: 'SFI', label: 'Serviço de Fiscalização de Intervenções' }
         ];
 
+        const resolveCargoValue = (value) => {
+            const normalized = String(value || '').trim();
+            if (!normalized) return '';
+            const found = CARGO_OPTIONS.find(c => c.value === normalized || c.label === normalized || c.acronym === normalized);
+            return found ? found.value : normalized;
+        };
         const getCargoAcronym = (value) => {
-            const found = CARGO_OPTIONS.find(c => c.value === value || c.label === value || c.acronym === value);
-            return found ? found.acronym : String(value || '').split(' — ')[0] || 'N/A';
+            const normalized = String(value || '').trim();
+            const found = CARGO_OPTIONS.find(c => c.value === normalized || c.label === normalized || c.acronym === normalized);
+            return found ? found.acronym : normalized.split(' — ')[0] || 'N/A';
         };
         const getCargoFullName = (value) => {
-            const found = CARGO_OPTIONS.find(c => c.value === value || c.label === value || c.acronym === value);
-            return found ? found.label : String(value || 'Sem cargo definido');
+            const normalized = String(value || '').trim();
+            const found = CARGO_OPTIONS.find(c => c.value === normalized || c.label === normalized || c.acronym === normalized);
+            return found ? found.label : (normalized || 'Sem cargo definido');
         };
         const normalizeCargoList = (item = {}) => {
-            const raw = [];
-            if (Array.isArray(item.involvedRoles)) raw.push(...item.involvedRoles);
-            if (Array.isArray(item.cargosEnvolvidos)) raw.push(...item.cargosEnvolvidos);
-            if (item.involvedRole) raw.push(item.involvedRole);
-            if (item.cargoEnvolvido) raw.push(item.cargoEnvolvido);
-            if (item.cargo) raw.push(item.cargo);
-            return [...new Set(raw.map(v => String(v || '').trim()).filter(Boolean))];
+            const explicit = [];
+            if (Array.isArray(item.involvedRoles)) explicit.push(...item.involvedRoles);
+            if (Array.isArray(item.cargosEnvolvidos)) explicit.push(...item.cargosEnvolvidos);
+            if (item.involvedRole) explicit.push(item.involvedRole);
+            if (item.cargoEnvolvido) explicit.push(item.cargoEnvolvido);
+            if (item.cargo) explicit.push(item.cargo);
+
+            const fallback = [];
+            if (Array.isArray(item.services)) fallback.push(...item.services);
+            if (item.service) fallback.push(item.service);
+
+            // Contratos antigos podem ter relação com um projeto, mas ainda não ter o campo de cargo preenchido.
+            // Nesse caso, herdamos os cargos/serviços do projeto relacionado para que a matriz Gantt não fique como “Sem cargo”.
+            if (!explicit.length && item.projRelation && dataStore?.projects?.length) {
+                const relatedProject = dataStore.projects.find(p => p.id === item.projRelation);
+                if (relatedProject) fallback.push(...normalizeCargoList(relatedProject));
+            }
+
+            if (item.coord) fallback.push(item.coord);
+
+            const raw = explicit.length ? explicit : fallback;
+            return [...new Set(raw
+                .map(resolveCargoValue)
+                .map(v => String(v || '').trim())
+                .filter(v => v && !['sem cargo', 'sem cargo definido', '__none__'].includes(v.toLowerCase()))
+            )];
         };
         window.populateCargoOptions = () => {
             const select = document.getElementById('projCargoAdder');
@@ -5161,6 +5189,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
         });
 
         window.openNewModal = () => {
+            currentProjectCollection = ['projects', 'contracts', 'operational'].includes(activeTab) ? activeTab : 'projects';
             const form = document.getElementById('projectForm');
             form.reset();
             document.getElementById('projObs').value = '';
@@ -5401,7 +5430,8 @@ document.getElementById('projRisks').value = '';
                 if (editIdEl) editIdEl.value = id;
             }
 
-            const existing = dataStore[activeTab]?.find(i => i.id === id);
+            const collectionName = ['projects', 'contracts', 'operational'].includes(currentProjectCollection) ? currentProjectCollection : activeTab;
+            const existing = dataStore[collectionName]?.find(i => i.id === id);
             let obsLog = [];
 
             // migração simples: se era legado (obs string) e ainda não tem obsLog
@@ -5422,7 +5452,7 @@ document.getElementById('projRisks').value = '';
 
             try {
                 await setDoc(
-                    doc(db, 'artifacts', appId, 'public', 'data', activeTab, id),
+                    doc(db, 'artifacts', appId, 'public', 'data', collectionName, id),
                     { obsLog, obs: lastText, ...buildAuditFields(existing) },
                     { merge: true }
                 );
@@ -5458,7 +5488,8 @@ document.getElementById('projRisks').value = '';
             }
 
             // histórico atual (cache local)
-            const existing = dataStore[activeTab]?.find(i => i.id === id);
+            const collectionName = ['projects', 'contracts', 'operational'].includes(currentProjectCollection) ? currentProjectCollection : activeTab;
+            const existing = dataStore[collectionName]?.find(i => i.id === id);
             let obsLog = [];
 
             // migração simples: se era legado (obs string) e ainda não tem obsLog
@@ -5470,7 +5501,7 @@ document.getElementById('projRisks').value = '';
 
             try {
                 await setDoc(
-                    doc(db, 'artifacts', appId, 'public', 'data', activeTab, id),
+                    doc(db, 'artifacts', appId, 'public', 'data', collectionName, id),
                     { obsLog, obs: text, ...buildAuditFields(existing) },
                     { merge: true }
                 );
@@ -5508,6 +5539,7 @@ document.getElementById('projRisks').value = '';
         window.saveProject = async () => {
             if (!currentUser) return;
             const id = document.getElementById('editId').value || Date.now().toString();
+            const collectionName = ['projects', 'contracts', 'operational'].includes(currentProjectCollection) ? currentProjectCollection : activeTab;
             // Se houver texto não salvo em Observações Gerais, salva no histórico antes de gravar o restante
             const __taObs = document.getElementById('projObs');
             if (__taObs && (__taObs.value || '').trim() && typeof window.addObsEntry === 'function') {
@@ -5518,39 +5550,40 @@ document.getElementById('projRisks').value = '';
             document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmap.push({ data: noDate ? '' : d, etapa: e, noDate }); });
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const cargosList = Array.from(document.querySelectorAll('#cargoTagsContainer .actor-tag span')).map(s => s.innerText);
-            const existingForAudit = (dataStore[activeTab] || []).find(i => i.id === id) || null;
+            const existingForAudit = (dataStore[collectionName] || []).find(i => i.id === id) || null;
             const data = {
                 name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não', decisionLevel: document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '', decisionDesc: document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value : '', services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
             };
-            if (activeTab === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (activeTab === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
+            if (collectionName === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (collectionName === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
             // Confirmação ao marcar como Concluído
             const __existingItem = existingForAudit;
             const __oldStatus = (__existingItem && __existingItem.status) ? __existingItem.status : '';
             const __newStatus = data.status || '';
             if (__newStatus === 'Concluído' && __oldStatus !== 'Concluído') {
-                window.__pendingCompleteSave = { id, data };
+                window.__pendingCompleteSave = { id, data, collectionName };
                 window.openConfirmCompleteModal && window.openConfirmCompleteModal(__existingItem);
                 return;
             }
             if (__newStatus === 'Concluído' && !data.concludedAt) data.concludedAt = (__existingItem && __existingItem.concludedAt) ? __existingItem.concludedAt : Date.now();
-            try { if(document.getElementById('editId').value) { const existing = dataStore[activeTab].find(i => i.id === id); if(existing && existing.onDispatch) data.onDispatch = true; if(existing && existing.onPlanner) data.onPlanner = true; if(existing && existing.onDiretoriaValidation) data.onDiretoriaValidation = true; if(existing && existing.dispatchData) data.dispatchData = existing.dispatchData; } await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, {merge: true}); projectFormDirty = false; resetProjectDirtyState(); suppressProjectClosePrompt = true; await toggleModal('projectModal'); suppressProjectClosePrompt = false; } catch (err) { console.error("Erro ao salvar:", err); }
+            try { if(document.getElementById('editId').value) { const existing = (dataStore[collectionName] || []).find(i => i.id === id); if(existing && existing.onDispatch) data.onDispatch = true; if(existing && existing.onPlanner) data.onPlanner = true; if(existing && existing.onDiretoriaValidation) data.onDiretoriaValidation = true; if(existing && existing.dispatchData) data.dispatchData = existing.dispatchData; } await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), data, {merge: true}); projectFormDirty = false; resetProjectDirtyState(); suppressProjectClosePrompt = true; await toggleModal('projectModal'); suppressProjectClosePrompt = false; } catch (err) { console.error("Erro ao salvar:", err); }
         };
 
         // ... (Delete Project, Dispatch Toggle, Meeting functions... mantidas) ...
         window.deleteProject = async () => {
             const id = document.getElementById('editId').value;
             if (!id) return;
+            const collectionName = ['projects', 'contracts', 'operational'].includes(currentProjectCollection) ? currentProjectCollection : activeTab;
 
-            const msg = (activeTab === 'contracts')
+            const msg = (collectionName === 'contracts')
                 ? 'Excluir este contrato/convênio? Esta ação não poderá ser desfeita.'
-                : (activeTab === 'operational')
+                : (collectionName === 'operational')
                     ? 'Excluir esta atividade operacional? Esta ação não poderá ser desfeita.'
                     : 'Excluir este projeto? Esta ação não poderá ser desfeita.';
 
             if (!confirm(msg)) return;
 
             try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id));
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id));
                 toggleModal('projectModal');
             } catch (err) {
                 console.error("Erro ao excluir:", err);
@@ -5908,10 +5941,12 @@ Item: ${itemLabel}`,
         
         window.editItem = (id, type) => {
             const t = type || activeTab;
+            currentProjectCollection = t;
             const item = dataStore[t]?.find(i => i.id === id);
             if (!item) return;
 
             window.openNewModal();
+            currentProjectCollection = t;
             if (t === 'contracts') {
                 document.getElementById('modalTitle').innerText = 'Editar Contrato / Convênio';
                 document.getElementById('contractTypeField').classList.remove('hidden-field');
@@ -6442,7 +6477,7 @@ window.toggleRiskInput();
                 const itemStatus = escapeHtml(normalizeStatus(item.status) || 'Sem status');
                 const collectionName = item.type === 'project' ? 'projects' : 'contracts';
 
-                row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${escapeHtml(item.coord || 'N/A')}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${itemName}">${itemName}</div><div class="mt-1 text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-md px-1.5 py-0.5 truncate" title="${escapeHtml(roleTitle)}">Cargo: ${escapeHtml(roleText)}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${collectionName}')"><span class="gantt-bar-label">${itemStatus}</span></div>${milestonesHtml}</div>`;
+                row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${escapeHtml(item.coord || 'N/A')}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${itemName}">${itemName}</div><div class="mt-1 text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-md px-1.5 py-0.5 truncate" title="${escapeHtml(roleTitle)}">Cargo(s): ${escapeHtml(roleText)}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${collectionName}')"><span class="gantt-bar-label">${itemStatus}</span></div>${milestonesHtml}</div>`;
                 container.appendChild(row);
             });
 
@@ -7895,9 +7930,10 @@ const filenameBase = (safeTitle || 'pauta')
 
         window.confirmCompleteSave = async () => {
             if (!window.__pendingCompleteSave || !currentUser) { window.hideInlineModal('confirmCompleteModal'); return; }
-            const { id, data } = window.__pendingCompleteSave;
+            const { id, data, collectionName: pendingCollectionName } = window.__pendingCompleteSave;
+            const collectionName = ['projects', 'contracts', 'operational'].includes(pendingCollectionName) ? pendingCollectionName : activeTab;
             try {
-                const existing = (dataStore[activeTab] || []).find(i => i.id === id);
+                const existing = (dataStore[collectionName] || []).find(i => i.id === id);
                 if (existing && existing.onDispatch) data.onDispatch = true;
                 if (existing && existing.onPlanner) data.onPlanner = true;
                 if (existing && existing.dispatchData) data.dispatchData = existing.dispatchData;
@@ -7905,7 +7941,7 @@ const filenameBase = (safeTitle || 'pauta')
                 if (!data.concludedAt) data.concludedAt = (existing && existing.concludedAt) ? existing.concludedAt : Date.now();
                 Object.assign(data, buildAuditFields(existing));
 
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', activeTab, id), data, { merge: true });
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), data, { merge: true });
                 window.__pendingCompleteSave = null;
                 window.hideInlineModal('confirmCompleteModal');
                 toggleModal('projectModal');
