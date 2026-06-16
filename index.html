@@ -3302,14 +3302,6 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </optgroup>
 </select>
 </div>
-<div class="flex flex-col hidden-field" id="cargoField">
-<label class="field-label" id="cargoFieldLabel">Cargos envolvidos no cronograma</label>
-<div class="tag-container bg-white mb-2 min-h-[44px] flex-wrap gap-2" id="cargoTagsContainer"></div>
-<select class="input-style" id="projCargoAdder" onchange="addCargoTag(this.value); this.value='';">
-<option value="">+ Adicionar cargo envolvido...</option>
-</select>
-<p class="text-[11px] text-slate-400 font-medium mt-1">Use este campo para medir a carga de demandas por cargo na aba Cronograma.</p>
-</div>
 <div class="hidden-field space-y-5 pt-3 border-t border-slate-100" id="projectActionDecisionField">
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 <div class="flex flex-col">
@@ -4356,14 +4348,14 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </div>
 <div class="gantt-control-panel shrink-0">
 <div class="gantt-role-card">
-<label class="gantt-role-card-title" for="ganttRoleFilter"><i class="fas fa-id-badge"></i> Filtrar por cargo envolvido</label>
+<label class="gantt-role-card-title" for="ganttRoleFilter"><i class="fas fa-id-badge"></i> Filtrar por divisão/serviço responsável</label>
 <select class="input-style" id="ganttRoleFilter" onchange="setGanttRoleFilter(this.value)">
-<option value="all">Todos os cargos</option>
+<option value="all">Todas as divisões/serviços</option>
 </select>
-<p class="text-[11px] text-slate-400 font-semibold mt-2">O filtro considera os cargos vinculados no cadastro de projetos e contratos.</p>
+<p class="text-[11px] text-slate-400 font-semibold mt-2">O filtro considera as divisões/serviços responsáveis cadastrados nos projetos e contratos.</p>
 </div>
 <div class="gantt-role-card">
-<div class="gantt-role-card-title"><i class="fas fa-weight-hanging"></i> Carga de demandas por cargo</div>
+<div class="gantt-role-card-title"><i class="fas fa-weight-hanging"></i> Carga de demandas por divisão/serviço</div>
 <div class="gantt-workload-grid" id="ganttWorkloadSummary">
 <div class="text-xs text-slate-400 italic">Sem dados para consolidar.</div>
 </div>
@@ -4819,41 +4811,41 @@ textarea.input-style { min-height: 92px; resize: vertical; }
         const getCargoFullName = (value) => {
             const normalized = String(value || '').trim();
             const found = CARGO_OPTIONS.find(c => c.value === normalized || c.label === normalized || c.acronym === normalized);
-            return found ? found.label : (normalized || 'Sem cargo definido');
+            return found ? found.label : (normalized || 'Sem divisão/serviço definido');
         };
         const normalizeCargoList = (item = {}) => {
-            const explicit = [];
-            if (Array.isArray(item.involvedRoles)) explicit.push(...item.involvedRoles);
-            if (Array.isArray(item.cargosEnvolvidos)) explicit.push(...item.cargosEnvolvidos);
-            if (item.involvedRole) explicit.push(item.involvedRole);
-            if (item.cargoEnvolvido) explicit.push(item.cargoEnvolvido);
-            if (item.cargo) explicit.push(item.cargo);
+            // A aba Cronograma passa a usar como base única as Divisões/Serviços responsáveis.
+            // Os campos antigos de cargo ficam apenas como fallback para registros legados sem serviços preenchidos.
+            const unidades = [];
+            if (Array.isArray(item.services)) unidades.push(...item.services);
+            if (item.service) unidades.push(item.service);
 
-            const fallback = [];
-            if (Array.isArray(item.services)) fallback.push(...item.services);
-            if (item.service) fallback.push(item.service);
-
-            // Contratos antigos podem ter relação com um projeto, mas ainda não ter o campo de cargo preenchido.
-            // Nesse caso, herdamos os cargos/serviços do projeto relacionado para que a matriz Gantt não fique como “Sem cargo”.
-            if (!explicit.length && item.projRelation && dataStore?.projects?.length) {
+            // Contratos vinculados a projetos podem herdar as divisões/serviços do projeto relacionado
+            // quando ainda não houver uma unidade cadastrada diretamente no contrato.
+            if (!unidades.length && item.projRelation && dataStore?.projects?.length) {
                 const relatedProject = dataStore.projects.find(p => p.id === item.projRelation);
-                if (relatedProject) fallback.push(...normalizeCargoList(relatedProject));
+                if (relatedProject) unidades.push(...normalizeCargoList(relatedProject));
             }
 
-            if (item.coord) fallback.push(item.coord);
+            const legacy = [];
+            if (Array.isArray(item.involvedRoles)) legacy.push(...item.involvedRoles);
+            if (Array.isArray(item.cargosEnvolvidos)) legacy.push(...item.cargosEnvolvidos);
+            if (item.involvedRole) legacy.push(item.involvedRole);
+            if (item.cargoEnvolvido) legacy.push(item.cargoEnvolvido);
+            if (item.cargo) legacy.push(item.cargo);
 
-            const raw = explicit.length ? explicit : fallback;
+            const raw = unidades.length ? unidades : legacy;
             return [...new Set(raw
                 .map(resolveCargoValue)
                 .map(v => String(v || '').trim())
-                .filter(v => v && !['sem cargo', 'sem cargo definido', '__none__'].includes(v.toLowerCase()))
+                .filter(v => v && !['sem cargo', 'sem cargo definido', 'sem divisão/serviço', 'sem divisão/serviço definido', '__none__'].includes(v.toLowerCase()))
             )];
         };
         window.populateCargoOptions = () => {
             const select = document.getElementById('projCargoAdder');
             if (!select) return;
             const current = select.value || '';
-            select.innerHTML = '<option value="">+ Adicionar cargo envolvido...</option>' + CARGO_OPTIONS.map(c => `<option value="${escapeHtml(c.value)}">${escapeHtml(c.acronym)} — ${escapeHtml(c.label)}</option>`).join('');
+            select.innerHTML = '<option value="">+ Adicionar divisão/serviço...</option>' + CARGO_OPTIONS.map(c => `<option value="${escapeHtml(c.value)}">${escapeHtml(c.acronym)} — ${escapeHtml(c.label)}</option>`).join('');
             select.value = current;
         };
         
@@ -5251,17 +5243,17 @@ document.getElementById('projRisks').value = '';
                 serviceField.classList.remove('hidden-field');
                 if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
                 if (projectActionDecisionField) projectActionDecisionField.classList.remove('hidden-field');
-                if (cargoField) cargoField.classList.remove('hidden-field');
             } else if (activeTab === 'contracts') {
                 document.getElementById('modalTitle').innerText = 'Novo Contrato / Convênio';
                 typeField.classList.remove('hidden-field');
                 resourceField.classList.remove('hidden-field');
                 document.getElementById('contractRelationWrapper').classList.remove('hidden-field');
+                serviceField.classList.remove('hidden-field');
+                if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
                             programField.classList.remove('hidden-field');
                 document.getElementById('contractProgram').value = '';
                 document.getElementById('contractComponent').value = '';
                 toggleContractProgramFields();
-                if (cargoField) cargoField.classList.remove('hidden-field');
 } else if (activeTab === 'operational') {
                 document.getElementById('modalTitle').innerText = 'Nova Atividade Operacional';
                 relField.classList.remove('hidden-field');
@@ -5549,7 +5541,7 @@ document.getElementById('projRisks').value = '';
             const roadmap = [];
             document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmap.push({ data: noDate ? '' : d, etapa: e, noDate }); });
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
-            const cargosList = Array.from(document.querySelectorAll('#cargoTagsContainer .actor-tag span')).map(s => s.innerText);
+            const cargosList = [...servicesList]; // compatibilidade: o Cronograma usa Divisões/Serviços responsáveis como base
             const existingForAudit = (dataStore[collectionName] || []).find(i => i.id === id) || null;
             const data = {
                 name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não', decisionLevel: document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '', decisionDesc: document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value : '', services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
@@ -5952,7 +5944,10 @@ Item: ${itemLabel}`,
                 document.getElementById('contractTypeField').classList.remove('hidden-field');
                 document.getElementById('resourceLogicField').classList.remove('hidden-field');
                 document.getElementById('contractRelationWrapper').classList.remove('hidden-field');
-                const cargoFieldEdit = document.getElementById('cargoField'); if (cargoFieldEdit) cargoFieldEdit.classList.remove('hidden-field');
+                document.getElementById('serviceField').classList.remove('hidden-field');
+                if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
+                const contractServices = item.services || (item.service ? [item.service] : []);
+                contractServices.forEach(s => window.addServiceTag(s));
                 document.getElementById('complexityField').classList.add('hidden-field');
                             document.getElementById('contractProgramField').classList.remove('hidden-field');
                 toggleContractProgramFields();
@@ -5970,7 +5965,6 @@ Item: ${itemLabel}`,
                  document.getElementById('modalTitle').innerText = 'Editar Projeto Estratégico';
                  document.getElementById('complexityField').classList.remove('hidden-field');
                  document.getElementById('serviceField').classList.remove('hidden-field');
-                 const cargoFieldEditProj = document.getElementById('cargoField'); if (cargoFieldEditProj) cargoFieldEditProj.classList.remove('hidden-field');
                  if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
                  const projectActionDecisionFieldEdit = document.getElementById('projectActionDecisionField');
                  if (projectActionDecisionFieldEdit) projectActionDecisionFieldEdit.classList.remove('hidden-field');
@@ -5997,8 +5991,6 @@ Item: ${itemLabel}`,
             document.getElementById('projPrazo').value = item.prazo || '';
             document.getElementById('projCoord').value = item.coord || '';
             if (typeof window.populateCargoOptions === 'function') window.populateCargoOptions();
-            const itemCargos = normalizeCargoList(item);
-            itemCargos.forEach(c => window.addCargoTag(c));
             document.getElementById('projStatus').value = normalizeStatus(item.status) || 'Backlog';
             document.getElementById('projPriority').value = item.priority || 'Média';
             // Documentos (multi-links)
@@ -6373,9 +6365,9 @@ window.toggleRiskInput();
             const allRoles = [...new Set([...CARGO_OPTIONS.map(c => c.value), ...dynamic])];
             const existingValues = new Set(['all', '__none__', ...allRoles]);
             if (!existingValues.has(currentGanttRoleFilter)) currentGanttRoleFilter = 'all';
-            select.innerHTML = '<option value="all">Todos os cargos</option>'
+            select.innerHTML = '<option value="all">Todas as divisões/serviços</option>'
                 + allRoles.map(role => `<option value="${escapeHtml(role)}">${escapeHtml(getCargoAcronym(role))} — ${escapeHtml(getCargoFullName(role))}</option>`).join('')
-                + '<option value="__none__">Sem cargo definido</option>';
+                + '<option value="__none__">Sem divisão/serviço definido</option>';
             select.value = currentGanttRoleFilter;
         };
 
@@ -6400,7 +6392,7 @@ window.toggleRiskInput();
             el.innerHTML = sorted.slice(0, 8).map(([role, count]) => {
                 const isNone = role === '__none__';
                 const acronym = isNone ? 'S/C' : getCargoAcronym(role);
-                const name = isNone ? 'Sem cargo definido' : getCargoFullName(role);
+                const name = isNone ? 'Sem divisão/serviço definido' : getCargoFullName(role);
                 const isTop = count === topCount && !isNone;
                 return `<button type="button" class="gantt-workload-card ${isTop ? 'top' : ''} text-left" onclick="setGanttRoleFilter('${escapeHtml(role)}')" title="${escapeHtml(name)}">
                     <div class="gantt-workload-role">${escapeHtml(acronym)}</div>
@@ -6471,13 +6463,13 @@ window.toggleRiskInput();
                 }
 
                 const itemRoles = normalizeCargoList(item);
-                const roleText = itemRoles.length ? itemRoles.map(getCargoAcronym).join(', ') : 'Sem cargo';
-                const roleTitle = itemRoles.length ? itemRoles.map(getCargoFullName).join(' • ') : 'Sem cargo definido';
+                const roleText = itemRoles.length ? itemRoles.map(getCargoAcronym).join(', ') : 'Sem divisão/serviço';
+                const roleTitle = itemRoles.length ? itemRoles.map(getCargoFullName).join(' • ') : 'Sem divisão/serviço definido';
                 const itemName = escapeHtml(item.name || 'Sem título');
                 const itemStatus = escapeHtml(normalizeStatus(item.status) || 'Sem status');
                 const collectionName = item.type === 'project' ? 'projects' : 'contracts';
 
-                row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${escapeHtml(item.coord || 'N/A')}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${itemName}">${itemName}</div><div class="mt-1 text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-md px-1.5 py-0.5 truncate" title="${escapeHtml(roleTitle)}">Cargo(s): ${escapeHtml(roleText)}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${collectionName}')"><span class="gantt-bar-label">${itemStatus}</span></div>${milestonesHtml}</div>`;
+                row.innerHTML = `<div class="gantt-item-col"><div class="flex items-center gap-2 mb-1"><div class="w-1.5 h-1.5 rounded-full ${item.type === 'project' ? 'bg-blue-500' : 'bg-purple-500'}"></div><span class="text-[9px] font-black uppercase text-slate-400">${escapeHtml(item.coord || 'N/A')}</span></div><div class="font-bold text-slate-700 text-xs truncate" title="${itemName}">${itemName}</div><div class="mt-1 text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-md px-1.5 py-0.5 truncate" title="${escapeHtml(roleTitle)}">Divisão/Serviço: ${escapeHtml(roleText)}</div></div><div class="gantt-timeline-area"><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col"></div><div class="gantt-grid-col" style="border:none"></div><div class="gantt-bar ${colorClass}" style="left: ${left}%; width: ${width}%;" onclick="editItem('${item.id}', '${collectionName}')"><span class="gantt-bar-label">${itemStatus}</span></div>${milestonesHtml}</div>`;
                 container.appendChild(row);
             });
 
