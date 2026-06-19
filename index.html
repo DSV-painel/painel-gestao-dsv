@@ -1246,6 +1246,21 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 @media(min-width:760px){.indicator-form-grid.two{grid-template-columns:repeat(2,minmax(0,1fr));}.indicator-form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr));}}
 
 
+/* Indicadores – remover degradês e manter cores fixas */
+#indicatorsView .ind-kpi-card,
+#indicatorsView .indicator-card-v2,
+#indicatorModal .indicator-modal-section,
+#newIndicatorModal .indicator-modal-section {
+  background-image: none !important;
+}
+
+#indicatorModal > .bg-white > div:first-child,
+#newIndicatorModal > .bg-white > div:first-child {
+  background: #be185d !important;
+  background-image: none !important;
+}
+
+
 /* ===============================
    PORTARIA 44 – Mapa circular interativo
    inspirado na Estrutura em Rede Detran-SP
@@ -2972,7 +2987,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <!-- Modal Novo Indicador -->
 <div class="items-center justify-center p-2 sm:p-4" id="newIndicatorModal" style="display: none;">
 <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
-<div class="bg-gradient-to-r from-slate-900 via-pink-700 to-rose-500 px-6 py-5 flex justify-between items-start text-white shrink-0">
+<div class="bg-pink-700 px-6 py-5 flex justify-between items-start text-white shrink-0">
 <div class="flex items-start gap-3">
 <div class="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center"><i class="fas fa-plus-circle text-lg"></i></div>
 <div>
@@ -3580,7 +3595,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <!-- Modal Edição Indicador -->
 <div class="items-center justify-center p-2 sm:p-4" id="indicatorModal" style="display: none;">
 <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
-<div class="bg-gradient-to-r from-slate-900 via-pink-700 to-rose-500 px-6 py-5 flex justify-between items-start text-white shrink-0">
+<div class="bg-pink-700 px-6 py-5 flex justify-between items-start text-white shrink-0">
 <div class="flex items-start gap-3">
 <div class="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center"><i class="fas fa-chart-line text-lg"></i></div>
 <div>
@@ -5511,7 +5526,20 @@ document.getElementById('projRisks').value = '';
 
         window.toggleOriginInput = () => { const originType = document.querySelector('input[name="originType"]:checked').value; const wrapper = document.getElementById('projectSelectWrapper'); const select = document.getElementById('projRelation'); const label = wrapper.querySelector('label'); if (originType === 'pontual') { wrapper.classList.add('hidden-field'); select.innerHTML = ''; } else { wrapper.classList.remove('hidden-field'); if (originType === 'projeto') { label.innerText = "Vincular a qual Projeto?"; select.innerHTML = '<option value="">Selecione o Projeto...</option>' + dataStore.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join(''); } else if (originType === 'contrato') { label.innerText = "Vincular a qual Contrato?"; select.innerHTML = '<option value="">Selecione o Contrato...</option>' + dataStore.contracts.map(c => `<option value="${c.id}">${c.name}</option>`).join(''); } } };
         window.toggleRiskInput = () => { const status = document.getElementById('projStatus').value; const riskField = document.getElementById('riskField'); const show = ["Em Execução (com risco)"].includes(status); riskField.classList.toggle('hidden-field', !show); };
-        window.toggleDecisionFields = () => { const needed = document.getElementById('projDecisionNeeded')?.value === 'Sim'; const detail = document.getElementById('decisionDetailField'); if (detail) detail.classList.toggle('hidden-field', !needed); };
+        window.toggleDecisionFields = () => {
+            const needed = document.getElementById('projDecisionNeeded')?.value === 'Sim';
+            const detail = document.getElementById('decisionDetailField');
+            if (detail) detail.classList.toggle('hidden-field', !needed);
+
+            // Ao marcar "Não", limpa os campos ocultos para evitar que uma decisão antiga
+            // continue sendo salva/renderizada no card depois que o texto foi apagado.
+            if (!needed) {
+                const descEl = document.getElementById('projDecisionDesc');
+                const levelEl = document.getElementById('projDecisionLevel');
+                if (descEl) descEl.value = '';
+                if (levelEl) levelEl.value = 'Diretoria DSV';
+            }
+        };
 
         // Funções de Tags
         const getTagsFromContainer = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); };
@@ -5715,8 +5743,20 @@ document.getElementById('projRisks').value = '';
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const cargosList = [...servicesList]; // compatibilidade: o Cronograma usa Divisões/Serviços responsáveis como base
             const existingForAudit = (dataStore[collectionName] || []).find(i => i.id === id) || null;
+
+            // Normalização da decisão necessária:
+            // - se o usuário apagar a descrição, a decisão deixa de existir;
+            // - se marcar "Não", nível e descrição são salvos vazios;
+            // - isso sobrescreve o valor antigo no Firebase e impede que o card continue exibindo a decisão removida.
+            const rawDecisionNeeded = document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não';
+            const rawDecisionDesc = document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value.trim() : '';
+            const decisionIsActive = collectionName === 'projects' && rawDecisionNeeded === 'Sim' && !!rawDecisionDesc;
+            const normalizedDecisionNeeded = decisionIsActive ? 'Sim' : 'Não';
+            const normalizedDecisionLevel = decisionIsActive && document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '';
+            const normalizedDecisionDesc = decisionIsActive ? rawDecisionDesc : '';
+
             const data = {
-                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: document.getElementById('projDecisionNeeded') ? document.getElementById('projDecisionNeeded').value : 'Não', decisionLevel: document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '', decisionDesc: document.getElementById('projDecisionDesc') ? document.getElementById('projDecisionDesc').value : '', services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
+                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: normalizedDecisionNeeded, decisionLevel: normalizedDecisionLevel, decisionDesc: normalizedDecisionDesc, services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
             };
             if (collectionName === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (collectionName === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
             // Confirmação ao marcar como Concluído
@@ -6173,9 +6213,11 @@ Item: ${itemLabel}`,
             links.forEach(l => window.addDocLinkRow(l));
             document.getElementById('projRisks').value = item.risks || ''; 
             if (document.getElementById('projEncaminhamentos')) document.getElementById('projEncaminhamentos').value = item.encaminhamentos || '';
-            if (document.getElementById('projDecisionNeeded')) document.getElementById('projDecisionNeeded').value = item.decisionNeeded || (item.decisionDesc ? 'Sim' : 'Não');
-            if (document.getElementById('projDecisionLevel')) document.getElementById('projDecisionLevel').value = item.decisionLevel || 'Diretoria DSV';
-            if (document.getElementById('projDecisionDesc')) document.getElementById('projDecisionDesc').value = item.decisionDesc || '';
+            const savedDecisionDesc = String(item.decisionDesc || '').trim();
+            const savedDecisionNeeded = ((item.decisionNeeded === 'Sim' && savedDecisionDesc) || (!item.decisionNeeded && savedDecisionDesc)) ? 'Sim' : 'Não';
+            if (document.getElementById('projDecisionNeeded')) document.getElementById('projDecisionNeeded').value = savedDecisionNeeded;
+            if (document.getElementById('projDecisionLevel')) document.getElementById('projDecisionLevel').value = savedDecisionNeeded === 'Sim' ? (item.decisionLevel || 'Diretoria DSV') : 'Diretoria DSV';
+            if (document.getElementById('projDecisionDesc')) document.getElementById('projDecisionDesc').value = savedDecisionNeeded === 'Sim' ? savedDecisionDesc : '';
             if (typeof window.toggleDecisionFields === 'function') window.toggleDecisionFields();
             const encaminhamentosFieldEdit = document.getElementById('encaminhamentosField');
             if (encaminhamentosFieldEdit) encaminhamentosFieldEdit.classList.toggle('hidden-field', t === 'operational');
@@ -7271,7 +7313,7 @@ window.openAddBacklogItemModal = (meetingId) => {
             let filtered = dataStore[activeTab] || [];
             if (activeTab === 'projects') { filtered = filtered.filter(i => !i.type || i.type === 'Projeto'); }
             
-            if(search) filtered = filtered.filter(i => { const hay = [i.name, i.desc, i.encaminhamentos, i.decisionDesc, i.decisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
+            if(search) filtered = filtered.filter(i => { const activeDecisionText = (activeTab === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : ''; const activeDecisionLevel = activeDecisionText ? i.decisionLevel : ''; const hay = [i.name, i.desc, i.encaminhamentos, activeDecisionText, activeDecisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
             if(currentFilter !== 'all') filtered = filtered.filter(i => i.coord === currentFilter);
             if(activeTab === 'operational' || activeTab === 'projects') { const serviceFilter = document.getElementById('filterService').value; if(serviceFilter !== 'all') { filtered = filtered.filter(i => { const s = i.services || (i.service ? [i.service] : []); return s.includes(serviceFilter); }); } }
             if(currentPriorityFilter !== 'all') filtered = filtered.filter(i => i.priority === currentPriorityFilter);
@@ -7514,16 +7556,17 @@ Object.keys(cols).forEach(key => {
                     })
                     .join('\n');
             };
-            const decisionResumoText = stripSummaryLabel(item.decisionDesc || '');
+            const decisionResumoText = stripSummaryLabel(item.decisionDesc || '').trim();
             const encaminhamentosResumoText = removeRepeatedLines(item.encaminhamentos, [decisionResumoText]);
             const shouldShowEncaminhamentosResumo = Boolean((activeTab === 'projects' || activeTab === 'contracts') && encaminhamentosResumoText);
 
             let decisionResumoHtml = '';
-            if (activeTab === 'projects' && (item.decisionNeeded === 'Sim' || decisionResumoText)) {
+            const shouldShowDecisionResumo = Boolean(activeTab === 'projects' && decisionResumoText && item.decisionNeeded !== 'Não');
+            if (shouldShowDecisionResumo) {
                 decisionResumoHtml = `
                     <div class="summary-box border-amber-200 bg-amber-50/80">
                         <p class="summary-box-title text-amber-700"><i class="fas fa-gavel"></i> Decisão necessária</p>
-                        ${decisionResumoText ? `<div class="summary-box-body markdown-content markdown-compact clamp-2">${md(decisionResumoText)}</div>` : `<p class="summary-box-body italic text-slate-400 font-semibold">Decisão indicada, mas sem descrição.</p>`}
+                        <div class="summary-box-body markdown-content markdown-compact clamp-2">${md(decisionResumoText)}</div>
                         <div class="summary-meta">
                             <span class="summary-meta-chip bg-white border border-amber-200 text-amber-700">${escapeHtml(item.decisionLevel || 'Nível não informado')}</span>
                         </div>
