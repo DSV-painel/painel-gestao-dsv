@@ -2934,6 +2934,227 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   }
 }
 
+
+
+/* ===============================
+   VISUALIZAÇÃO EM TABELA – PROJETOS E CONTRATOS
+   =============================== */
+.view-mode-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+}
+.view-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15,23,42,.04);
+}
+.view-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 34px;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #64748b;
+  transition: all .18s ease;
+}
+.view-mode-btn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+.view-mode-btn.active {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(15,23,42,.18);
+}
+.projects-theme .view-mode-btn.active,
+#appShell:not(.contracts-theme) .view-mode-btn.active {
+  background: #2563eb;
+}
+.contracts-theme .view-mode-btn.active {
+  background: #7c3aed;
+}
+.table-view-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 2px rgba(15,23,42,.05);
+  overflow: hidden;
+}
+.table-view-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+.table-view-title {
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #0f172a;
+}
+.table-view-subtitle {
+  margin-top: .2rem;
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 700;
+}
+.table-view-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: .35rem .7rem;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.table-view-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+.table-view {
+  width: 100%;
+  min-width: 1180px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table-view thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: .85rem .9rem;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #64748b;
+  white-space: nowrap;
+}
+.table-view tbody td {
+  border-bottom: 1px solid #f1f5f9;
+  padding: .9rem;
+  vertical-align: top;
+  font-size: 12px;
+  color: #334155;
+}
+.table-view tbody tr:hover {
+  background: #f8fafc;
+}
+.table-primary-title {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.3;
+  max-width: 360px;
+}
+.table-primary-desc {
+  margin-top: .35rem;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.35;
+  max-width: 420px;
+}
+.table-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  max-width: 240px;
+  min-height: 24px;
+  padding: .28rem .55rem;
+  border-radius: .65rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  line-height: 1.15;
+  white-space: normal;
+}
+.table-pill.status-pill,
+.table-pill.priority-pill,
+.table-pill.program-pill,
+.table-pill.decision-pill {
+  max-width: 100%;
+}
+.table-meta-muted {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+.table-service-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  max-width: 300px;
+}
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  flex-wrap: wrap;
+  min-width: 158px;
+}
+.table-action-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: .75rem;
+  background: #f1f5f9;
+  color: #94a3b8;
+  transition: all .18s ease;
+}
+.table-action-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+.table-action-btn.active-dispatch { background: #0f172a; color: #ffffff; }
+.table-action-btn.active-planner { background: #2563eb; color: #ffffff; }
+.table-action-btn.active-validation { background: #059669; color: #ffffff; }
+.table-empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 800;
+}
+@media (max-width: 767px) {
+  .view-mode-wrapper { justify-content: stretch; }
+  .view-mode-toggle { width: 100%; }
+  .view-mode-btn { flex: 1; }
+  .table-view-toolbar { flex-direction: column; }
+}
+
 </style>
 <style id="portaria-sem-pr-vp-final">
 #portariaView .portaria-context-node,
@@ -3906,6 +4127,16 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </select>
 </div>
 </div>
+<div class="px-4 md:px-6 pt-5 view-mode-wrapper" id="viewModeWrapper">
+<div class="view-mode-toggle" role="group" aria-label="Modo de visualização">
+<button class="view-mode-btn active" id="viewModeCardsBtn" onclick="setProjectContractViewMode('cards')" type="button">
+<i class="fas fa-grip"></i> Cards
+</button>
+<button class="view-mode-btn" id="viewModeTableBtn" onclick="setProjectContractViewMode('table')" type="button">
+<i class="fas fa-table-list"></i> Tabela
+</button>
+</div>
+</div>
 <div class="px-4 md:px-6 pt-5">
 <button class="action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 transition-all text-sm font-black uppercase tracking-widest hover:border-current btn-theme-project" id="addBtn" onclick="openNewModal()">
 <i class="fas fa-plus-circle mr-2" id="addBtnIcon"></i> <span id="addBtnText">Adicionar Projeto</span>
@@ -4405,6 +4636,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
         let currentFilter = 'all';
         let currentListFilter = 'all'; 
         let currentPriorityFilter = 'all';
+        let projectContractViewMode = localStorage.getItem('dsvProjectContractViewMode') || 'cards';
         let currentPortariaFilter = 'all';
         let currentGanttFilter = 'all';
         let currentGanttRoleFilter = 'all';
@@ -6314,7 +6546,7 @@ window.toggleRiskInput();
               // Use inline display to avoid any Tailwind utility precedence issues (e.g., flex vs hidden)
               coordWrapper.style.display = showCoord ? '' : 'none';
               coordWrapper.classList.toggle('hidden', !showCoord);
-            } if(tab !== 'portaria' && tab !== 'calendar' && tab !== 'indicators' && tab !== 'despachos' && tab !== 'gantt' && tab !== 'pca2027') window.renderData(); };
+            } updateProjectContractViewModeButtons(); if(tab !== 'portaria' && tab !== 'calendar' && tab !== 'indicators' && tab !== 'despachos' && tab !== 'gantt' && tab !== 'pca2027') window.renderData(); };
         window.setGanttFilter = (filter) => {
             currentGanttFilter = filter;
             document.getElementById('btnGanttAll').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'all' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`;
@@ -7071,12 +7303,182 @@ window.openAddBacklogItemModal = (meetingId) => {
             section.classList.remove('hidden');
         }
 
+
+        function updateProjectContractViewModeButtons() {
+            const wrapper = document.getElementById('viewModeWrapper');
+            const cardsBtn = document.getElementById('viewModeCardsBtn');
+            const tableBtn = document.getElementById('viewModeTableBtn');
+            if (!wrapper || !cardsBtn || !tableBtn) return;
+            const shouldShow = activeTab === 'projects' || activeTab === 'contracts';
+            wrapper.classList.toggle('hidden', !shouldShow);
+            cardsBtn.classList.toggle('active', projectContractViewMode !== 'table');
+            tableBtn.classList.toggle('active', projectContractViewMode === 'table');
+        }
+
+        window.setProjectContractViewMode = (mode) => {
+            projectContractViewMode = mode === 'table' ? 'table' : 'cards';
+            localStorage.setItem('dsvProjectContractViewMode', projectContractViewMode);
+            updateProjectContractViewModeButtons();
+            window.renderData();
+        };
+
+        function getProjectNameById(projectId) {
+            if (!projectId) return '';
+            const project = (dataStore.projects || []).find(p => p.id === projectId);
+            return project ? project.name : '';
+        }
+
+        function formatDateBRShort(value) {
+            if (!value) return '--';
+            try { return new Date(value + 'T00:00:00').toLocaleDateString('pt-BR'); }
+            catch (e) { return '--'; }
+        }
+
+        function parseCurrencyBR(value) {
+            if (value === null || value === undefined) return 0;
+            const s = value.toString().trim();
+            if (!s) return 0;
+            let clean = s.replace(/[^0-9,.-]/g, '');
+            if (clean.includes(',')) clean = clean.replace(/\./g, '').replace(',', '.');
+            const n = parseFloat(clean);
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        function formatCurrencyBR(value) {
+            const n = parseCurrencyBR(value);
+            if (!n) return '--';
+            return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function compactText(value, max = 150) {
+            const text = String(value || '').replace(/\s+/g, ' ').trim();
+            if (!text) return '';
+            return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+        }
+
+        function getServicePillsHtml(item, colorClass = 'text-indigo-700 bg-indigo-50 border-indigo-100') {
+            const services = normalizeCargoList(item);
+            if (!services.length) return '<span class="table-meta-muted">--</span>';
+            return `<div class="table-service-list">${services.map(s => `<span class="table-pill ${colorClass}" title="${escapeHtml(getCargoFullName(s))}">${escapeHtml(getCargoAcronym(s))}</span>`).join('')}</div>`;
+        }
+
+        function renderProjectContractTable(items, today) {
+            const container = document.getElementById('projectsList');
+            if (!container) return;
+            const isContracts = activeTab === 'contracts';
+            const isProjects = activeTab === 'projects';
+            container.className = 'space-y-4';
+
+            const title = isContracts ? 'Tabela de contratos e convênios' : 'Tabela de projetos';
+            const subtitle = isContracts
+                ? 'Visualização operacional dos contratos filtrados, com programa, recurso, vínculo e ações rápidas.'
+                : 'Visualização operacional dos projetos filtrados, com status, complexidade, decisão e ações rápidas.';
+            const columns = isContracts ? `
+                <th>Contrato / Convênio</th>
+                <th>Coord.</th>
+                <th>Divisão/Serviço</th>
+                <th>Status</th>
+                <th>Programa</th>
+                <th>Recurso</th>
+                <th>Projeto vinculado</th>
+                <th>Prazo</th>
+                <th>Docs</th>
+                <th>Ações</th>
+            ` : `
+                <th>Projeto</th>
+                <th>Coord.</th>
+                <th>Divisão/Serviço</th>
+                <th>Status</th>
+                <th>Prioridade</th>
+                <th>Complexidade</th>
+                <th>Decisão</th>
+                <th>Prazo</th>
+                <th>Docs</th>
+                <th>Ações</th>
+            `;
+
+            const rows = items.map(item => {
+                const status = normalizeStatus(item.status);
+                const docs = getDocLinksArray(item);
+                const docHtml = docs.length
+                    ? `<a href="${sanitizeMarkdownUrl(docs[0].url)}" target="_blank" rel="noopener noreferrer" class="table-pill text-blue-700 bg-blue-50 border-blue-100"><i class="fas fa-paperclip"></i>${docs.length} ${docs.length === 1 ? 'doc' : 'docs'}</a>`
+                    : '<span class="table-meta-muted">--</span>';
+                const actionHtml = `
+                    <div class="table-actions">
+                        <button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${activeTab}')" class="table-action-btn ${item.onDispatch ? 'active-dispatch' : ''}" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}"><i class="fas fa-clipboard-list"></i></button>
+                        <button onclick="event.stopPropagation(); togglePlanner('${item.id}', '${activeTab}')" class="table-action-btn ${item.onPlanner ? 'active-planner' : ''}" title="${item.onPlanner ? 'Remover do Planner da Presidência' : 'Sinalizar no Planner da Presidência'}"><i class="fas fa-tasks"></i></button>
+                        <button onclick="event.stopPropagation(); toggleDiretoriaValidation('${item.id}', '${activeTab}')" class="table-action-btn ${item.onDiretoriaValidation ? 'active-validation' : ''}" title="${item.onDiretoriaValidation ? 'Remover da Validação da Diretoria' : 'Marcar para Validação da Diretoria'}"><i class="fas fa-user-check"></i></button>
+                        <button onclick="event.stopPropagation(); editItem('${item.id}', '${activeTab}')" class="table-action-btn" title="Editar"><i class="fas fa-edit"></i></button>
+                    </div>`;
+                const primary = `
+                    <div class="table-primary-title">${escapeHtml(item.name || 'Sem título')}</div>
+                    ${item.desc ? `<div class="table-primary-desc">${escapeHtml(compactText(item.desc, 160))}</div>` : ''}
+                `;
+                const baseCells = `
+                    <td>${primary}</td>
+                    <td><span class="table-pill">${escapeHtml(item.coord || 'N/A')}</span></td>
+                    <td>${getServicePillsHtml(item, isContracts ? 'text-purple-700 bg-purple-50 border-purple-100' : 'text-indigo-700 bg-indigo-50 border-indigo-100')}</td>
+                    <td><span class="table-pill status-pill ${window.getStatusColor(status)}">${escapeHtml(status || 'Sem status')}</span></td>
+                `;
+
+                if (isContracts) {
+                    const programLabel = item.program === 'Respeito à Vida'
+                        ? `Respeito à Vida${item.programComponent ? ` — C${item.programComponent}` : ''}`
+                        : (item.program || '--');
+                    const projectName = getProjectNameById(item.projRelation);
+                    return `<tr onclick="editItem('${item.id}', '${activeTab}')">
+                        ${baseCells}
+                        <td><span class="table-pill program-pill text-purple-700 bg-purple-50 border-purple-100">${escapeHtml(programLabel)}</span></td>
+                        <td><span class="font-black text-slate-700">${formatCurrencyBR(item.resourceValue)}</span></td>
+                        <td>${projectName ? `<span class="table-pill" title="${escapeHtml(projectName)}">${escapeHtml(compactText(projectName, 48))}</span>` : '<span class="table-meta-muted">--</span>'}</td>
+                        <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
+                        <td>${docHtml}</td>
+                        <td>${actionHtml}</td>
+                    </tr>`;
+                }
+
+                const complexity = item.complexity || 'Média';
+                const decisionActive = item.decisionNeeded !== 'Não' && item.decisionDesc;
+                const decisionHtml = decisionActive
+                    ? `<span class="table-pill decision-pill text-amber-700 bg-amber-50 border-amber-100" title="${escapeHtml(item.decisionDesc)}"><i class="fas fa-scale-balanced"></i>${escapeHtml(item.decisionLevel || 'Decisão')}</span>`
+                    : '<span class="table-meta-muted">--</span>';
+                return `<tr onclick="editItem('${item.id}', '${activeTab}')">
+                    ${baseCells}
+                    <td><span class="table-pill priority-pill ${item.priority === 'Urgente' ? 'text-red-700 bg-red-50 border-red-100' : 'text-slate-600 bg-slate-50 border-slate-200'}">${escapeHtml(item.priority || '--')}</span></td>
+                    <td><span class="table-pill ${complexity === 'Alta' ? 'tag-g' : (complexity === 'Baixa' ? 'tag-p' : 'tag-m')}">${escapeHtml(complexity)}</span></td>
+                    <td>${decisionHtml}</td>
+                    <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
+                    <td>${docHtml}</td>
+                    <td>${actionHtml}</td>
+                </tr>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="table-view-card">
+                    <div class="table-view-toolbar">
+                        <div>
+                            <div class="table-view-title"><i class="fas fa-table-list mr-2"></i>${title}</div>
+                            <div class="table-view-subtitle">${subtitle}</div>
+                        </div>
+                        <span class="table-view-count">${items.length} ${items.length === 1 ? 'registro' : 'registros'}</span>
+                    </div>
+                    <div class="table-view-scroll">
+                        <table class="table-view">
+                            <thead><tr>${columns}</tr></thead>
+                            <tbody>${rows || `<tr><td colspan="10"><div class="table-empty-state"><i class="fas fa-inbox text-2xl mb-3 block"></i>Nenhum registro encontrado com os filtros atuais.</div></td></tr>`}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
         window.renderData = () => {
             if (activeTab === 'calendar') { window.renderCalendar(); return; }
             if (activeTab === 'portaria') { window.renderPortaria(); return; }
             if (activeTab === 'indicators') { window.renderIndicators(); return; }
             if (activeTab === 'despachos') { window.renderDespachos(); return; }
 
+            updateProjectContractViewModeButtons();
             const container = document.getElementById('projectsList');
             const search = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
@@ -7179,6 +7581,11 @@ window.openAddBacklogItemModal = (meetingId) => {
             if (!document.getElementById('priorityChartWrapper').classList.contains('hidden')) { const urg = filtered.filter(p => p.priority === 'Urgente').length, high = filtered.filter(p => p.priority === 'Alta').length, mid = filtered.filter(p => p.priority === 'Média').length; const pU = Math.round((urg/total)*100), pH = Math.round((high/total)*100), pM = Math.round((mid/total)*100); document.getElementById('priorityChart').style.background = `conic-gradient(#ef4444 0% ${pU}%, #f97316 ${pU}% ${pU+pH}%, #eab308 ${pU+pH}% ${pU+pH+pM}%, #22c55e ${pU+pH+pM}% 100%)`; document.getElementById('count-prio-urg').innerText = `(${urg})`; document.getElementById('count-prio-high').innerText = `(${high})`; document.getElementById('count-prio-mid').innerText = `(${mid})`; document.getElementById('count-prio-low').innerText = `(${filtered.filter(p => p.priority === 'Baixa').length})`; }
             
             const today = new Date().toISOString().split('T')[0];
+
+            if ((activeTab === 'projects' || activeTab === 'contracts') && projectContractViewMode === 'table') {
+                renderProjectContractTable(filtered, today);
+                return;
+            }
 
             if (activeTab === 'projects') {
                 container.className = "grid grid-cols-1 sm:grid-cols-3 gap-6";
