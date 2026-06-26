@@ -1,0 +1,46 @@
+diff --git a/index.html b/index.html
+--- a/index.html
++++ b/index.html
+@@
+-                <th>Docs</th>
+                 <th>Ações</th>
+             ` : `
+@@
+-                <th>Docs</th>
+                 <th>Ações</th>
+             `;
+ 
+             const rows = items.map(item => {
+                 const status = normalizeStatus(item.status);
+-                const docs = getDocLinksArray(item);
+-                const docHtml = docs.length
+-                    ? `<a href="${sanitizeMarkdownUrl(docs[0].url)}" target="_blank" rel="noopener noreferrer" class="table-pill text-blue-700 bg-blue-50 border-blue-100"><i class="fas fa-paperclip"></i>${docs.length} ${docs.length === 1 ? 'doc' : 'docs'}</a>`
+-                    : '<span class="table-meta-muted">--</span>';
+                 const actionHtml = `
+                     <div class="table-actions">
+                         <button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${activeTab}')" class="table-action-btn ${item.onDispatch ? 'active-dispatch' : ''}" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}"><i class="fas fa-clipboard-list"></i></button>
+@@
+                 const primary = `
+                     <div class="table-primary-title">${escapeHtml(item.name || 'Sem título')}</div>
+-                    ${item.desc ? `<div class="table-primary-desc">${escapeHtml(compactText(item.desc, 160))}</div>` : ''}
+                 `;
+@@
+                         <td><span class="font-black text-slate-700">${formatCurrencyBR(item.resourceValue)}</span></td>
+                         <td>${projectName ? `<span class="table-pill" title="${escapeHtml(projectName)}">${escapeHtml(compactText(projectName, 48))}</span>` : '<span class="table-meta-muted">--</span>'}</td>
+                         <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
+-                        <td>${docHtml}</td>
+                         <td>${actionHtml}</td>
+                     </tr>`;
+@@
+                     <td><span class="table-pill ${complexity === 'Alta' ? 'tag-g' : (complexity === 'Baixa' ? 'tag-p' : 'tag-m')}">${escapeHtml(complexity)}</span></td>
+                     <td>${decisionHtml}</td>
+                     <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
+-                    <td>${docHtml}</td>
+                     <td>${actionHtml}</td>
+                 </tr>`;
+@@
+-                            <tbody>${rows || `<tr><td colspan="10"><div class="table-empty-state"><i class="fas fa-inbox text-2xl mb-3 block"></i>Nenhum registro encontrado com os filtros atuais.</div></td></tr>`}</tbody>
++                            <tbody>${rows || `<tr><td colspan="9"><div class="table-empty-state"><i class="fas fa-inbox text-2xl mb-3 block"></i>Nenhum registro encontrado com os filtros atuais.</div></td></tr>`}</tbody>
+                         </table>
+                     </div>
+                 </div>
