@@ -4128,6 +4128,9 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </div>
 </div>
 <div class="px-4 md:px-6 pt-5 view-mode-wrapper" id="viewModeWrapper">
+<button class="view-mode-btn" id="exportJsonBtn" onclick="exportProjectsJson()" type="button" style="border:1px solid #e2e8f0;border-radius:999px;background:#fff;">
+<i class="fas fa-file-export"></i> Exportar JSON
+</button>
 <div class="view-mode-toggle" role="group" aria-label="Modo de visualização">
 <button class="view-mode-btn active" id="viewModeCardsBtn" onclick="setProjectContractViewMode('cards')" type="button">
 <i class="fas fa-grip"></i> Cards
@@ -8286,6 +8289,53 @@ const filenameBase = (safeTitle || 'pauta')
             } catch (err) {
                 console.error('Erro ao exportar PDF:', err);
                 alert('Não foi possível gerar o PDF. Veja o console para detalhes.');
+            }
+        };
+
+        window.exportProjectsJson = () => {
+            try {
+                if (!['projects', 'contracts'].includes(activeTab)) {
+                    alert('Selecione a aba Projetos ou Contratos para exportar.');
+                    return;
+                }
+                const search = document.getElementById('searchInput').value.toLowerCase();
+                let filtered = dataStore[activeTab] || [];
+                if (activeTab === 'projects') { filtered = filtered.filter(i => !i.type || i.type === 'Projeto'); }
+                if (search) filtered = filtered.filter(i => {
+                    const activeDecisionText = (activeTab === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : '';
+                    const activeDecisionLevel = activeDecisionText ? i.decisionLevel : '';
+                    const hay = [i.name, i.desc, i.encaminhamentos, activeDecisionText, activeDecisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase();
+                    return hay.includes(search);
+                });
+                if (currentFilter !== 'all') filtered = filtered.filter(i => i.coord === currentFilter);
+                const serviceFilter = document.getElementById('filterService').value;
+                if (serviceFilter !== 'all') filtered = filtered.filter(i => {
+                    const s = i.services || (i.service ? [i.service] : []);
+                    return s.includes(serviceFilter);
+                });
+                if (currentPriorityFilter !== 'all') filtered = filtered.filter(i => i.priority === currentPriorityFilter);
+                if (currentListFilter !== 'all') filtered = filtered.filter(i => normalizeStatus(i.status) === currentListFilter);
+                else filtered = filtered.filter(i => { const st = normalizeStatus(i.status); return st !== 'Concluído' && st !== 'Cancelado'; });
+
+                if (filtered.length === 0) {
+                    alert('Nenhum item para exportar com os filtros atuais.');
+                    return;
+                }
+
+                const label = activeTab === 'contracts' ? 'contratos' : 'projetos';
+                const dateStr = new Date().toISOString().slice(0, 10);
+                const blob = new Blob([JSON.stringify(filtered, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${label}_${dateStr}.json`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error('Erro ao exportar JSON:', err);
+                alert('Erro ao exportar JSON. Veja o console.');
             }
         };
 
