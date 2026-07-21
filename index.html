@@ -3623,6 +3623,17 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <label class="radio-option"><input name="originType" onclick="toggleOriginInput()" type="radio" value="contrato"/> Contrato</label>
 </div>
 </div>
+<div class="flex flex-col hidden-field space-y-3 pt-3 border-t border-slate-100" id="parentProjectField">
+<label class="field-label">Este projeto é um subprojeto de um Projeto Guarda-chuva?</label>
+<div class="radio-group flex-col sm:flex-row">
+<label class="radio-option"><input checked="" name="parentProjectRel" onclick="toggleParentProjectInput()" type="radio" value="nao"/> Não</label>
+<label class="radio-option"><input name="parentProjectRel" onclick="toggleParentProjectInput()" type="radio" value="sim"/> Sim</label>
+</div>
+<div class="hidden-field animate-fade-in" id="parentProjectSelectWrapper">
+<label class="field-label">Qual Projeto Guarda-chuva?</label>
+<select class="input-style" id="projParentProject"></select>
+</div>
+</div>
 </div>
 </div>
 <!-- Processos -->
@@ -3768,6 +3779,18 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <button class="text-xs font-semibold text-slate-500 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md uppercase transition-colors hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2" id="addRoadmapBtn" onclick="addRoadmapRow()" type="button">
 <i class="fas fa-plus"></i> Adicionar nova etapa
                             </button>
+</div>
+</div>
+<!-- SEÇÃO 05: CHECKLIST DE TAREFAS -->
+<div class="mt-6 bg-slate-50 p-4 sm:p-6 rounded-3xl border border-slate-100 space-y-5" id="subtasksSection">
+<div class="flex justify-between items-center border-b border-slate-200 pb-3">
+<h4 class="form-section-title !mb-0 !border-0 !pb-0"><strong>05. Checklist de Tarefas</strong></h4>
+</div>
+<div class="space-y-3" id="subtasksContainer"></div>
+<div class="flex justify-center pt-4">
+<button class="text-xs font-semibold text-slate-500 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md uppercase transition-colors hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2" onclick="addSubtaskRow()" type="button">
+<i class="fas fa-plus"></i> Adicionar tarefa
+</button>
 </div>
 </div>
 <div class="sticky bottom-0 z-30 -mx-4 md:-mx-8 mt-6 flex gap-4 border-t border-slate-200 bg-white/95 px-4 md:px-8 py-4 shadow-[0_-12px_30px_rgba(15,23,42,0.10)] backdrop-blur" id="projectFloatingSaveBar">
@@ -4858,6 +4881,30 @@ textarea.input-style { min-height: 92px; resize: vertical; }
             return (Array.isArray(rawLinks) ? rawLinks : [rawLinks]).map(normalizeDocLink).filter(Boolean);
         }
 
+        function getSubtasksArray(item) {
+            return Array.isArray(item?.subtasks) ? item.subtasks : [];
+        }
+
+        function computeSubtaskProgress(item) {
+            const list = getSubtasksArray(item);
+            const total = list.length;
+            const done = list.filter(s => s.done).length;
+            const percent = total ? Math.round((done / total) * 100) : 0;
+            return { total, done, percent };
+        }
+
+        function getSubprojects(item) {
+            return (dataStore.projects || []).filter(p => p.parentProjectId === item.id);
+        }
+
+        function computeSubprojectProgress(item) {
+            const list = getSubprojects(item);
+            const total = list.length;
+            const done = list.filter(p => normalizeStatus(p.status) === 'Concluído').length;
+            const percent = total ? Math.round((done / total) * 100) : 0;
+            return { total, done, percent };
+        }
+
         function getDocDisplayText(link) {
             const doc = normalizeDocLink(link);
             return doc ? (doc.label || doc.url) : '';
@@ -5382,6 +5429,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
             document.getElementById('editId').value = '';
             document.getElementById('roadmapContainer').innerHTML = '';
+            document.getElementById('subtasksContainer').innerHTML = '';
             document.getElementById('serviceTagsContainer').innerHTML = '';
             const cargoTags = document.getElementById('cargoTagsContainer');
             if (cargoTags) cargoTags.innerHTML = '';
@@ -5403,10 +5451,20 @@ typeField.classList.add('hidden-field');
             relField.classList.add('hidden-field');
             serviceField.classList.add('hidden-field');
             if (cargoField) cargoField.classList.add('hidden-field');
-            durationField.classList.add('hidden-field'); 
+            durationField.classList.add('hidden-field');
             complexityField.classList.add('hidden-field');
             if (projectActionDecisionField) projectActionDecisionField.classList.add('hidden-field');
-            
+            const subtasksSection = document.getElementById('subtasksSection');
+            if (subtasksSection) subtasksSection.classList.add('hidden-field');
+            const parentProjectField = document.getElementById('parentProjectField');
+            if (parentProjectField) parentProjectField.classList.add('hidden-field');
+            const parentProjectRelNao = document.querySelector('input[name="parentProjectRel"][value="nao"]');
+            if (parentProjectRelNao) parentProjectRelNao.checked = true;
+            const parentProjectSelectWrapper = document.getElementById('parentProjectSelectWrapper');
+            if (parentProjectSelectWrapper) parentProjectSelectWrapper.classList.add('hidden-field');
+            const projParentProjectSelect = document.getElementById('projParentProject');
+            if (projParentProjectSelect) projParentProjectSelect.innerHTML = '';
+
                         programField.classList.add('hidden-field');
             componentField.classList.add('hidden-field');
 document.getElementById('projRisks').value = '';
@@ -5432,6 +5490,8 @@ document.getElementById('projRisks').value = '';
                 serviceField.classList.remove('hidden-field');
                 if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
                 if (projectActionDecisionField) projectActionDecisionField.classList.remove('hidden-field');
+                if (subtasksSection) subtasksSection.classList.remove('hidden-field');
+                if (parentProjectField) parentProjectField.classList.remove('hidden-field');
             } else if (activeTab === 'contracts') {
                 document.getElementById('modalTitle').innerText = 'Novo Contrato / Convênio';
                 typeField.classList.remove('hidden-field');
@@ -5457,6 +5517,20 @@ document.getElementById('projRisks').value = '';
 
         // ... (Funções auxiliares de toggle) ...
         window.toggleContractRelInput = () => { const isSim = document.querySelector('input[name="contractRelType"]:checked').value === 'sim'; const wrapper = document.getElementById('projectSelectWrapper'); if (isSim) { wrapper.classList.remove('hidden-field'); const select = document.getElementById('projRelation'); select.innerHTML = '<option value="">Selecione...</option>' + dataStore.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join(''); } else { wrapper.classList.add('hidden-field'); } };
+
+        window.toggleParentProjectInput = () => {
+            const isSim = document.querySelector('input[name="parentProjectRel"]:checked')?.value === 'sim';
+            const wrapper = document.getElementById('parentProjectSelectWrapper');
+            if (isSim) {
+                wrapper.classList.remove('hidden-field');
+                const editId = document.getElementById('editId').value;
+                const select = document.getElementById('projParentProject');
+                const options = (dataStore.projects || []).filter(p => p.id !== editId && p.parentProjectId !== editId);
+                select.innerHTML = '<option value="">Selecione...</option>' + options.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            } else {
+                wrapper.classList.add('hidden-field');
+            }
+        };
         window.toggleResourceInput = () => { const hasResource = document.getElementById('projHasResource').value === 'Sim'; document.getElementById('resourceValueField').classList.toggle('hidden-field', !hasResource); };
 
         // --- Documentos (multi-links) ---
@@ -5574,7 +5648,22 @@ document.getElementById('projRisks').value = '';
             updateProjectDirtyState();
         };
 
-        
+        window.addSubtaskRow = (subtask = null) => {
+            const container = document.getElementById('subtasksContainer');
+            const row = document.createElement('div');
+            row.className = 'subtask-row flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-3 py-2';
+            row.dataset.subtaskId = subtask?.id || (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()));
+            row.dataset.subtaskCreatedAt = subtask?.createdAt || Date.now();
+            row.innerHTML = `
+                <input type="checkbox" class="subtask-done w-4 h-4 accent-blue-600 shrink-0" ${subtask?.done ? 'checked' : ''}>
+                <input type="text" class="input-style flex-1 subtask-text" placeholder="Descreva a tarefa/entrega..." value="${String(subtask?.text || '').replace(/"/g, '&quot;')}">
+                <button type="button" onclick="this.closest('.subtask-row').remove(); updateProjectDirtyState();" class="w-9 h-9 rounded-lg hover:bg-red-50 hover:text-red-600 text-slate-300 flex items-center justify-center transition-colors shrink-0" title="Remover tarefa"><i class="fas fa-trash"></i></button>
+            `;
+            container.appendChild(row);
+            updateProjectDirtyState();
+        };
+
+
         // ===== Observações Gerais: histórico (obsLog) =====
         function formatDateTime(ts){
             try { return new Date(ts).toLocaleString('pt-BR'); } catch { return ''; }
@@ -5742,6 +5831,17 @@ document.getElementById('projRisks').value = '';
             }
             const roadmap = [];
             document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmap.push({ data: noDate ? '' : d, etapa: e, noDate }); });
+            const subtasks = [];
+            document.querySelectorAll('#subtasksContainer > .subtask-row').forEach(row => {
+                const text = (row.querySelector('.subtask-text')?.value || '').trim();
+                if (!text) return;
+                subtasks.push({
+                    id: row.dataset.subtaskId || (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now())),
+                    text,
+                    done: !!row.querySelector('.subtask-done')?.checked,
+                    createdAt: Number(row.dataset.subtaskCreatedAt) || Date.now()
+                });
+            });
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const cargosList = [...servicesList]; // compatibilidade: o Cronograma usa Divisões/Serviços responsáveis como base
             const existingForAudit = (dataStore[collectionName] || []).find(i => i.id === id) || null;
@@ -5760,7 +5860,7 @@ document.getElementById('projRisks').value = '';
             const data = {
                 name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: normalizedDecisionNeeded, decisionLevel: normalizedDecisionLevel, decisionDesc: normalizedDecisionDesc, services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
             };
-            if (collectionName === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (collectionName === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
+            if (collectionName === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (collectionName === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; } else if (collectionName === 'projects') { data.subtasks = subtasks; const parentProjectRel = document.querySelector('input[name="parentProjectRel"]:checked')?.value; data.parentProjectId = (parentProjectRel === 'sim') ? (document.getElementById('projParentProject')?.value || '') : ''; }
             // Confirmação ao marcar como Concluído
             const __existingItem = existingForAudit;
             const __oldStatus = (__existingItem && __existingItem.status) ? __existingItem.status : '';
@@ -5794,6 +5894,27 @@ document.getElementById('projRisks').value = '';
             } catch (err) {
                 console.error("Erro ao excluir:", err);
                 alert('Erro ao excluir no Firebase. Veja o console.');
+            }
+        };
+
+        window.toggleSubtask = async (id, collectionName, subtaskIndex, checkboxEl) => {
+            const item = (dataStore[collectionName] || []).find(i => i.id === id);
+            if (!item) return;
+            const subtasks = getSubtasksArray(item).map(s => ({ ...s }));
+            if (!subtasks[subtaskIndex]) return;
+            subtasks[subtaskIndex].done = !!checkboxEl?.checked;
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), { subtasks, ...buildAuditFields(item) }, { merge: true });
+                item.subtasks = subtasks;
+                const row = checkboxEl.closest('.accordion-row');
+                const progressHost = row?.querySelector('[data-subtask-progress]');
+                if (progressHost) progressHost.outerHTML = buildSubtaskProgressHtml(item);
+                checkboxEl.closest('label')?.querySelector('span')?.classList.toggle('line-through', subtasks[subtaskIndex].done);
+                checkboxEl.closest('label')?.querySelector('span')?.classList.toggle('text-slate-400', subtasks[subtaskIndex].done);
+            } catch (err) {
+                console.error("Erro ao salvar tarefa:", err);
+                checkboxEl.checked = !checkboxEl.checked;
+                alert('Erro ao salvar tarefa no Firebase. Veja o console.');
             }
         };
 
@@ -6185,6 +6306,10 @@ Item: ${itemLabel}`,
                  const projectServices = item.services || (item.service ? [item.service] : []);
                  projectServices.forEach(s => window.addServiceTag(s));
             }
+            const subtasksSectionEdit = document.getElementById('subtasksSection');
+            if (subtasksSectionEdit) subtasksSectionEdit.classList.toggle('hidden-field', t !== 'projects');
+            const parentProjectFieldEdit = document.getElementById('parentProjectField');
+            if (parentProjectFieldEdit) parentProjectFieldEdit.classList.toggle('hidden-field', t !== 'projects');
 
             document.getElementById('editId').value = item.id;
             setAuditInfo('projectAuditInfo', item);
@@ -6227,6 +6352,14 @@ Item: ${itemLabel}`,
             document.getElementById('projComplexity').value = item.complexity || 'Média';
 window.toggleRiskInput(); 
             if (item.roadmap) { item.roadmap.forEach(r => window.addRoadmapRow(r.data || '', r.etapa || '', !!r.noDate || !r.data)); }
+            if (t === 'projects') { getSubtasksArray(item).forEach(s => window.addSubtaskRow(s)); }
+            if (t === 'projects') {
+                const hasParentProject = !!item.parentProjectId;
+                const parentRelRadio = document.querySelector(`input[name="parentProjectRel"][value="${hasParentProject ? 'sim' : 'nao'}"]`);
+                if (parentRelRadio) parentRelRadio.checked = true;
+                window.toggleParentProjectInput();
+                if (hasParentProject) document.getElementById('projParentProject').value = item.parentProjectId;
+            }
             if (t === 'contracts') { document.getElementById('projType').value = item.type || 'Contrato'; document.getElementById('projHasResource').value = item.hasResource || 'Não'; document.getElementById('projResourceValue').value = item.resourceValue || ''; document.getElementById('contractProgram').value = item.program || ''; document.getElementById('contractComponent').value = item.programComponent || ''; window.toggleResourceInput(); window.toggleContractProgramFields(); } else if (t === 'operational') { /* serviços já foram populados como tags acima */ }
             setTimeout(resetProjectDirtyState, 0);
         };
@@ -7684,6 +7817,53 @@ Object.keys(cols).forEach(key => {
                 }
             }};
 
+        function buildSubtaskProgressHtml(item) {
+            const { total, done, percent } = computeSubtaskProgress(item);
+            if (total === 0) return '';
+            return `<div class="indicator-progress-wrap !mt-2 !p-2" data-subtask-progress>
+                <div class="indicator-progress-meta"><span>Progresso das tarefas</span><span>${done}/${total} (${percent}%)</span></div>
+                <div class="indicator-progress-bar"><div class="indicator-progress-fill" style="width:${percent}%"></div></div>
+            </div>`;
+        }
+
+        function buildSubtaskChecklistHtml(item) {
+            const list = getSubtasksArray(item);
+            if (!list.length) return '';
+            const rows = list.map((s, idx) => `
+                <label class="flex items-center gap-3 bg-white border border-slate-200 rounded-lg px-3 py-2 cursor-pointer hover:border-blue-300 transition-colors">
+                    <input type="checkbox" class="w-4 h-4 accent-blue-600 shrink-0" ${s.done ? 'checked' : ''} onclick="event.stopPropagation(); window.toggleSubtask('${item.id}', 'projects', ${idx}, this);">
+                    <span class="text-sm font-medium ${s.done ? 'text-slate-400 line-through' : 'text-slate-700'}">${escapeHtml(s.text)}</span>
+                </label>`).join('');
+            return `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Checklist de Tarefas</p><div class="space-y-2">${rows}</div></div>`;
+        }
+
+        function buildSubprojectProgressHtml(item) {
+            const { total, done, percent } = computeSubprojectProgress(item);
+            if (total === 0) return '';
+            return `<div class="indicator-progress-wrap !mt-2 !p-2" data-subproject-progress>
+                <div class="indicator-progress-meta"><span>Progresso dos subprojetos</span><span>${done}/${total} (${percent}%)</span></div>
+                <div class="indicator-progress-bar"><div class="indicator-progress-fill other" style="width:${percent}%"></div></div>
+            </div>`;
+        }
+
+        function buildSubprojectListHtml(item) {
+            const list = getSubprojects(item);
+            if (!list.length) return '';
+            const rows = list.map(p => `
+                <div class="flex items-center justify-between gap-3 bg-white border border-slate-200 rounded-lg px-3 py-2 cursor-pointer hover:border-blue-300 transition-colors" onclick="event.stopPropagation(); editItem('${p.id}', 'projects');">
+                    <span class="text-sm font-medium text-slate-700 truncate">${escapeHtml(p.name)}</span>
+                    <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black shrink-0 ${window.getStatusColor(normalizeStatus(p.status))}">${normalizeStatus(p.status) || 'Sem status'}</span>
+                </div>`).join('');
+            return `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Subprojetos</p><div class="space-y-2">${rows}</div></div>`;
+        }
+
+        function buildParentProjectRefHtml(item) {
+            if (!item.parentProjectId) return '';
+            const parentName = getProjectNameById(item.parentProjectId);
+            if (!parentName) return '';
+            return `<p class="text-[10px] text-slate-400 font-bold uppercase truncate" title="${escapeHtml(parentName)}"><i class="fas fa-layer-group mr-1"></i> Subprojeto de: ${escapeHtml(parentName)}</p>`;
+        }
+
         // Função auxiliar para criar HTML do card
         function createCardHtml(item, today) {
             const sortedRoadmap = (item.roadmap || []).sort((a,b) => (a.noDate || !a.data ? '9999-12-31' : a.data).localeCompare(b.noDate || !b.data ? '9999-12-31' : b.data));
@@ -7796,8 +7976,11 @@ Object.keys(cols).forEach(key => {
                                             ${respectBadge}
                                         </div>
                                         <h4 class="font-bold text-slate-900 text-base leading-tight clamp-2">${item.name}</h4>
+                                        ${activeTab === 'projects' ? buildSubtaskProgressHtml(item) : ''}
+                                        ${activeTab === 'projects' ? buildSubprojectProgressHtml(item) : ''}
                                     </div>
                                     <div class="card-summary-stack">
+                                        ${activeTab === 'projects' ? buildParentProjectRefHtml(item) : ''}
                                         ${servicesBadgeHtml}
                                         ${decisionResumoHtml ? `<div class="decision-summary-grid">${decisionResumoHtml}</div>` : ''}
                                         ${encaminhamentosResumoHtml}
@@ -7845,6 +8028,8 @@ Object.keys(cols).forEach(key => {
                                 </div>
                             </div>` : ''}
                             ${roadmapHtml}
+                            ${activeTab === 'projects' ? buildSubtaskChecklistHtml(item) : ''}
+                            ${activeTab === 'projects' ? buildSubprojectListHtml(item) : ''}
                         </div>
                         
                         ${operationalHtml}
