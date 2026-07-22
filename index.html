@@ -4623,6 +4623,11 @@ textarea.input-style { min-height: 92px; resize: vertical; }
         let activeTab = 'projects';
         let currentProjectCollection = 'projects';
         let draggedDispatchKey = null;
+        // Deep-link de projeto compartilhado: #projeto=<colecao>:<id> (consumido após login + primeiro snapshot)
+        let pendingDeepLink = (() => {
+            const m = (location.hash || '').match(/^#projeto=(projects|contracts|operational):(.+)$/);
+            return m ? { coll: m[1], id: decodeURIComponent(m[2]) } : null;
+        })();
         function getDispatchBacklogOrder(){
             try { const v = JSON.parse(localStorage.getItem('dispatchBacklogOrder') || '[]'); return Array.isArray(v) ? v : []; } catch(e){ return []; }
         }
@@ -5289,8 +5294,20 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                         if (activeTab === 'gantt') window.renderGantt();
                         else if (activeTab !== 'portaria' && activeTab !== 'calendar' && activeTab !== 'indicators' && activeTab !== 'despachos') window.renderData();
                     }
+                    consumePendingDeepLink(colName);
                 }, (err) => console.error("Erro snapshot:", err));
             });
+        }
+
+        function consumePendingDeepLink(colName) {
+            if (!pendingDeepLink || pendingDeepLink.coll !== colName) return;
+            const { coll, id } = pendingDeepLink;
+            pendingDeepLink = null;
+            window.__dsvDeepLinkTab = coll === 'operational' ? 'projects' : coll;
+            const item = dataStore[coll]?.find(i => i.id === id);
+            if (!item) { alert('Projeto não encontrado. O link pode estar desatualizado.'); return; }
+            window.switchTab(window.__dsvDeepLinkTab);
+            window.editItem(id, coll);
         }
         
         // ... (Todas as demais funções: modal, save, delete, meetings etc... permanecem) ...
@@ -6145,6 +6162,28 @@ Item: ${itemLabel}`,
 
 
         
+        window.shareItemLink = async (id, type, btn) => {
+            const url = location.href.split('#')[0] + '#projeto=' + type + ':' + encodeURIComponent(id);
+            try {
+                await navigator.clipboard.writeText(url);
+            } catch (e) {
+                const ta = document.createElement('textarea');
+                ta.value = url;
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch (err) { console.error(err); }
+                ta.remove();
+            }
+            if (btn) {
+                const icon = btn.querySelector('i');
+                const prevIcon = icon ? icon.className : '';
+                const prevTitle = btn.title;
+                if (icon) icon.className = 'fas fa-check';
+                btn.title = 'Link copiado!';
+                setTimeout(() => { if (icon) icon.className = prevIcon; btn.title = prevTitle; }, 1500);
+            }
+        };
+
         window.editItem = (id, type) => {
             const t = type || activeTab;
             currentProjectCollection = t;
@@ -7409,6 +7448,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                         <button onclick="event.stopPropagation(); togglePlanner('${item.id}', '${activeTab}')" class="table-action-btn ${item.onPlanner ? 'active-planner' : ''}" title="${item.onPlanner ? 'Remover do Planner da Presidência' : 'Sinalizar no Planner da Presidência'}"><i class="fas fa-tasks"></i></button>
                         <button onclick="event.stopPropagation(); toggleDiretoriaValidation('${item.id}', '${activeTab}')" class="table-action-btn ${item.onDiretoriaValidation ? 'active-validation' : ''}" title="${item.onDiretoriaValidation ? 'Remover da Validação da Diretoria' : 'Marcar para Validação da Diretoria'}"><i class="fas fa-user-check"></i></button>
                         <button onclick="event.stopPropagation(); editItem('${item.id}', '${activeTab}')" class="table-action-btn" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button onclick="event.stopPropagation(); shareItemLink('${item.id}', '${activeTab}', this)" class="table-action-btn" title="Copiar link"><i class="fas fa-share-nodes"></i></button>
                     </div>`;
                 const primary = `
                     <div class="table-primary-title">${escapeHtml(item.name || 'Sem título')}</div>
@@ -7824,6 +7864,7 @@ Object.keys(cols).forEach(key => {
                         </div>
                         <div class="flex items-center gap-2">
                             <button onclick="editItem('${item.id}')" class="text-slate-300 hover:text-blue-600 transition-colors text-sm w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-blue-50"><i class="fas fa-edit"></i></button>
+                            <button onclick="event.stopPropagation(); shareItemLink('${item.id}', '${activeTab}', this)" class="text-slate-300 hover:text-blue-600 transition-colors text-sm w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-blue-50" title="Copiar link"><i class="fas fa-share-nodes"></i></button>
                             <button type="button" class="card-toggle-btn" onclick="this.closest('.accordion-row').classList.toggle('active')">
                                 <i class="fas fa-chevron-down chevron-icon transition-transform text-sm"></i>
                             </button>
@@ -8031,7 +8072,7 @@ window.setListFilter = f => { f = normalizeStatus(f); if(f === 'Concluído' && t
             updateAuthIndicator(user);
             if (window.__dsvListenersStarted) return;
             window.__dsvListenersStarted = true;
- initListeners(); setTimeout(() => window.switchTab('projects'), 500); // Indicadores: listeners de busca/filtro
+ initListeners(); setTimeout(() => window.switchTab(window.__dsvDeepLinkTab || 'projects'), 500); // Indicadores: listeners de busca/filtro
                     const s = document.getElementById('indicatorSearch');
                     const c = document.getElementById('indicatorClearSearch');
                     const tf = document.getElementById('indicatorTypeFilter');
