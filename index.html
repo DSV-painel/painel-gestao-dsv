@@ -5550,6 +5550,10 @@ document.getElementById('projRisks').value = '';
         window.addCargoTag = (val) => { if(!val) return; const container = document.getElementById('cargoTagsContainer'); if(!container) return; const existing = Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'cargoTagsContainer', null, 'tag-purple'); };
         const setupTagInput = (inputId, containerId, colorClass) => { const input = document.getElementById(inputId); if(!input) return; input.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); const val = this.value.trim().replace(',', ''); if(val) { createTag(val, containerId, inputId, colorClass); this.value = ''; } } }); };
         
+        const sortRoadmapByDate = (list) => [...(list || [])].sort((a, b) =>
+            ((a.noDate || !a.data) ? '9999-12-31' : a.data)
+            .localeCompare((b.noDate || !b.data) ? '9999-12-31' : b.data));
+
         window.addRoadmapRow = (data = '', etapa = '', noDate = false) => {
             const container = document.getElementById('roadmapContainer');
             const row = document.createElement('div');
@@ -5740,8 +5744,9 @@ document.getElementById('projRisks').value = '';
                 document.getElementById('editId').value = id;
                 await window.addObsEntry();
             }
-            const roadmap = [];
-            document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmap.push({ data: noDate ? '' : d, etapa: e, noDate }); });
+            const roadmapRows = [];
+            document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmapRows.push({ data: noDate ? '' : d, etapa: e, noDate }); });
+            const roadmap = sortRoadmapByDate(roadmapRows);
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const cargosList = [...servicesList]; // compatibilidade: o Cronograma usa Divisões/Serviços responsáveis como base
             const existingForAudit = (dataStore[collectionName] || []).find(i => i.id === id) || null;
@@ -6226,7 +6231,7 @@ Item: ${itemLabel}`,
             document.getElementById('projDuration').value = item.duration || ''; 
             document.getElementById('projComplexity').value = item.complexity || 'Média';
 window.toggleRiskInput(); 
-            if (item.roadmap) { item.roadmap.forEach(r => window.addRoadmapRow(r.data || '', r.etapa || '', !!r.noDate || !r.data)); }
+            if (item.roadmap) { sortRoadmapByDate(item.roadmap).forEach(r => window.addRoadmapRow(r.data || '', r.etapa || '', !!r.noDate || !r.data)); }
             if (t === 'contracts') { document.getElementById('projType').value = item.type || 'Contrato'; document.getElementById('projHasResource').value = item.hasResource || 'Não'; document.getElementById('projResourceValue').value = item.resourceValue || ''; document.getElementById('contractProgram').value = item.program || ''; document.getElementById('contractComponent').value = item.programComponent || ''; window.toggleResourceInput(); window.toggleContractProgramFields(); } else if (t === 'operational') { /* serviços já foram populados como tags acima */ }
             setTimeout(resetProjectDirtyState, 0);
         };
@@ -7686,7 +7691,7 @@ Object.keys(cols).forEach(key => {
 
         // Função auxiliar para criar HTML do card
         function createCardHtml(item, today) {
-            const sortedRoadmap = (item.roadmap || []).sort((a,b) => (a.noDate || !a.data ? '9999-12-31' : a.data).localeCompare(b.noDate || !b.data ? '9999-12-31' : b.data));
+            const sortedRoadmap = sortRoadmapByDate(item.roadmap);
             const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const semData = r.noDate || !r.data; const isPast = !semData && r.data < today; const dotClass = semData ? 'bg-slate-400 ring-4 ring-slate-100' : (isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'); const dateClass = semData ? 'text-slate-500 font-black' : (isPast ? 'text-slate-400' : 'text-blue-600 font-black'); const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; const dateLabel = semData ? 'Data a definir' : new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${dateLabel}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
             const respectBadge = (activeTab === 'contracts' && item.program === 'Respeito à Vida' && (item.programComponent === '1' || item.programComponent === '3'))
                 ? `<span class=\"ml-2 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-100\">Respeito à Vida — C${item.programComponent}</span>`
