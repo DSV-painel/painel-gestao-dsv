@@ -27,7 +27,7 @@ jobs:
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
 
       - name: Montar index.html
-        if: steps.parts.outputs.count == '16'
+        if: steps.parts.outputs.count == '10'
         shell: bash
         run: |
           python - <<'PY'
@@ -44,7 +44,7 @@ jobs:
           PY
 
       - name: Publicar arquivo montado
-        if: steps.parts.outputs.count == '16'
+        if: steps.parts.outputs.count == '10'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
