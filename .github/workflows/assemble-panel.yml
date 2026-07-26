@@ -1,0 +1,58 @@
+name: Montar painel com issues
+
+on:
+  push:
+    branches:
+      - agent/implementar-issues-painel
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    if: ${{ !contains(github.event.head_commit.message, '[skip assemble]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/implementar-issues-painel
+          fetch-depth: 0
+
+      - name: Verificar partes
+        id: parts
+        shell: bash
+        run: |
+          COUNT=$(find .panel-build -maxdepth 1 -name 'panel-*.b64' 2>/dev/null | wc -l | tr -d ' ')
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Montar index.html
+        if: steps.parts.outputs.count == '4'
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          import gzip
+
+          build = Path('.panel-build')
+          encoded = ''.join(
+              path.read_text(encoding='ascii').strip()
+              for path in sorted(build.glob('panel-*.b64'))
+          )
+          Path('index.html').write_bytes(gzip.decompress(base64.b64decode(encoded)))
+          PY
+
+      - name: Publicar arquivo montado
+        if: steps.parts.outputs.count == '4'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração em index.html."
+          else
+            git commit -m "Implementa issues do painel [skip assemble]"
+            git push origin HEAD:agent/implementar-issues-painel
+          fi
