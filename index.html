@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
 <html lang="pt-br">
-<head>
+<head><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet"/>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-<title>DSV 2026 - Painel de Gestão</title>
+<title>DSV · Painel de Gestão</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -546,7 +546,7 @@
   gap: 0.75rem;
   align-items: stretch;
 }
-@media (min-width: 900px) { .exec-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .exec-summary-grid { grid-template-columns: 1fr; } }
 .summary-box {
   border-radius: 0.9rem;
   padding: 0.85rem;
@@ -1200,8 +1200,8 @@ textarea.input-style { min-height: 92px; resize: vertical; }
    INDICADORES – PAINEL EXECUTIVO
    =============================== */
 .ind-kpi-grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:1rem;}
-@media(min-width:720px){.ind-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-@media(min-width:1180px){.ind-kpi-grid{grid-template-columns:repeat(5,minmax(0,1fr));}}
+@media(min-width:720px){.ind-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(min-width:1180px){.ind-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 .ind-kpi-card{background:#fff;border:1px solid #e2e8f0;border-radius:1.25rem;padding:1rem;box-shadow:0 1px 2px rgba(15,23,42,.04);position:relative;overflow:hidden;}
 .ind-kpi-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#0f172a;}
 .ind-kpi-card.pink::before{background:#be185d}.ind-kpi-card.indigo::before{background:#4f46e5}.ind-kpi-card.green::before{background:#059669}.ind-kpi-card.amber::before{background:#d97706}.ind-kpi-card.blue::before{background:#2563eb}
@@ -3155,10 +3155,1211 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   .table-view-toolbar { flex-direction: column; }
 }
 
+
+/* --- Ajustes finos solicitados (26/07) --- */
+.ds-sidebar-head{padding:16px 14px 12px!important;}
+.ds-brand-row{min-height:auto!important;}
+.ds-brand-card{
+  width:100%;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:12px 14px!important;
+  border:1px solid #D5E8F5!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#F8FBFD 0%, #EEF5FA 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75)!important;
+}
+.ds-sidebar-logo{
+  width:152px!important;
+  max-width:100%!important;
+  max-height:52px!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.7));
+}
+#sidebar nav{padding-top:12px!important;}
+#coordFiltersWrapper{padding-top:12px!important; margin-top:4px!important;}
+#appShell:not(.sidebar-expanded) .ds-brand-card{
+  padding:10px!important;
+  border-radius:14px!important;
+}
+#appShell:not(.sidebar-expanded) .ds-sidebar-logo{display:none!important;}
+#appShell:not(.sidebar-expanded) .ds-compact-brand{display:flex!important;}
+
+
+
+/* Ajuste do recolhimento conforme referência visual do PRaVida */
+.management-sidebar-toggle .material-symbols-outlined{
+  font-size:24px;
+  font-weight:400;
+  line-height:1;
+  color:#1f1f1f;
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+}
+.management-sidebar-toggle{
+  border:1px solid transparent!important;
+  background:transparent!important;
+  color:#1f1f1f!important;
+}
+.management-sidebar-toggle:hover{
+  background:#f1f5f9!important;
+  color:#1f1f1f!important;
+}
+.management-logo-collapsed{
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+}
+.management-logo-collapsed img{
+  width:39px!important;
+  height:43px!important;
+  max-width:39px!important;
+  max-height:43px!important;
+  object-fit:contain!important;
+}
+@media (min-width:1024px){
+  #appShell:not(.sidebar-expanded) .management-sidebar-toggle{
+    width:44px!important;
+    height:44px!important;
+    flex:0 0 44px!important;
+    border:2px solid #1f1f1f!important;
+    border-radius:11px!important;
+    background:#ffffff!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-sidebar-toggle:hover{
+    background:#f8fafc!important;
+  }
+}
 </style>
 <style id="portaria-sem-pr-vp-final">
 #portariaView .portaria-context-node,
 #portariaView .portaria-context-line { display: none !important; }
+</style>
+<style id="ds-paineis-detran-v1-aplicado">
+:root{
+  --ds-blue-dark:#004077;
+  --ds-blue-medium:#005CA8;
+  --ds-blue-light:#A4CFED;
+  --ds-page:#F4F7FA;
+  --ds-surface:#FFFFFF;
+  --ds-surface-soft:#F8FAFC;
+  --ds-surface-blue:#EEF6FB;
+  --ds-border:#DBE4EE;
+  --ds-border-soft:#E2E8F0;
+  --ds-text-primary:#14213D;
+  --ds-text-body:#334155;
+  --ds-text-secondary:#64748B;
+  --ds-sidebar-expanded:276px;
+  --ds-sidebar-collapsed:86px;
+}
+*{box-sizing:border-box;}
+html,body,button,input,select,textarea{font-family:'Open Sans',Arial,sans-serif!important;}
+body{background:var(--ds-page)!important;color:var(--ds-text-body)!important;}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
+  outline:3px solid rgba(0,92,168,.28)!important;
+  outline-offset:2px!important;
+}
+#appShell{background:var(--ds-page)!important;}
+#sidebar{
+  background:var(--ds-surface)!important;
+  color:var(--ds-text-body)!important;
+  border-right:1px solid var(--ds-border)!important;
+  box-shadow:8px 0 24px rgba(15,23,42,.03)!important;
+  z-index:70!important;
+}
+.ds-sidebar-head{padding:18px 14px 14px;border-bottom:1px solid var(--ds-border-soft);}
+.ds-brand-row{min-height:62px;display:flex;align-items:center;justify-content:center;}
+.ds-brand-expanded{width:100%;display:flex;align-items:center;gap:12px;min-width:0;}
+.ds-sidebar-logo{width:116px;height:auto;max-height:46px;object-fit:contain;object-position:left center;flex:0 0 auto;}
+.ds-sidebar-product{min-width:0;padding-left:12px;border-left:1px solid var(--ds-border);}
+.ds-sidebar-product h1{margin:0;color:var(--ds-blue-dark);font-size:16px;line-height:1.1;font-weight:800;letter-spacing:-.02em;white-space:nowrap;}
+.ds-sidebar-product p{margin:5px 0 0;color:var(--ds-text-secondary);font-size:10px;line-height:1.25;font-weight:700;text-transform:uppercase;letter-spacing:.09em;}
+.ds-compact-brand{display:none;width:48px;height:48px;border-radius:14px;background:var(--ds-blue-dark);color:#fff;align-items:center;justify-content:center;font-size:12px;font-weight:800;letter-spacing:.03em;}
+.ds-system-status{margin-top:12px;min-height:36px;padding:8px 10px;border:1px solid var(--ds-border);border-radius:10px;background:var(--ds-surface-soft);display:flex;align-items:center;gap:8px;color:var(--ds-text-secondary);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.ds-system-dot{width:8px;height:8px;border-radius:50%;background:#94a3b8;flex:0 0 auto;}
+#sidebar nav{
+  background:var(--ds-surface)!important;
+  padding:14px 12px!important;
+  margin-top:0!important;
+  gap:18px!important;
+  align-items:stretch!important;
+}
+#sidebar nav>div{min-width:0!important;width:100%!important;}
+#sidebar nav p{color:var(--ds-text-secondary)!important;font-size:10px!important;font-weight:700!important;letter-spacing:.09em!important;margin:0 0 7px!important;padding:0 8px!important;}
+#sidebar .tab-btn{
+  min-height:48px!important;
+  width:100%!important;
+  padding:11px 12px!important;
+  border-radius:12px!important;
+  color:var(--ds-text-body)!important;
+  background:transparent!important;
+  border:1px solid transparent!important;
+  gap:11px!important;
+  justify-content:flex-start!important;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease!important;
+}
+#sidebar .tab-btn i{width:20px!important;text-align:center!important;color:var(--ds-blue-dark)!important;font-size:15px!important;margin:0!important;}
+#sidebar .tab-btn span{font-size:13px!important;font-weight:700!important;line-height:1.25!important;}
+#sidebar .tab-btn:hover{background:var(--ds-surface-blue)!important;color:var(--ds-blue-dark)!important;border-color:#D5E8F5!important;transform:none!important;}
+#sidebar .tab-btn.text-white,
+#sidebar .tab-btn.bg-sky-600,
+#sidebar .tab-btn.bg-purple-600,
+#sidebar .tab-btn.bg-orange-500,
+#sidebar .tab-btn.bg-cyan-600,
+#sidebar .tab-btn.bg-indigo-600,
+#sidebar .tab-btn.bg-pink-600,
+#sidebar .tab-btn.bg-slate-800,
+#sidebar .tab-btn.bg-emerald-600,
+#sidebar .tab-btn.bg-blue-700{
+  background:var(--ds-blue-medium)!important;
+  color:#fff!important;
+  border-color:var(--ds-blue-medium)!important;
+  box-shadow:0 5px 12px rgba(0,92,168,.20)!important;
+}
+#sidebar .tab-btn.text-white i,
+#sidebar .tab-btn[class*="bg-"] i{color:inherit!important;}
+#coordFiltersWrapper{padding-top:14px!important;border-top:1px solid var(--ds-border-soft)!important;border-left:0!important;}
+#coordBtnContainer{gap:7px!important;}
+#sidebar .coord-btn{
+  min-height:38px!important;
+  padding:8px 9px!important;
+  border-radius:9px!important;
+  border:1px solid var(--ds-border)!important;
+  background:var(--ds-surface-soft)!important;
+  color:var(--ds-text-body)!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+#sidebar .coord-btn:hover{background:var(--ds-surface-blue)!important;color:var(--ds-blue-dark)!important;border-color:#A4CFED!important;}
+#sidebar .coord-btn.active-coord{background:var(--ds-blue-dark)!important;color:#fff!important;border-color:var(--ds-blue-dark)!important;box-shadow:0 4px 10px rgba(0,64,119,.16)!important;transform:none!important;}
+#coordBtnContainer.coord-list-active .coord-btn:not(.active-coord){opacity:.58!important;filter:none!important;transform:none!important;}
+.ds-legacy-logo{display:none!important;}
+.ds-sidebar-footer{margin:auto 12px 14px;padding:12px;border:1px solid var(--ds-border);border-radius:12px;background:var(--ds-surface-soft);display:flex;align-items:flex-start;gap:9px;color:var(--ds-text-secondary);font-size:10px;line-height:1.45;font-weight:700;}
+.ds-sidebar-footer i{margin-top:2px;color:var(--ds-blue-dark);}
+.sidebar-toggle-button{background:#fff!important;color:var(--ds-blue-dark)!important;border-color:var(--ds-border)!important;box-shadow:0 6px 16px rgba(15,23,42,.12)!important;}
+.sidebar-toggle-button:hover{background:var(--ds-surface-blue)!important;}
+.ds-sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(15,23,42,.46);z-index:65;backdrop-filter:blur(2px);}
+
+/* Cabeçalho interno */
+.ds-topbar{
+  min-height:104px;
+  padding:18px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:22px;
+  position:sticky;
+  top:0;
+  z-index:30;
+  background:rgba(255,255,255,.98);
+  border-bottom:1px solid var(--ds-border);
+  box-shadow:0 2px 10px rgba(15,23,42,.035);
+}
+.ds-topbar-title{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 auto;}
+.ds-title-icon{width:46px;height:46px;border-radius:13px;background:var(--ds-blue-dark);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:17px;box-shadow:0 5px 12px rgba(0,64,119,.14);}
+.ds-title-copy{min-width:0;}
+.ds-title-copy h2{margin:0;color:var(--ds-text-primary);font-size:clamp(20px,2vw,27px);line-height:1.15;font-weight:800;letter-spacing:-.025em;text-transform:none;}
+.ds-title-copy p{margin:6px 0 0;max-width:760px;color:var(--ds-text-secondary);font-size:12px;line-height:1.45;font-weight:600;}
+.ds-context-info{min-height:38px;padding:0 12px;border-radius:9px;border:1px solid var(--ds-blue-dark);background:#fff;color:var(--ds-blue-dark);align-items:center;gap:7px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
+.ds-context-info:not(.hidden){display:inline-flex!important;}
+.ds-context-info:hover{background:var(--ds-surface-blue);}
+.ds-mobile-menu{display:none;width:42px;height:42px;border-radius:10px;border:1px solid var(--ds-border);background:#fff;color:var(--ds-blue-dark);align-items:center;justify-content:center;flex:0 0 auto;}
+.header-actions{width:auto!important;max-width:560px;flex:0 0 auto;}
+.auth-inline-badge{border-color:var(--ds-border)!important;background:var(--ds-surface-soft)!important;border-radius:12px!important;box-shadow:none!important;padding:7px 8px!important;}
+.auth-inline-label{color:var(--ds-text-secondary)!important;}
+.auth-inline-email{color:var(--ds-text-primary)!important;}
+.auth-inline-logout{background:var(--ds-blue-dark)!important;border-color:var(--ds-blue-dark)!important;border-radius:8px!important;}
+.auth-inline-logout:hover{background:var(--ds-blue-medium)!important;transform:none!important;}
+.ds-search-wrap{position:relative;width:280px;max-width:100%;}
+.ds-search-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:13px;pointer-events:none;}
+.ds-search-wrap input{width:100%;min-height:42px;padding:9px 12px 9px 38px;border:1px solid var(--ds-border);border-radius:10px;background:var(--ds-surface-soft);color:var(--ds-text-primary);font-size:12px;font-weight:600;outline:none;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;}
+.ds-search-wrap input:focus{border-color:var(--ds-blue-dark);background:#fff;box-shadow:0 0 0 3px rgba(0,64,119,.10);}
+
+/* Área principal e componentes */
+main{background:var(--ds-page)!important;}
+#standardView,#portariaView,#calendarView,#indicatorsView,#despachosView,#ganttView,#pca2027View{color:var(--ds-text-body);}
+#standardView>div,#coordProgressSection,#portariaView,#calendarView,#indicatorsView,#despachosView,#ganttView,#pca2027View{max-width:1480px;width:100%;margin-left:auto!important;margin-right:auto!important;}
+main .bg-white.rounded-xl,
+main .bg-white.rounded-2xl,
+main .bg-white.rounded-3xl,
+main .coord-progress-card,
+main .indicator-card,
+main .portaria-card,
+main .gantt-role-card,
+main .table-view-container,
+main .calendar-new-wrapper{
+  border-color:var(--ds-border)!important;
+  box-shadow:0 4px 14px rgba(0,64,119,.055)!important;
+}
+main .rounded-xl{border-radius:12px!important;}
+main .rounded-2xl{border-radius:14px!important;}
+main .rounded-3xl{border-radius:16px!important;}
+.stat-card{min-height:92px!important;border-color:var(--ds-border)!important;box-shadow:0 3px 10px rgba(0,64,119,.045)!important;}
+.stat-card:hover{transform:translateY(-2px)!important;box-shadow:0 7px 18px rgba(0,64,119,.09)!important;}
+.stat-card.active-filter{box-shadow:0 0 0 2px var(--ds-blue-medium)!important;background:var(--ds-surface-blue)!important;transform:none!important;}
+.input-style,
+main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+main select,
+main textarea{
+  border-color:var(--ds-border)!important;
+  border-radius:8px!important;
+  background:#fff;
+  color:var(--ds-text-primary);
+  font-size:12px!important;
+  font-weight:400!important;
+  box-shadow:none!important;
+}
+.input-style:focus,
+main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+main select:focus,
+main textarea:focus{border-color:var(--ds-blue-dark)!important;box-shadow:0 0 0 3px rgba(0,64,119,.10)!important;outline:none!important;}
+.field-label,.doc-link-field-label{color:var(--ds-text-secondary)!important;font-size:11px!important;font-weight:700!important;letter-spacing:.04em!important;}
+.form-section-title,.indicator-modal-section-title{color:var(--ds-text-primary)!important;border-color:var(--ds-border-soft)!important;}
+.action-btn{border-radius:12px!important;}
+main button[class*="bg-blue-"],main button[class*="bg-sky-"]{box-shadow:none;}
+.table-view thead th,.pca-table th{background:var(--ds-blue-dark)!important;color:#fff!important;}
+.table-view tbody td,.pca-table td{border-color:var(--ds-border-soft)!important;}
+
+/* Padrão sóbrio: remove degradês decorativos sem alterar dados ou hierarquia. */
+.portaria-org-board,.portaria-circular-board,.portaria-network-viewport,
+.portaria-org-node.type-Diretoria,.portaria-org-node.type-Coordenadoria,.portaria-org-node.type-Divisão,
+.portaria-center-mark,.portaria-popover-head{
+  background-image:none!important;
+}
+.portaria-circular-board,.portaria-network-viewport{background-color:#fff!important;}
+.portaria-center-mark{background:var(--ds-blue-light)!important;}
+.portaria-circle-node.type-Diretoria,.portaria-popover-head{background:var(--ds-blue-dark)!important;}
+.portaria-circle-node.type-Coordenadoria{background:var(--ds-blue-medium)!important;}
+.portaria-circle-node.type-Divisão{background:#5B9BC7!important;}
+.portaria-detail-head{background:var(--ds-blue-dark)!important;}
+
+@media (min-width:1024px){
+  #sidebar{width:var(--ds-sidebar-collapsed)!important;min-width:var(--ds-sidebar-collapsed)!important;max-width:var(--ds-sidebar-collapsed)!important;height:100%!important;}
+  #appShell.sidebar-expanded #sidebar{width:var(--ds-sidebar-expanded)!important;min-width:var(--ds-sidebar-expanded)!important;max-width:var(--ds-sidebar-expanded)!important;}
+  #appShell:not(.sidebar-expanded) .ds-brand-expanded{display:none!important;}
+  #appShell:not(.sidebar-expanded) .ds-compact-brand{display:flex!important;}
+  #appShell:not(.sidebar-expanded) .ds-sidebar-head{padding-left:12px!important;padding-right:12px!important;}
+  #appShell:not(.sidebar-expanded) .ds-system-status{justify-content:center;padding:8px!important;}
+  #appShell:not(.sidebar-expanded) #sysStatusText{display:none!important;}
+  #appShell:not(.sidebar-expanded) #sidebar nav p,
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn span,
+  #appShell:not(.sidebar-expanded) #coordFiltersWrapper,
+  #appShell:not(.sidebar-expanded) .ds-sidebar-footer{display:none!important;}
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn{justify-content:center!important;padding:11px!important;gap:0!important;}
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn i{font-size:17px!important;}
+  #appShell.sidebar-expanded .ds-compact-brand{display:none!important;}
+}
+@media (max-width:1023px){
+  #appShell{display:block!important;position:relative;}
+  #sidebar{
+    position:fixed!important;
+    inset:0 auto 0 0!important;
+    width:min(var(--ds-sidebar-expanded),88vw)!important;
+    min-width:0!important;
+    max-width:88vw!important;
+    height:100dvh!important;
+    transform:translateX(-105%);
+    transition:transform .24s ease!important;
+    overflow-y:auto!important;
+  }
+  #sidebar.mobile-open{transform:translateX(0);}
+  #sidebar .ds-brand-expanded{display:flex!important;}
+  #sidebar .ds-compact-brand{display:none!important;}
+  #sidebar nav{display:flex!important;flex-direction:column!important;overflow:visible!important;}
+  #sidebar nav>div:first-child>div{display:flex!important;flex-direction:column!important;gap:4px!important;}
+  #coordFiltersWrapper{display:block!important;height:auto!important;padding-left:0!important;}
+  #coordBtnContainer{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  .sidebar-toggle-button{display:none!important;}
+  .ds-mobile-menu{display:flex;}
+  .ds-sidebar-backdrop.active{display:block;}
+  main{width:100%!important;height:100dvh!important;}
+  .ds-topbar{padding:16px 18px;min-height:96px;}
+}
+@media (max-width:760px){
+  .ds-topbar{align-items:stretch;flex-direction:column;gap:14px;padding:14px 16px;}
+  .ds-topbar-title{align-items:flex-start;}
+  .ds-title-icon{width:40px;height:40px;border-radius:11px;}
+  .ds-title-copy h2{font-size:20px;}
+  .ds-title-copy p{font-size:11px;}
+  .ds-context-info{margin-left:auto;}
+  .header-actions{width:100%!important;max-width:none;flex-direction:column;align-items:stretch;}
+  .ds-search-wrap{width:100%;}
+  #standardView>div,#coordProgressSection,#portariaView,#calendarView,#indicatorsView,#despachosView,#ganttView,#pca2027View{padding-left:16px!important;padding-right:16px!important;}
+}
+@media (max-width:480px){
+  .ds-title-icon{display:none;}
+  .ds-mobile-menu{width:40px;height:40px;}
+  .ds-sidebar-logo{width:102px;}
+  .ds-sidebar-product h1{font-size:14px;}
+}
+</style>
+<style id="sidebar-pravida-management-v1">
+/* =========================================================
+   SIDEBAR — PADRÃO PRaVida aplicado ao Painel de Gestão
+   ========================================================= */
+:root{
+  --management-sidebar-expanded:280px;
+  --management-sidebar-collapsed:80px;
+}
+
+#sidebar{
+  width:var(--management-sidebar-expanded)!important;
+  min-width:var(--management-sidebar-expanded)!important;
+  max-width:var(--management-sidebar-expanded)!important;
+  padding:0!important;
+  background:#ffffff!important;
+  border-right:1px solid #e2e8f0!important;
+  box-shadow:none!important;
+  transition:width .3s cubic-bezier(.4,0,.2,1), min-width .3s cubic-bezier(.4,0,.2,1), max-width .3s cubic-bezier(.4,0,.2,1)!important;
+  overflow:visible!important;
+}
+
+.management-sidebar-head{
+  padding:30px 20px 20px;
+  flex:0 0 auto;
+}
+.management-logo-container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:42px;
+}
+.management-logo-group{
+  min-width:0;
+  display:flex;
+  align-items:center;
+}
+.management-logo-full{
+  display:block!important;
+  width:auto!important;
+  height:38px!important;
+  max-width:188px!important;
+  max-height:38px!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+}
+.management-logo-collapsed{
+  display:none;
+  width:38px;
+  height:38px;
+  overflow:visible;
+  flex:0 0 38px;
+  align-items:center;
+  justify-content:center;
+}
+.management-logo-collapsed img{
+  display:block!important;
+  width:32px!important;
+  height:32px!important;
+  max-width:32px!important;
+  max-height:32px!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+}
+.management-sidebar-toggle{
+  width:38px;
+  height:38px;
+  padding:0;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#64748b;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 38px;
+  transition:background .2s ease,color .2s ease;
+}
+.management-sidebar-toggle:hover{
+  background:#f1f5f9;
+  color:#1e293b;
+}
+.management-sidebar-toggle .material-icons{font-size:22px;}
+
+#sidebar nav{
+  padding:0 20px 22px!important;
+  margin:0!important;
+  gap:8px!important;
+  overflow-x:hidden!important;
+}
+#sidebar nav>div{width:100%!important;min-width:0!important;}
+#sidebar nav p{
+  margin:8px 0 4px!important;
+  padding:0 4px!important;
+  color:#94a3b8!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.1em!important;
+}
+#sidebar .tab-btn{
+  min-height:44px!important;
+  width:100%!important;
+  padding:11px 14px!important;
+  gap:12px!important;
+  border:1px solid transparent!important;
+  border-radius:12px!important;
+  background:transparent!important;
+  color:#475569!important;
+  box-shadow:none!important;
+  justify-content:flex-start!important;
+  overflow:hidden!important;
+  transition:background .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+}
+#sidebar .tab-btn:hover{
+  background:#f1f5f9!important;
+  color:#1e293b!important;
+  border-color:transparent!important;
+}
+#sidebar .tab-btn i{
+  width:20px!important;
+  flex:0 0 20px!important;
+  color:inherit!important;
+  font-size:18px!important;
+}
+#sidebar .tab-btn span{
+  color:inherit!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  white-space:nowrap!important;
+}
+#sidebar .tab-btn.text-white,
+#sidebar .tab-btn.bg-sky-600,
+#sidebar .tab-btn.bg-purple-600,
+#sidebar .tab-btn.bg-orange-500,
+#sidebar .tab-btn.bg-cyan-600,
+#sidebar .tab-btn.bg-indigo-600,
+#sidebar .tab-btn.bg-pink-600,
+#sidebar .tab-btn.bg-slate-800,
+#sidebar .tab-btn.bg-emerald-600,
+#sidebar .tab-btn.bg-blue-700{
+  background:#0f5cab!important;
+  color:#ffffff!important;
+  border-color:#0f5cab!important;
+  box-shadow:0 4px 6px -1px rgba(15,92,171,.20)!important;
+}
+
+#coordFiltersWrapper{
+  margin-top:12px!important;
+  padding-top:16px!important;
+  padding-left:0!important;
+  border-left:0!important;
+  border-top:1px solid #e2e8f0!important;
+}
+#sidebar .coord-btn{
+  background:#f8fafc!important;
+  color:#475569!important;
+  border:1px solid #e2e8f0!important;
+  border-radius:9px!important;
+  box-shadow:none!important;
+}
+#sidebar .coord-btn:hover{
+  background:#f1f5f9!important;
+  color:#1e293b!important;
+  border-color:#cbd5e1!important;
+}
+#sidebar .coord-btn.active-coord{
+  background:#0f5cab!important;
+  color:#fff!important;
+  border-color:#0f5cab!important;
+  transform:none!important;
+  box-shadow:0 3px 7px rgba(15,92,171,.18)!important;
+}
+
+@media (min-width:1024px){
+  #appShell:not(.sidebar-expanded) #sidebar{
+    width:var(--management-sidebar-collapsed)!important;
+    min-width:var(--management-sidebar-collapsed)!important;
+    max-width:var(--management-sidebar-collapsed)!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-sidebar-head{
+    padding:30px 10px 20px!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-logo-container{
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:8px!important;
+    min-height:42px!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-logo-group{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    min-width:0!important;
+    flex:1 1 auto!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-logo-full{display:none!important;}
+  #appShell:not(.sidebar-expanded) .management-logo-collapsed{
+    display:flex!important;
+    width:38px!important;
+    height:38px!important;
+    flex:0 0 38px!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-logo-collapsed img{
+    width:32px!important;
+    height:32px!important;
+    max-width:32px!important;
+    max-height:32px!important;
+    object-fit:contain!important;
+    object-position:left center!important;
+    display:block!important;
+  }
+  #appShell:not(.sidebar-expanded) #sidebar nav{
+    padding:0 10px 22px!important;
+  }
+  #appShell:not(.sidebar-expanded) #sidebar nav p,
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn span,
+  #appShell:not(.sidebar-expanded) #coordFiltersWrapper{
+    display:none!important;
+  }
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn{
+    width:100%!important;
+    min-width:0!important;
+    padding:11px!important;
+    justify-content:center!important;
+    gap:0!important;
+    overflow:visible!important;
+    position:relative;
+  }
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn i{
+    width:20px!important;
+    flex-basis:20px!important;
+    font-size:18px!important;
+  }
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn::after,
+  #appShell:not(.sidebar-expanded) .management-sidebar-toggle::after{
+    content:attr(data-tooltip);
+    position:absolute;
+    left:100%;
+    top:50%;
+    transform:translateY(-50%) translateX(10px);
+    background:#1e293b;
+    color:#fff;
+    padding:6px 12px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:600;
+    white-space:nowrap;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:all .2s ease;
+    box-shadow:0 4px 8px rgba(15,23,42,.16);
+    z-index:9999;
+  }
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn::before,
+  #appShell:not(.sidebar-expanded) .management-sidebar-toggle::before{
+    content:'';
+    position:absolute;
+    left:100%;
+    top:50%;
+    transform:translateY(-50%) translateX(4px);
+    border-width:5px;
+    border-style:solid;
+    border-color:transparent #1e293b transparent transparent;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:all .2s ease;
+    z-index:9999;
+  }
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn:hover::after,
+  #appShell:not(.sidebar-expanded) #sidebar .tab-btn:hover::before,
+  #appShell:not(.sidebar-expanded) .management-sidebar-toggle:hover::after,
+  #appShell:not(.sidebar-expanded) .management-sidebar-toggle:hover::before{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(-50%) translateX(8px);
+  }
+  #appShell:not(.sidebar-expanded) .management-sidebar-toggle{
+    position:relative;
+    overflow:visible;
+    margin-left:auto!important;
+    flex:0 0 38px!important;
+  }
+}
+
+@media (max-width:1023px){
+  #sidebar{
+    width:280px!important;
+    min-width:280px!important;
+    max-width:280px!important;
+    height:100dvh!important;
+    padding:0!important;
+  }
+  .management-sidebar-head{padding:24px 20px 18px;}
+  .management-sidebar-toggle{display:none!important;}
+  #sidebar nav{padding:0 16px 22px!important;}
+  .management-logo-full{height:36px!important;max-height:36px!important;}
+}
+</style>
+<style id="sidebar-pravida-fiel-v5">
+/*
+ * Replicação fiel da lógica do PRaVida:
+ * - logo completa no estado expandido;
+ * - arquivo independente apenas com o D no estado recolhido;
+ * - botão sem borda nos dois estados;
+ * - no recolhido, D e seta ficam centralizados em coluna.
+ */
+.management-logo-full{
+  display:block!important;
+  height:38px!important;
+  width:auto!important;
+  max-width:188px!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+}
+.management-logo-collapsed{
+  display:none!important;
+  width:38px!important;
+  height:38px!important;
+  margin:0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 38px!important;
+  overflow:visible!important;
+}
+.management-logo-collapsed img{
+  display:block!important;
+  width:32px!important;
+  height:auto!important;
+  max-width:32px!important;
+  max-height:38px!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+}
+.management-sidebar-toggle,
+#appShell:not(.sidebar-expanded) .management-sidebar-toggle{
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  flex:0 0 38px!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#64748b!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  position:relative!important;
+  overflow:visible!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+}
+.management-sidebar-toggle:hover,
+#appShell:not(.sidebar-expanded) .management-sidebar-toggle:hover{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:#f1f5f9!important;
+  color:#1e293b!important;
+}
+.management-sidebar-toggle:focus,
+.management-sidebar-toggle:focus-visible{
+  border:0!important;
+  outline:2px solid #bfdbfe!important;
+  outline-offset:1px!important;
+  box-shadow:none!important;
+}
+.management-sidebar-toggle .material-symbols-outlined{
+  font-size:24px!important;
+  line-height:1!important;
+  color:inherit!important;
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24!important;
+}
+@media (min-width:1024px){
+  #appShell:not(.sidebar-expanded) .management-sidebar-head{
+    padding:30px 10px 20px!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-logo-container{
+    padding-left:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:15px!important;
+    min-height:auto!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-logo-group{
+    width:100%!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    flex:0 0 auto!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-logo-full{
+    display:none!important;
+  }
+  #appShell:not(.sidebar-expanded) .management-logo-collapsed{
+    display:flex!important;
+    margin:0 auto!important;
+  }
+}
+</style>
+
+
+<style id="overview-dashboard-styles">
+/* ===============================
+   VISÃO GERAL — DASHBOARD EXECUTIVO DSV
+   =============================== */
+#overviewView {
+  color: #334155;
+  max-width: 1480px;
+  width: 100%;
+  margin: 0 auto;
+}
+.overview-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #dbe5ee;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+  border-left: 5px solid #004077;
+}
+.overview-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  margin-bottom: .45rem;
+  color: #005ca8;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.overview-hero h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -.035em;
+}
+.overview-hero p {
+  max-width: 920px;
+  margin: .65rem 0 0;
+  color: #526173;
+  font-size: .92rem;
+  line-height: 1.65;
+  font-weight: 600;
+}
+.overview-updated {
+  flex: 0 0 auto;
+  min-width: 170px;
+  padding: .75rem .9rem;
+  border-radius: .9rem;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 10px;
+  line-height: 1.45;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  text-align: right;
+}
+.overview-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: .8rem;
+}
+.overview-kpi-card {
+  min-width: 0;
+  min-height: 132px;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.overview-kpi-card.is-clickable { cursor: pointer; }
+.overview-kpi-card.is-clickable:hover {
+  transform: translateY(-2px);
+  border-color: #a4cfed;
+  box-shadow: 0 10px 24px rgba(0, 64, 119, .09);
+}
+.overview-kpi-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .75rem;
+}
+.overview-kpi-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: .8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-size: .9rem;
+}
+.overview-kpi-icon.blue { background:#eaf4fb; color:#004077; }
+.overview-kpi-icon.green { background:#ecfdf5; color:#047857; }
+.overview-kpi-icon.orange { background:#fff7ed; color:#c2410c; }
+.overview-kpi-icon.purple { background:#faf5ff; color:#7e22ce; }
+.overview-kpi-icon.pink { background:#fdf2f8; color:#be185d; }
+.overview-kpi-icon.slate { background:#f1f5f9; color:#475569; }
+.overview-kpi-label {
+  color: #64748b;
+  font-size: 9px;
+  line-height: 1.35;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.overview-kpi-value {
+  margin-top: .35rem;
+  color: #0f172a;
+  font-size: 1.65rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -.04em;
+}
+.overview-kpi-note {
+  margin-top: .55rem;
+  color: #7b8797;
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+.overview-grid-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, .85fr);
+  gap: 1rem;
+  align-items: start;
+}
+.overview-grid-equal {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+.overview-panel {
+  min-width: 0;
+  padding: 1.15rem;
+  border-radius: 1.15rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+.overview-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: .85rem;
+  margin-bottom: .9rem;
+  border-bottom: 1px solid #edf1f5;
+}
+.overview-panel-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: .93rem;
+  font-weight: 900;
+  line-height: 1.3;
+}
+.overview-panel-subtitle {
+  margin-top: .2rem;
+  color: #8491a2;
+  font-size: 10px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+.overview-panel-action {
+  flex: 0 0 auto;
+  border: 0;
+  background: #eef6fb;
+  color: #005ca8;
+  border-radius: .7rem;
+  padding: .55rem .7rem;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.overview-panel-action:hover { background: #dceef9; }
+.overview-status-block + .overview-status-block { margin-top: 1rem; }
+.overview-status-title {
+  display: flex;
+  justify-content: space-between;
+  gap: .8rem;
+  margin-bottom: .55rem;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 900;
+}
+.overview-status-track {
+  display: flex;
+  width: 100%;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #edf2f6;
+}
+.overview-status-segment { min-width: 0; height: 100%; }
+.overview-status-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem .75rem;
+  margin-top: .65rem;
+}
+.overview-status-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 800;
+}
+.overview-status-dot { width: 8px; height: 8px; border-radius: 999px; }
+.overview-list { display: flex; flex-direction: column; gap: .55rem; }
+.overview-list-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: .7rem;
+  align-items: center;
+  padding: .72rem;
+  border-radius: .9rem;
+  background: #f8fafc;
+  border: 1px solid #e8edf2;
+  text-align: left;
+}
+button.overview-list-item { cursor: pointer; transition: border-color .2s ease, background .2s ease; }
+button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
+.overview-list-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: .75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+}
+.overview-list-icon.red { color:#b91c1c; background:#fef2f2; }
+.overview-list-icon.orange { color:#c2410c; background:#fff7ed; }
+.overview-list-icon.blue { color:#005ca8; background:#eaf4fb; }
+.overview-list-icon.green { color:#047857; background:#ecfdf5; }
+.overview-list-icon.purple { color:#7e22ce; background:#faf5ff; }
+.overview-list-title {
+  color: #1e293b;
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 900;
+}
+.overview-list-meta {
+  margin-top: .18rem;
+  color: #7b8797;
+  font-size: 9.5px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+.overview-list-value {
+  color: #475569;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.overview-empty {
+  padding: 1.2rem;
+  border-radius: .9rem;
+  border: 1px dashed #cbd5e1;
+  background: #fbfdff;
+  color: #8491a2;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+.overview-indicator-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 54px;
+  gap: .8rem;
+  align-items: center;
+  padding: .68rem 0;
+  border-bottom: 1px solid #f0f3f6;
+}
+.overview-indicator-row:last-child { border-bottom: 0; }
+.overview-indicator-title {
+  color: #334155;
+  font-size: 10.5px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+.overview-indicator-track {
+  height: 7px;
+  margin-top: .42rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e9eef3;
+}
+.overview-indicator-fill { height:100%; border-radius:999px; }
+.overview-indicator-pct {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: right;
+}
+.overview-coord-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: .7rem;
+}
+.overview-coord-card {
+  min-width: 0;
+  padding: .85rem;
+  border-radius: .9rem;
+  background: #f8fafc;
+  border: 1px solid #e4eaf0;
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease;
+}
+.overview-coord-card:hover { background:#f1f7fb; border-color:#a4cfed; }
+.overview-coord-name {
+  color: #004077;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.overview-coord-main {
+  margin-top: .42rem;
+  color: #0f172a;
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.overview-coord-note {
+  margin-top: .38rem;
+  color: #7b8797;
+  font-size: 9px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+.overview-coord-track {
+  height: 6px;
+  margin-top: .6rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+.overview-coord-fill { height:100%; border-radius:999px; background:#005ca8; }
+.overview-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: .65rem;
+}
+.overview-shortcut {
+  min-width: 0;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: .9rem;
+  padding: .75rem;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  color: #334155;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .2s ease, background .2s ease;
+}
+.overview-shortcut:hover { border-color:#a4cfed; background:#f7fbfe; }
+.overview-shortcut i { color:#005ca8; width:18px; text-align:center; }
+.overview-shortcut strong { display:block; font-size:10px; font-weight:900; }
+.overview-shortcut span { display:block; margin-top:.1rem; color:#8491a2; font-size:8.5px; font-weight:700; }
+@media (max-width: 1280px) {
+  .overview-kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .overview-coord-grid, .overview-shortcuts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  #overviewView { padding-left: 16px !important; padding-right: 16px !important; }
+  .overview-hero { flex-direction: column; }
+  .overview-updated { min-width: 0; width: 100%; text-align: left; }
+  .overview-grid-main, .overview-grid-equal { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .overview-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .overview-coord-grid, .overview-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .overview-list-item { grid-template-columns: 32px minmax(0, 1fr); }
+  .overview-list-value { grid-column: 2; white-space: normal; }
+}
+@media (max-width: 420px) {
+  .overview-kpi-grid, .overview-coord-grid, .overview-shortcuts { grid-template-columns: 1fr; }
+}
+</style>
+
+<style id="github-issues-styles">
+/* Issues GitHub — tabela, tarefas, projetos vinculados, progresso e compartilhamento */
+.view-mode-wrapper{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;}
+.view-mode-actions{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;}
+.github-feature-btn{min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.65rem .9rem;border-radius:.8rem;border:1px solid #d7e1ea;background:#fff;color:#334155;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.055em;transition:.2s ease;}
+.github-feature-btn:hover{border-color:#93c5fd;background:#eff6ff;color:#005ca8;}
+.github-feature-btn.primary{background:#004077;color:#fff;border-color:#004077;}
+.github-feature-btn.primary:hover{background:#005ca8;border-color:#005ca8;color:#fff;}
+.table-view-toolbar{align-items:flex-end;}
+.table-toolbar-stack{display:flex;flex-direction:column;gap:.7rem;min-width:0;}
+.table-controls{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;}
+.table-control{min-height:38px;max-width:190px;border:1px solid #dbe3eb;background:#fff;border-radius:.75rem;padding:.55rem .75rem;color:#475569;font-size:10px;font-weight:800;outline:none;}
+.table-control:focus{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(96,165,250,.15);}
+.table-reset-btn{width:38px;height:38px;border-radius:.75rem;border:1px solid #dbe3eb;background:#fff;color:#64748b;display:inline-flex;align-items:center;justify-content:center;transition:.2s ease;}
+.table-reset-btn:hover{color:#dc2626;background:#fef2f2;border-color:#fecaca;}
+.project-parent-field .input-style{background:#fff;}
+.task-list{display:flex;flex-direction:column;gap:.75rem;}
+.task-row{border:1px solid #dbe3eb;background:#fff;border-radius:1rem;padding:.85rem;box-shadow:0 1px 2px rgba(15,23,42,.03);}
+.task-main-line{display:grid;grid-template-columns:28px minmax(0,1fr) 38px;gap:.65rem;align-items:center;}
+.task-check,.subtask-check{width:18px;height:18px;accent-color:#005ca8;cursor:pointer;}
+.task-title-input,.subtask-title-input{width:100%;border:0;background:transparent;outline:none;color:#1e293b;font-size:13px;font-weight:800;min-width:0;}
+.task-remove,.subtask-remove{width:34px;height:34px;border-radius:.7rem;display:inline-flex;align-items:center;justify-content:center;color:#94a3b8;background:#f8fafc;border:1px solid #e2e8f0;transition:.2s ease;}
+.task-remove:hover,.subtask-remove:hover{color:#dc2626;background:#fef2f2;border-color:#fecaca;}
+.subtasks-container{display:flex;flex-direction:column;gap:.45rem;margin:.7rem 0 0 2rem;}
+.subtask-row{display:grid;grid-template-columns:22px minmax(0,1fr) 32px;gap:.5rem;align-items:center;padding:.45rem .55rem;border-radius:.75rem;background:#f8fafc;border:1px solid #edf1f5;}
+.add-subtask-btn{margin:.55rem 0 0 2rem;color:#005ca8;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;display:inline-flex;align-items:center;gap:.4rem;}
+.progress-summary-card{border:1px solid #dbe3eb;background:#f8fafc;border-radius:.9rem;padding:.75rem .85rem;}
+.progress-summary-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;color:#475569;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.055em;}
+.progress-summary-value{color:#004077;font-size:12px;font-weight:900;}
+.progress-summary-track{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin-top:.55rem;}
+.progress-summary-fill{height:100%;border-radius:999px;background:#005ca8;transition:width .35s ease;}
+.project-link-chip{display:inline-flex;align-items:center;gap:.35rem;max-width:100%;padding:.35rem .6rem;border-radius:.65rem;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;font-size:10px;font-weight:900;}
+.project-link-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.child-project-list{display:flex;flex-direction:column;gap:.45rem;}
+.child-project-item{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.6rem .7rem;border:1px solid #e2e8f0;border-radius:.75rem;background:#fff;color:#334155;font-size:11px;font-weight:800;cursor:pointer;}
+.child-project-item:hover{border-color:#93c5fd;background:#f8fbff;}
+.share-feedback{position:fixed;right:1rem;bottom:1rem;z-index:999999;background:#0f172a;color:#fff;border-radius:.85rem;padding:.8rem 1rem;font-size:11px;font-weight:800;box-shadow:0 16px 36px rgba(15,23,42,.22);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s ease;}
+.share-feedback.show{opacity:1;transform:translateY(0);}
+@media(max-width:760px){
+  .view-mode-wrapper,.view-mode-actions{align-items:stretch;}
+  .view-mode-wrapper{flex-direction:column;}
+  .view-mode-actions,.github-feature-btn{width:100%;}
+  .table-controls{justify-content:stretch;}
+  .table-control{max-width:none;flex:1 1 150px;}
+  .task-main-line{grid-template-columns:24px minmax(0,1fr) 34px;}
+  .subtasks-container,.add-subtask-btn{margin-left:.5rem;}
+}
 </style>
 </head>
 <body class="bg-slate-50 text-slate-900 text-sm overflow-hidden" id="mainBody">
@@ -3181,7 +4382,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
             border-radius: 18px;
             padding: 22px;
             box-shadow: 0 18px 60px rgba(0,0,0,0.12);
-            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+            font-family: 'Open Sans', Arial, sans-serif;
         ">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
 <h2 style="margin:0; font-size: 18px; font-weight: 900; letter-spacing: -0.02em;">Acesso ao Painel</h2>
@@ -3594,6 +4795,13 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <option value="Alta">G - Alta Complexidade (Estratégico)</option>
 </select>
 </div>
+<div class="flex flex-col hidden-field animate-fade-in project-parent-field" id="parentProjectField">
+<label class="field-label text-blue-800"><i class="fas fa-diagram-project mr-1"></i> Projeto guarda-chuva</label>
+<select class="input-style border-blue-200 focus:ring-blue-200" id="projParentProject">
+<option value="">Nenhum — projeto independente</option>
+</select>
+<p class="mt-2 text-[11px] text-slate-400 font-semibold">Vincule este registro a um projeto maior. O progresso do projeto guarda-chuva considera os subprojetos concluídos.</p>
+</div>
 <div class="flex flex-col">
 <label class="field-label">Observações Gerais</label>
 <textarea class="input-style resize-none" id="projObs" placeholder="Digite uma observação e pressione Enter para salvar no histórico. (Shift+Enter para quebrar linha)" rows="3"></textarea>
@@ -3770,6 +4978,24 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                             </button>
 </div>
 </div>
+<div class="mt-6 bg-slate-50 p-4 sm:p-6 rounded-3xl border border-slate-100 space-y-5 hidden-field" id="tasksSection">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+<div>
+<h4 class="form-section-title !mb-0 !border-0 !pb-0"><strong>05. Tarefas e entregas intermediárias</strong></h4>
+<p class="mt-1 text-[11px] text-slate-400 font-semibold">Crie tarefas, subtarefas e acompanhe o percentual concluído do projeto.</p>
+</div>
+<div class="text-right">
+<div class="text-[10px] font-black uppercase tracking-wider text-slate-400">Progresso</div>
+<div class="text-lg font-black text-blue-700" id="taskFormProgress">0%</div>
+</div>
+</div>
+<div class="task-list" id="tasksContainer"></div>
+<div class="flex justify-center pt-2">
+<button class="text-xs font-semibold bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md uppercase transition-colors hover:bg-blue-700 flex items-center gap-2" onclick="addTaskRow()" type="button">
+<i class="fas fa-plus"></i> Adicionar tarefa
+</button>
+</div>
+</div>
 <div class="sticky bottom-0 z-30 -mx-4 md:-mx-8 mt-6 flex gap-4 border-t border-slate-200 bg-white/95 px-4 md:px-8 py-4 shadow-[0_-12px_30px_rgba(15,23,42,0.10)] backdrop-blur" id="projectFloatingSaveBar">
 <button class="bg-red-50 text-red-600 font-bold px-6 rounded-2xl shadow-sm hover:bg-red-100 transition-all uppercase text-xs tracking-widest hidden" id="deleteBtn" onclick="deleteProject()" type="button"><i class="fas fa-trash mr-2"></i> Excluir</button>
 <button class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-blue-700 transition-all uppercase text-xs tracking-[0.2em]" id="saveBtn" onclick="saveProject()" type="button">
@@ -3879,48 +5105,39 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </div>
 </div>
 <!-- App Shell (Sidebar, Main, etc.) -->
-<div class="flex flex-col md:flex-row h-dvh md:h-screen overflow-hidden" id="appShell">
+<div class="flex flex-col md:flex-row h-dvh md:h-screen overflow-hidden sidebar-expanded" id="appShell">
 <!-- Sidebar -->
-<aside class="sidebar-retratil w-full md:w-64 text-white flex flex-col shadow-xl shrink-0 z-30 h-auto md:h-full" id="sidebar" style="background-color:#004077;">
-<button aria-expanded="false" aria-label="Expandir menu lateral" class="sidebar-toggle-button" id="sidebarToggle" onclick="toggleSidebar()" title="Expandir menu" type="button">
-<span aria-hidden="true" id="sidebarToggleIcon"></span>
-</button>
-<div class="p-3 md:p-5 border-b border-slate-800 flex justify-between md:block items-center">
-<div>
-<h1 class="text-lg md:text-2xl font-bold tracking-tight uppercase">DSV <span class="text-blue-400">2026</span></h1>
-<p class="text-[10px] md:text-[11px] text-slate-400 uppercase tracking-widest font-bold mt-1">Painel de Gestão</p>
-</div>
-<div class="md:mt-5 flex items-center gap-2 text-[10px] font-black uppercase tracking-wider py-1 md:py-2 px-2 md:px-3 rounded-lg w-auto md:w-full transition-all border border-slate-700/50 bg-slate-800" id="sysStatus">
-<span class="w-2 h-2 rounded-full bg-slate-500" id="sysStatusDot"></span>
-<span class="text-slate-400 hidden sm:inline" id="sysStatusText">Iniciando...</span>
-</div>
-</div>
+<aside class="sidebar-retratil w-full md:w-64 text-white flex flex-col shadow-xl shrink-0 z-30 h-auto md:h-full" id="sidebar" style="background-color:#004077;"><div class="management-sidebar-head"><div class="management-logo-container"><div class="management-logo-group"><img alt="Detran-SP" class="management-logo-full" decoding="async" loading="eager" src="https://www.detran.sp.gov.br/702a783633529610cd8381ac4f5c7b5b.iix"/><div aria-hidden="true" class="management-logo-collapsed"><img alt="Símbolo Detran-SP" decoding="async" loading="eager" src="./painel-dsv_logo/logo_detran.png"/></div></div><button aria-expanded="true" aria-label="Recolher menu lateral" class="management-sidebar-toggle" data-tooltip="Recolher menu" id="sidebarToggle" onclick="toggleSidebar()" title="Recolher menu" type="button"><span aria-hidden="true" class="material-symbols-outlined" id="sidebarToggleMaterialIcon">chevron_left</span></button></div></div>
 <nav class="flex-1 flex md:flex-col flex-row overflow-x-auto md:overflow-y-auto px-2 py-2 md:px-3 md:mt-3 space-x-2 md:space-x-0 md:space-y-3 scrollbar-hide shrink-0 items-center md:items-stretch" style="background-color:#004077;">
 <div class="flex-none min-w-[140px] md:w-full">
 <p class="text-[11px] font-normal text-slate-500 uppercase tracking-widest mb-2 px-2 hidden md:block">Visualização</p>
 <div class="flex md:block space-x-2 md:space-x-0 md:space-y-1">
-<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" id="tab-projects" onclick="switchTab('projects')">
+
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-eye" data-tooltip="Visão Geral" id="tab-overview" onclick="switchTab('overview')">
+<i class="fas fa-eye w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Visão Geral</span>
+</button>
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-diagram-project" data-tooltip="Projetos" id="tab-projects" onclick="switchTab('projects')">
 <i class="fas fa-diagram-project w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Projetos</span>
 </button>
-<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" id="tab-contracts" onclick="switchTab('contracts')">
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-file-contract" data-tooltip="Contratos" id="tab-contracts" onclick="switchTab('contracts')">
 <i class="fas fa-file-contract w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Contratos</span>
 </button>
-<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" id="tab-gantt" onclick="switchTab('gantt')">
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-stream" data-tooltip="Cronograma" id="tab-gantt" onclick="switchTab('gantt')">
 <i class="fas fa-stream w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Cronograma</span>
 </button>
-<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" id="tab-pca2027" onclick="switchTab('pca2027')">
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-clipboard-check" data-tooltip="PCA 2027" id="tab-pca2027" onclick="switchTab('pca2027')">
 <i class="fas fa-clipboard-check w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">PCA 2027</span>
 </button>
-<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" id="tab-indicators" onclick="switchTab('indicators')">
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-chart-line" data-tooltip="Indicadores" id="tab-indicators" onclick="switchTab('indicators')">
 <i class="fas fa-chart-line w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Indicadores</span>
 </button>
-<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" id="tab-despachos" onclick="switchTab('despachos')">
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-clipboard-list" data-tooltip="Despachos" id="tab-despachos" onclick="switchTab('despachos')">
 <i class="fas fa-clipboard-list w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Despachos</span>
 </button>
-<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" id="tab-calendar" onclick="switchTab('calendar')">
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-calendar-alt" data-tooltip="Calendário" id="tab-calendar" onclick="switchTab('calendar')">
 <i class="fas fa-calendar-alt w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Calendário</span>
 </button>
-<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" id="tab-portaria" onclick="switchTab('portaria')">
+<button class="tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap" data-tab-icon="fa-balance-scale" data-tooltip="Portaria nº44/25" id="tab-portaria" onclick="switchTab('portaria')">
 <i class="fas fa-balance-scale w-5 text-base md:text-lg"></i><span class="text-sm md:text-base font-medium">Portaria nº44/25</span>
 </button>
 </div>
@@ -3937,7 +5154,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <button class="coord-btn bg-slate-800 p-2 rounded-lg text-xs font-bold text-white hover:bg-slate-700 min-w-[50px]" id="coord-COST" onclick="setFilter('COST')">COST</button>
 <button class="coord-btn bg-slate-800 p-2 rounded-lg text-xs font-bold text-white hover:bg-slate-700 min-w-[50px]" id="coord-CIST" onclick="setFilter('CIST')">CIST</button>
 <button class="coord-btn md:col-span-2 bg-slate-700 p-2 rounded-lg text-xs font-bold text-white text-center uppercase whitespace-nowrap hover:bg-slate-600" id="coord-all" onclick="setFilter('all')">Limpar</button>
-<div class="md:col-span-2 mt-3 pt-4 border-t border-slate-800 flex justify-center">
+<div class="ds-legacy-logo md:col-span-2 mt-3 pt-4 border-t border-slate-800 flex justify-center">
 <img alt="DETRAN-SP" class="max-w-[150px] md:max-w-[170px] w-full h-auto object-contain opacity-90 hover:opacity-100 transition-opacity" loading="lazy" src="data:image/png;base64,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"/>
 </div>
 </div>
@@ -3945,30 +5162,93 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </div>
 </nav>
 </aside>
+<div class="ds-sidebar-backdrop" id="dsSidebarBackdrop" onclick="closeDSMobileSidebar()"></div>
 <main class="flex-1 flex flex-col overflow-y-auto overflow-x-hidden relative">
-<header class="bg-white border-b border-slate-200 px-4 md:px-6 py-4 md:py-5 flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm sticky top-0 z-20 gap-3">
-<div class="flex items-center gap-3">
-<h2 class="text-lg md:text-2xl font-black text-slate-800 uppercase tracking-tight" id="viewTitle">Portfólio de Projetos</h2>
-<!-- Info PMG (Apenas Projetos) -->
-<button class="hidden bg-blue-50 text-blue-600 hover:bg-blue-100 text-[11px] font-bold uppercase px-3 py-1.5 rounded-lg transition-colors border border-blue-200" id="pmgInfoBtn" onclick="toggleModal('pmgLegendModal')">
-<i class="fas fa-info-circle mr-1"></i> Matriz PMG
-                    </button>
+<header class="ds-topbar">
+<div class="ds-topbar-title">
+<button aria-label="Abrir menu lateral" class="ds-mobile-menu" onclick="openDSMobileSidebar()" type="button">
+<i aria-hidden="true" class="fas fa-bars"></i>
+</button>
+<div class="ds-title-icon"><i aria-hidden="true" class="fas fa-diagram-project" id="viewTitleIcon"></i></div>
+<div class="ds-title-copy">
+<h2 id="viewTitle">Portfólio de Projetos</h2>
+<p id="viewSubtitle">Gestão integrada de projetos, contratos, indicadores, agendas e entregas da Diretoria de Segurança Viária.</p>
+</div>
+<button class="hidden ds-context-info" id="pmgInfoBtn" onclick="toggleModal('pmgLegendModal')" type="button">
+<i aria-hidden="true" class="fas fa-info-circle"></i><span>Matriz PMG</span>
+</button>
 </div>
 <div class="header-actions">
 <div class="auth-inline-badge" id="authStatusBadge" title="Usuário autenticado">
 <span class="auth-inline-dot"></span>
 <div class="auth-inline-text">
-<span class="auth-inline-label">Logado</span>
+<span class="auth-inline-label">Usuário conectado</span>
 <span class="auth-inline-email" id="authUserEmail"></span>
 </div>
 <button class="auth-inline-logout" id="authLogoutBtn" title="Sair" type="button">Sair</button>
 </div>
-<div class="relative w-full md:w-72">
-<i class="fas fa-search absolute left-3 top-3 text-slate-300 text-sm"></i>
-<input class="w-full bg-slate-50 border border-slate-100 rounded-xl pl-10 pr-3 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-100 transition-all font-medium" id="searchInput" oninput="renderData();" placeholder="Pesquisar..." type="text"/>
+<div class="ds-search-wrap">
+<i aria-hidden="true" class="fas fa-search"></i>
+<input id="searchInput" oninput="renderData();" placeholder="Pesquisar no painel..." type="text"/>
 </div>
 </div>
 </header>
+
+<!-- Visão Geral — Dashboard Executivo -->
+<div class="hidden flex-1 flex flex-col p-4 md:p-6 bg-slate-50 space-y-4 overflow-y-auto pb-20 md:pb-6" id="overviewView">
+  <section class="overview-kpi-grid" aria-label="Indicadores gerais do painel">
+    <article class="overview-kpi-card is-clickable" onclick="switchTab('projects')" title="Abrir projetos">
+      <div class="overview-kpi-head"><div><div class="overview-kpi-label">Projetos no portfólio</div><div class="overview-kpi-value" id="ovProjectsTotal">0</div></div><div class="overview-kpi-icon blue"><i class="fas fa-diagram-project"></i></div></div>
+      <div class="overview-kpi-note" id="ovProjectsNote">0 ativos · 0 concluídos</div>
+    </article>
+    <article class="overview-kpi-card is-clickable" onclick="openOverviewFiltered('projects','Em Execução (com risco)')" title="Abrir projetos em risco">
+      <div class="overview-kpi-head"><div><div class="overview-kpi-label">Pontos de atenção</div><div class="overview-kpi-value" id="ovAttentionTotal">0</div></div><div class="overview-kpi-icon orange"><i class="fas fa-triangle-exclamation"></i></div></div>
+      <div class="overview-kpi-note" id="ovAttentionNote">Riscos, atrasos e validações</div>
+    </article>
+    <article class="overview-kpi-card is-clickable" onclick="switchTab('contracts')" title="Abrir contratos">
+      <div class="overview-kpi-head"><div><div class="overview-kpi-label">Contratos e convênios</div><div class="overview-kpi-value" id="ovContractsTotal">0</div></div><div class="overview-kpi-icon purple"><i class="fas fa-file-contract"></i></div></div>
+      <div class="overview-kpi-note" id="ovContractsNote">R$ 0,00 em recursos cadastrados</div>
+    </article>
+    <article class="overview-kpi-card is-clickable" onclick="switchTab('indicators')" title="Abrir indicadores">
+      <div class="overview-kpi-head"><div><div class="overview-kpi-label">Indicadores em avanço</div><div class="overview-kpi-value" id="ovIndicatorsOnTrack">0</div></div><div class="overview-kpi-icon pink"><i class="fas fa-chart-line"></i></div></div>
+      <div class="overview-kpi-note" id="ovIndicatorsNote">0 indicadores com meta definida</div>
+    </article>
+    <article class="overview-kpi-card is-clickable" onclick="switchTab('despachos')" title="Abrir despachos">
+      <div class="overview-kpi-head"><div><div class="overview-kpi-label">Decisões pendentes</div><div class="overview-kpi-value" id="ovDecisionsTotal">0</div></div><div class="overview-kpi-icon slate"><i class="fas fa-gavel"></i></div></div>
+      <div class="overview-kpi-note" id="ovDecisionsNote">Projetos e pautas aguardando definição</div>
+    </article>
+    <article class="overview-kpi-card is-clickable" onclick="switchTab('gantt')" title="Abrir cronograma">
+      <div class="overview-kpi-head"><div><div class="overview-kpi-label">Próximos 30 dias</div><div class="overview-kpi-value" id="ovNext30Total">0</div></div><div class="overview-kpi-icon green"><i class="fas fa-calendar-check"></i></div></div>
+      <div class="overview-kpi-note" id="ovNext30Note">Marcos e eventos programados</div>
+    </article>
+  </section>
+
+  <section class="overview-grid-equal">
+    <article class="overview-panel">
+      <div class="overview-panel-head">
+        <div><h4 class="overview-panel-title">Agenda executiva</h4><p class="overview-panel-subtitle">Próximos prazos, marcos, reuniões e eventos em até 60 dias.</p></div>
+        <button class="overview-panel-action" onclick="switchTab('calendar')" type="button">Abrir calendário</button>
+      </div>
+      <div class="overview-list" id="overviewAgendaList"></div>
+    </article>
+    <article class="overview-panel">
+      <div class="overview-panel-head">
+        <div><h4 class="overview-panel-title">Indicadores estratégicos</h4><p class="overview-panel-subtitle">Indicadores com meta definida, ordenados pelos que mais exigem acompanhamento.</p></div>
+        <button class="overview-panel-action" onclick="switchTab('indicators')" type="button">Ver indicadores</button>
+      </div>
+      <div id="overviewIndicatorsList"></div>
+    </article>
+  </section>
+
+  <section class="overview-panel">
+    <div class="overview-panel-head">
+      <div><h4 class="overview-panel-title">Leitura por coordenação</h4><p class="overview-panel-subtitle">Volume, conclusão e atenção no portfólio de projetos.</p></div>
+      <button class="overview-panel-action" onclick="switchTab('projects')" type="button">Detalhar projetos</button>
+    </div>
+    <div class="overview-coord-grid" id="overviewCoordGrid"></div>
+  </section>
+
+</div>
 <!-- Container Principal -->
 <div class="flex-1 flex flex-col transition-colors duration-300 pb-20 md:pb-0" id="standardView">
 <div class="px-4 md:px-6 pt-6 flex flex-col xl:flex-row gap-6" id="statsWrapper">
@@ -4128,12 +5408,17 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 </div>
 </div>
 <div class="px-4 md:px-6 pt-5 view-mode-wrapper" id="viewModeWrapper">
-<div class="view-mode-toggle" role="group" aria-label="Modo de visualização">
+<div aria-label="Modo de visualização" class="view-mode-toggle" role="group">
 <button class="view-mode-btn active" id="viewModeCardsBtn" onclick="setProjectContractViewMode('cards')" type="button">
 <i class="fas fa-grip"></i> Cards
 </button>
 <button class="view-mode-btn" id="viewModeTableBtn" onclick="setProjectContractViewMode('table')" type="button">
 <i class="fas fa-table-list"></i> Tabela
+</button>
+</div>
+<div class="view-mode-actions">
+<button class="github-feature-btn primary" id="exportProjectsJsonBtn" onclick="exportAllProjectsJson()" type="button" title="Baixar backup completo dos projetos em JSON">
+<i class="fas fa-file-code"></i> Exportar projetos em JSON
 </button>
 </div>
 </div>
@@ -4428,8 +5713,6 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 <div class="ind-kpi-card pink"><div class="ind-kpi-label">Total de indicadores</div><div class="ind-kpi-value" id="indicatorKpiTotal">0</div><div class="ind-kpi-note">Base exibida nos filtros atuais</div></div>
 <div class="ind-kpi-card blue"><div class="ind-kpi-label">Estratégicos PPA</div><div class="ind-kpi-value" id="indicatorKpiPpa">0</div><div class="ind-kpi-note">Metas vinculadas ao ciclo 2024–2027</div></div>
 <div class="ind-kpi-card indigo"><div class="ind-kpi-label">Gerenciais</div><div class="ind-kpi-value" id="indicatorKpiOther">0</div><div class="ind-kpi-note">Acompanhamento interno da DSV</div></div>
-<div class="ind-kpi-card green"><div class="ind-kpi-label">Progresso médio</div><div class="ind-kpi-value" id="indicatorKpiAverage">0%</div><div class="ind-kpi-note">Realizado / meta 2026</div></div>
-<div class="ind-kpi-card amber"><div class="ind-kpi-label">Atenção</div><div class="ind-kpi-value" id="indicatorKpiAttention">0</div><div class="ind-kpi-note">Abaixo de 50% da meta anual</div></div>
 </div>
 <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-4">
 <div class="flex flex-col xl:flex-row gap-3 xl:items-center">
@@ -4620,7 +5903,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
         // ... (Variaveis Globais e Constantes mantidas) ...
         let currentUser = null;
-        let activeTab = 'projects';
+        let activeTab = 'overview';
         let currentProjectCollection = 'projects';
         let draggedDispatchKey = null;
         function getDispatchBacklogOrder(){
@@ -4637,6 +5920,10 @@ textarea.input-style { min-height: 92px; resize: vertical; }
         let currentListFilter = 'all'; 
         let currentPriorityFilter = 'all';
         let projectContractViewMode = localStorage.getItem('dsvProjectContractViewMode') || 'cards';
+        let tableSortMode = localStorage.getItem('dsvTableSortMode') || 'name-asc';
+        let tableStatusFilter = 'all';
+        let tableCoordFilter = 'all';
+        let sharedProjectOpened = false;
         let currentPortariaFilter = 'all';
         let currentGanttFilter = 'all';
         let currentGanttRoleFilter = 'all';
@@ -5275,10 +6562,13 @@ textarea.input-style { min-height: 92px; resize: vertical; }
                     }
                     
                     window.updateStatusUI(snapshot.metadata.hasPendingWrites ? 'syncing' : 'online');
+                    if (colName === 'projects') setTimeout(tryOpenSharedProject, 0);
                     migrateLegacyPlanningToBacklog(colName, snapshot);
 
                     // Atualiza a view correta sem depender de trocar de aba/recarregar
-                    if (colName === 'indicators') {
+                    if (activeTab === 'overview') {
+                        window.renderOverview?.();
+                    } else if (colName === 'indicators') {
                         if (activeTab === 'indicators') window.renderIndicators();
                     } else if (colName === 'calendar_events') {
                         if (activeTab === 'calendar') window.renderCalendar();
@@ -5395,6 +6685,11 @@ textarea.input-style { min-height: 92px; resize: vertical; }
             const durationField = document.getElementById('operationalDurationField');
             const complexityField = document.getElementById('complexityField');
             const projectActionDecisionField = document.getElementById('projectActionDecisionField');
+            const parentProjectField = document.getElementById('parentProjectField');
+            const tasksSection = document.getElementById('tasksSection');
+            const tasksContainer = document.getElementById('tasksContainer');
+            if (tasksContainer) tasksContainer.innerHTML = '';
+            if (document.getElementById('taskFormProgress')) document.getElementById('taskFormProgress').textContent = '0%';
             
                         const programField = document.getElementById('contractProgramField');
             const componentField = document.getElementById('contractComponentField');
@@ -5406,6 +6701,9 @@ typeField.classList.add('hidden-field');
             durationField.classList.add('hidden-field'); 
             complexityField.classList.add('hidden-field');
             if (projectActionDecisionField) projectActionDecisionField.classList.add('hidden-field');
+            if (parentProjectField) parentProjectField.classList.add('hidden-field');
+            if (tasksSection) tasksSection.classList.add('hidden-field');
+            if (document.getElementById('projParentProject')) document.getElementById('projParentProject').value = '';
             
                         programField.classList.add('hidden-field');
             componentField.classList.add('hidden-field');
@@ -5432,6 +6730,9 @@ document.getElementById('projRisks').value = '';
                 serviceField.classList.remove('hidden-field');
                 if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
                 if (projectActionDecisionField) projectActionDecisionField.classList.remove('hidden-field');
+                if (parentProjectField) parentProjectField.classList.remove('hidden-field');
+                if (tasksSection) tasksSection.classList.remove('hidden-field');
+                window.populateParentProjectOptions?.('', '');
             } else if (activeTab === 'contracts') {
                 document.getElementById('modalTitle').innerText = 'Novo Contrato / Convênio';
                 typeField.classList.remove('hidden-field');
@@ -5571,7 +6872,261 @@ document.getElementById('projRisks').value = '';
                 </div>
             `;
             container.appendChild(row);
+            const dateInput = row.querySelector('.roadmap-date');
+            const noDateInput = row.querySelector('.roadmap-no-date');
+            if (dateInput) dateInput.addEventListener('change', () => setTimeout(window.sortRoadmapFormRows, 0));
+            if (noDateInput) noDateInput.addEventListener('change', () => setTimeout(window.sortRoadmapFormRows, 0));
             updateProjectDirtyState();
+        };
+
+        function sortRoadmapItems(items = []) {
+            return [...(Array.isArray(items) ? items : [])].sort((a, b) => {
+                const aKey = (a?.noDate || !a?.data) ? '9999-12-31' : String(a.data);
+                const bKey = (b?.noDate || !b?.data) ? '9999-12-31' : String(b.data);
+                const byDate = aKey.localeCompare(bKey);
+                if (byDate !== 0) return byDate;
+                return String(a?.etapa || '').localeCompare(String(b?.etapa || ''), 'pt-BR', { sensitivity: 'base' });
+            });
+        }
+
+        window.sortRoadmapFormRows = () => {
+            const container = document.getElementById('roadmapContainer');
+            if (!container) return;
+            const rows = Array.from(container.querySelectorAll(':scope > .roadmap-row'));
+            rows.sort((a, b) => {
+                const aNoDate = !!a.querySelector('.roadmap-no-date')?.checked;
+                const bNoDate = !!b.querySelector('.roadmap-no-date')?.checked;
+                const aDate = aNoDate ? '9999-12-31' : (a.querySelector('.roadmap-date')?.value || '9999-12-31');
+                const bDate = bNoDate ? '9999-12-31' : (b.querySelector('.roadmap-date')?.value || '9999-12-31');
+                const byDate = aDate.localeCompare(bDate);
+                if (byDate !== 0) return byDate;
+                return (a.querySelector('.roadmap-step')?.value || '').localeCompare((b.querySelector('.roadmap-step')?.value || ''), 'pt-BR', { sensitivity: 'base' });
+            });
+            rows.forEach(row => container.appendChild(row));
+        };
+
+        function makeLocalId(prefix = 'item') {
+            try { return `${prefix}-${crypto.randomUUID()}`; }
+            catch (e) { return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`; }
+        }
+
+        function normalizeTasks(tasks = []) {
+            return (Array.isArray(tasks) ? tasks : []).map(task => ({
+                id: task?.id || makeLocalId('task'),
+                title: String(task?.title || ''),
+                done: !!task?.done,
+                subtasks: (Array.isArray(task?.subtasks) ? task.subtasks : []).map(subtask => ({
+                    id: subtask?.id || makeLocalId('subtask'),
+                    title: String(subtask?.title || ''),
+                    done: !!subtask?.done
+                }))
+            }));
+        }
+
+        function getTaskProgress(tasks = []) {
+            const normalized = normalizeTasks(tasks);
+            let total = 0;
+            let done = 0;
+            normalized.forEach(task => {
+                if (task.subtasks.length) {
+                    total += task.subtasks.length;
+                    done += task.subtasks.filter(subtask => subtask.done).length;
+                } else {
+                    total += 1;
+                    if (task.done) done += 1;
+                }
+            });
+            return { total, done, pct: total ? Math.round((done / total) * 100) : 0 };
+        }
+
+        window.updateTaskFormProgress = () => {
+            const progress = getTaskProgress(window.getTasksFromForm?.() || []);
+            const value = document.getElementById('taskFormProgress');
+            if (value) value.textContent = `${progress.pct}%`;
+            updateProjectDirtyState();
+        };
+
+        window.syncTaskCompletion = (input) => {
+            const taskRow = input?.closest?.('.task-row');
+            if (!taskRow) return;
+            if (input.classList.contains('task-check')) {
+                taskRow.querySelectorAll('.subtask-check').forEach(check => { check.checked = input.checked; });
+            } else {
+                const subchecks = Array.from(taskRow.querySelectorAll('.subtask-check'));
+                const main = taskRow.querySelector('.task-check');
+                if (main && subchecks.length) main.checked = subchecks.every(check => check.checked);
+            }
+            window.updateTaskFormProgress();
+        };
+
+        window.addSubtaskRow = (taskRowOrButton, subtask = {}) => {
+            const taskRow = taskRowOrButton?.classList?.contains('task-row')
+                ? taskRowOrButton
+                : taskRowOrButton?.closest?.('.task-row');
+            if (!taskRow) return;
+            const container = taskRow.querySelector('.subtasks-container');
+            if (!container) return;
+            const row = document.createElement('div');
+            row.className = 'subtask-row';
+            row.dataset.subtaskId = subtask.id || makeLocalId('subtask');
+            row.innerHTML = `
+                <input class="subtask-check" type="checkbox" ${subtask.done ? 'checked' : ''} onchange="syncTaskCompletion(this)">
+                <input class="subtask-title-input" type="text" placeholder="Nome da subtarefa" value="${escapeHtml(subtask.title || '')}" oninput="updateTaskFormProgress()">
+                <button class="subtask-remove" type="button" title="Remover subtarefa" onclick="this.closest('.subtask-row').remove(); updateTaskFormProgress();"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(row);
+            window.updateTaskFormProgress();
+        };
+
+        window.addTaskRow = (task = {}) => {
+            const container = document.getElementById('tasksContainer');
+            if (!container) return;
+            const normalized = normalizeTasks([task])[0];
+            const row = document.createElement('div');
+            row.className = 'task-row';
+            row.dataset.taskId = normalized.id;
+            row.innerHTML = `
+                <div class="task-main-line">
+                    <input class="task-check" type="checkbox" ${normalized.done ? 'checked' : ''} onchange="syncTaskCompletion(this)">
+                    <input class="task-title-input" type="text" placeholder="Nome da tarefa / entrega" value="${escapeHtml(normalized.title)}" oninput="updateTaskFormProgress()">
+                    <button class="task-remove" type="button" title="Remover tarefa" onclick="this.closest('.task-row').remove(); updateTaskFormProgress();"><i class="fas fa-trash"></i></button>
+                </div>
+                <div class="subtasks-container"></div>
+                <button class="add-subtask-btn" type="button" onclick="addSubtaskRow(this)"><i class="fas fa-plus"></i> Adicionar subtarefa</button>
+            `;
+            container.appendChild(row);
+            normalized.subtasks.forEach(subtask => window.addSubtaskRow(row, subtask));
+            window.updateTaskFormProgress();
+        };
+
+        window.getTasksFromForm = () => {
+            const container = document.getElementById('tasksContainer');
+            if (!container) return [];
+            return Array.from(container.querySelectorAll(':scope > .task-row')).map(row => ({
+                id: row.dataset.taskId || makeLocalId('task'),
+                title: (row.querySelector('.task-title-input')?.value || '').trim(),
+                done: !!row.querySelector('.task-check')?.checked,
+                subtasks: Array.from(row.querySelectorAll('.subtask-row')).map(subrow => ({
+                    id: subrow.dataset.subtaskId || makeLocalId('subtask'),
+                    title: (subrow.querySelector('.subtask-title-input')?.value || '').trim(),
+                    done: !!subrow.querySelector('.subtask-check')?.checked
+                })).filter(subtask => subtask.title)
+            })).filter(task => task.title);
+        };
+
+        function getProjectChildren(projectId) {
+            return (dataStore.projects || []).filter(project => project.parentProjectId === projectId);
+        }
+
+        function getProjectParent(projectId) {
+            if (!projectId) return null;
+            return (dataStore.projects || []).find(project => project.id === projectId) || null;
+        }
+
+        function getProjectDescendantIds(projectId, visited = new Set()) {
+            if (!projectId || visited.has(projectId)) return visited;
+            visited.add(projectId);
+            getProjectChildren(projectId).forEach(child => getProjectDescendantIds(child.id, visited));
+            return visited;
+        }
+
+        function getSubprojectProgress(projectId) {
+            const children = getProjectChildren(projectId);
+            const done = children.filter(child => normalizeStatus(child.status) === 'Concluído').length;
+            return { children, total: children.length, done, pct: children.length ? Math.round((done / children.length) * 100) : 0 };
+        }
+
+        function getProjectProgressSummary(project) {
+            const subprojects = getSubprojectProgress(project?.id);
+            if (subprojects.total) return { ...subprojects, kind: 'subprojects', label: 'Subprojetos concluídos' };
+            const tasks = getTaskProgress(project?.tasks || []);
+            return { ...tasks, kind: 'tasks', label: 'Tarefas concluídas' };
+        }
+
+        window.populateParentProjectOptions = (selectedId = '', editingId = '') => {
+            const select = document.getElementById('projParentProject');
+            if (!select) return;
+            const forbidden = editingId ? getProjectDescendantIds(editingId) : new Set();
+            const options = (dataStore.projects || [])
+                .filter(project => project.id !== editingId && !forbidden.has(project.id))
+                .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR', { sensitivity: 'base' }));
+            select.innerHTML = '<option value="">Nenhum — projeto independente</option>' + options.map(project => `<option value="${project.id}">${escapeHtml(project.name || 'Projeto sem nome')}</option>`).join('');
+            select.value = selectedId && options.some(project => project.id === selectedId) ? selectedId : '';
+        };
+
+        function showShareFeedback(message) {
+            let toast = document.getElementById('shareFeedback');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'shareFeedback';
+                toast.className = 'share-feedback';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(window.__shareFeedbackTimer);
+            window.__shareFeedbackTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+
+        window.shareProject = async (projectId) => {
+            const project = (dataStore.projects || []).find(item => item.id === projectId);
+            if (!project) return;
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', 'projects');
+            url.searchParams.set('project', projectId);
+            url.hash = '';
+            try {
+                await navigator.clipboard.writeText(url.toString());
+                showShareFeedback('Link do projeto copiado.');
+            } catch (err) {
+                const input = document.createElement('textarea');
+                input.value = url.toString();
+                input.style.position = 'fixed';
+                input.style.opacity = '0';
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                input.remove();
+                showShareFeedback('Link do projeto copiado.');
+            }
+        };
+
+        function tryOpenSharedProject() {
+            if (sharedProjectOpened || !currentUser) return;
+            const params = new URLSearchParams(window.location.search);
+            const projectId = params.get('project');
+            if (!projectId) return;
+            const project = (dataStore.projects || []).find(item => item.id === projectId);
+            if (!project) return;
+            sharedProjectOpened = true;
+            window.switchTab?.('projects');
+            setTimeout(() => window.editItem?.(projectId, 'projects'), 120);
+        }
+
+        window.exportAllProjectsJson = () => {
+            const projects = dataStore.projects || [];
+            const normalizeForJson = (value) => {
+                if (value && typeof value.toDate === 'function') return value.toDate().toISOString();
+                return value;
+            };
+            const payload = {
+                exportedAt: new Date().toISOString(),
+                source: 'Painel de Gestão DSV',
+                total: projects.length,
+                projects
+            };
+            const json = JSON.stringify(payload, (key, value) => normalizeForJson(value), 2);
+            const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const stamp = new Date().toISOString().slice(0, 10);
+            link.href = url;
+            link.download = `painel-gestao-dsv-projetos-${stamp}.json`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+            showShareFeedback(`${projects.length} projetos exportados em JSON.`);
         };
 
         
@@ -5740,8 +7295,9 @@ document.getElementById('projRisks').value = '';
                 document.getElementById('editId').value = id;
                 await window.addObsEntry();
             }
-            const roadmap = [];
-            document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmap.push({ data: noDate ? '' : d, etapa: e, noDate }); });
+            const roadmapDraft = [];
+            document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmapDraft.push({ data: noDate ? '' : d, etapa: e, noDate }); });
+            const roadmap = sortRoadmapItems(roadmapDraft);
             const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
             const cargosList = [...servicesList]; // compatibilidade: o Cronograma usa Divisões/Serviços responsáveis como base
             const existingForAudit = (dataStore[collectionName] || []).find(i => i.id === id) || null;
@@ -5760,6 +7316,7 @@ document.getElementById('projRisks').value = '';
             const data = {
                 name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: normalizedDecisionNeeded, decisionLevel: normalizedDecisionLevel, decisionDesc: normalizedDecisionDesc, services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
             };
+            if (collectionName === 'projects') { data.tasks = window.getTasksFromForm?.() || []; data.parentProjectId = document.getElementById('projParentProject')?.value || ''; }
             if (collectionName === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (collectionName === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
             // Confirmação ao marcar como Concluído
             const __existingItem = existingForAudit;
@@ -6226,7 +7783,14 @@ Item: ${itemLabel}`,
             document.getElementById('projDuration').value = item.duration || ''; 
             document.getElementById('projComplexity').value = item.complexity || 'Média';
 window.toggleRiskInput(); 
-            if (item.roadmap) { item.roadmap.forEach(r => window.addRoadmapRow(r.data || '', r.etapa || '', !!r.noDate || !r.data)); }
+            sortRoadmapItems(item.roadmap || []).forEach(r => window.addRoadmapRow(r.data || '', r.etapa || '', !!r.noDate || !r.data));
+            if (t === 'projects') {
+                window.populateParentProjectOptions?.(item.parentProjectId || '', item.id);
+                const tasksContainer = document.getElementById('tasksContainer');
+                if (tasksContainer) tasksContainer.innerHTML = '';
+                normalizeTasks(item.tasks || []).forEach(task => window.addTaskRow(task));
+                window.updateTaskFormProgress?.();
+            }
             if (t === 'contracts') { document.getElementById('projType').value = item.type || 'Contrato'; document.getElementById('projHasResource').value = item.hasResource || 'Não'; document.getElementById('projResourceValue').value = item.resourceValue || ''; document.getElementById('contractProgram').value = item.program || ''; document.getElementById('contractComponent').value = item.programComponent || ''; window.toggleResourceInput(); window.toggleContractProgramFields(); } else if (t === 'operational') { /* serviços já foram populados como tags acima */ }
             setTimeout(resetProjectDirtyState, 0);
         };
@@ -6539,14 +8103,399 @@ window.toggleRiskInput();
                 </div>
             `;
         };
-        window.switchTab = (tab) => { if (tab === 'operational') tab = 'projects'; activeTab = tab; currentListFilter = 'all'; currentFilter = 'all'; currentPriorityFilter = 'all'; const app = document.getElementById('appShell'); const addBtn = document.getElementById('addBtn'); const addBtnText = document.getElementById('addBtnText'); app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme', 'gantt-page-scroll'); document.querySelectorAll('.tab-btn').forEach(b => b.className = "tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400"); const mapBg = { projects: "bg-sky-600", contracts: "bg-purple-600", operational: "bg-orange-500", portaria: "bg-cyan-600", calendar: "bg-indigo-600", indicators: "bg-pink-600", despachos: "bg-slate-800", gantt: "bg-emerald-600", pca2027: "bg-blue-700" }; document.getElementById(`tab-${tab}`).className += " " + mapBg[tab] + " text-white"; addBtn.className = "action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current"; document.getElementById('standardView').classList.add('hidden'); document.getElementById('portariaView').classList.add('hidden'); document.getElementById('calendarView').classList.add('hidden'); document.getElementById('indicatorsView').classList.add('hidden'); document.getElementById('despachosView').classList.add('hidden'); document.getElementById('ganttView').classList.add('hidden'); document.getElementById('pca2027View').classList.add('hidden'); document.getElementById('statsWrapper').classList.add('hidden'); document.getElementById('addBtn').parentElement.classList.add('hidden'); document.getElementById('pmgInfoBtn').classList.add('hidden');
-            if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.add('hidden'); if (tab === 'projects' || tab === 'contracts') { if (document.getElementById('cardCancelado')) document.getElementById('cardCancelado').classList.remove('hidden'); } if (tab === 'projects') { addBtn.classList.add('btn-theme-project'); addBtnText.innerText = 'Adicionar Projeto'; document.getElementById('viewTitle').innerText = 'Portfólio de Projetos'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); document.getElementById('pmgInfoBtn').classList.remove('hidden'); showCharts(true, false); } else if (tab === 'contracts') { addBtn.classList.add('btn-theme-contract'); addBtnText.innerText = 'Adicionar Contrato'; app.classList.add('contracts-theme'); document.getElementById('viewTitle').innerText = 'Contratos | Convênios'; document.getElementById('standardView').classList.remove('hidden'); document.getElementById('statsWrapper').classList.remove('hidden'); document.getElementById('addBtn').parentElement.classList.remove('hidden'); showCharts(true, false); } else if (tab === 'portaria') { app.classList.add('portaria-theme'); document.getElementById('viewTitle').innerText = 'Portaria Detran nº 44/2025'; document.getElementById('portariaView').classList.remove('hidden'); window.renderPortaria(); } else if (tab === 'calendar') { document.getElementById('viewTitle').innerText = 'Calendário Estratégico'; document.getElementById('calendarView').classList.remove('hidden'); window.renderCalendar(); } else if (tab === 'indicators') { document.getElementById('viewTitle').innerText = 'Indicadores Estratégicos'; document.getElementById('indicatorsView').classList.remove('hidden'); window.renderIndicators(); } else if (tab === 'despachos') { document.getElementById('viewTitle').innerText = 'Pauta de Despachos'; document.getElementById('despachosView').classList.remove('hidden'); window.renderDespachos(); } else if (tab === 'gantt') { app.classList.add('gantt-page-scroll'); document.getElementById('viewTitle').innerText = 'Cronograma Integrado'; document.getElementById('ganttView').classList.remove('hidden'); window.renderGantt(); } else if (tab === 'pca2027') { document.getElementById('viewTitle').innerText = 'PCA 2027'; document.getElementById('pca2027View').classList.remove('hidden'); } document.getElementById('filterService').value = 'all'; document.getElementById('operationalFilters').style.display = (tab === 'projects') ? 'flex' : 'none'; const filterServiceLabel = document.querySelector('#operationalFilters label'); if (filterServiceLabel) filterServiceLabel.innerText = tab === 'projects' ? 'Filtrar por Divisão/Serviço responsável' : 'Filtrar por Serviço'; document.getElementById('statsRow2').style.display = tab === 'contracts' ? 'block' : 'none'; document.querySelectorAll('.active-coord').forEach(b => b.classList.remove('active-coord')); document.querySelectorAll('.active-filter').forEach(c => c.classList.remove('active-filter')); if(document.getElementById('cardTotal')) document.getElementById('cardTotal').classList.add('active-filter'); document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); const coordWrapper = document.getElementById('coordFiltersWrapper');
-            if (coordWrapper) {
-              const showCoord = ['projects','contracts','gantt'].includes(tab);
-              // Use inline display to avoid any Tailwind utility precedence issues (e.g., flex vs hidden)
-              coordWrapper.style.display = showCoord ? '' : 'none';
-              coordWrapper.classList.toggle('hidden', !showCoord);
-            } updateProjectContractViewModeButtons(); if(tab !== 'portaria' && tab !== 'calendar' && tab !== 'indicators' && tab !== 'despachos' && tab !== 'gantt' && tab !== 'pca2027') window.renderData(); };
+        
+
+
+// ===== VISÃO GERAL — DASHBOARD EXECUTIVO =====
+function overviewCurrencyNumber(value) {
+    if (value === null || value === undefined) return 0;
+    let clean = String(value).trim().replace(/[^0-9,.-]/g, '');
+    if (!clean) return 0;
+    if (clean.includes(',')) clean = clean.replace(/\./g, '').replace(',', '.');
+    const n = Number.parseFloat(clean);
+    return Number.isFinite(n) ? n : 0;
+}
+
+function overviewDate(raw) {
+    if (!raw) return null;
+    const value = String(raw).trim();
+    const d = /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(`${value}T12:00:00`) : new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function overviewDayStart(date = new Date()) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function overviewDateLabel(date) {
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '');
+}
+
+function overviewFullDateLabel(date) {
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function overviewStatusCounts(items) {
+    const counts = Object.fromEntries(UNIFIED_STATUS.map(status => [status, 0]));
+    (items || []).forEach(item => {
+        const status = normalizeStatus(item?.status) || 'Backlog';
+        if (counts[status] === undefined) counts[status] = 0;
+        counts[status] += 1;
+    });
+    return counts;
+}
+
+function overviewStatusHtml(title, items, tab) {
+    const counts = overviewStatusCounts(items);
+    const total = Math.max((items || []).length, 1);
+    const statuses = ['Backlog', 'Em Execução', 'Em Execução (com risco)', 'Cancelado', 'Concluído'];
+    const labels = {
+        'Backlog': 'Backlog',
+        'Em Execução': 'Execução',
+        'Em Execução (com risco)': 'Com risco',
+        'Cancelado': 'Cancelado',
+        'Concluído': 'Concluído'
+    };
+    const segments = statuses.map(status => {
+        const pct = (counts[status] / total) * 100;
+        return counts[status] ? `<span class="overview-status-segment" style="width:${pct}%;background:${STATUS_COLORS_HEX[status]};" title="${escapeHtml(labels[status])}: ${counts[status]}"></span>` : '';
+    }).join('');
+    const legend = statuses.map(status => `<button type="button" onclick="openOverviewFiltered('${tab}','${status}')" class="overview-status-legend-item"><span class="overview-status-dot" style="background:${STATUS_COLORS_HEX[status]}"></span>${escapeHtml(labels[status])} ${counts[status]}</button>`).join('');
+    return `<div class="overview-status-block"><div class="overview-status-title"><span>${escapeHtml(title)}</span><span>${(items || []).length} itens</span></div><div class="overview-status-track">${segments || '<span class="overview-status-segment" style="width:100%;background:#e2e8f0"></span>'}</div><div class="overview-status-legend">${legend}</div></div>`;
+}
+
+function overviewCollectAgenda(today) {
+    const events = [];
+    const add = (dateRaw, type, name, meta, tab, collection = '', id = '') => {
+        const date = overviewDate(dateRaw);
+        if (!date) return;
+        const diff = Math.ceil((overviewDayStart(date) - today) / 86400000);
+        if (diff < 0 || diff > 60) return;
+        events.push({ date, diff, type, name: name || 'Item sem título', meta, tab, collection, id });
+    };
+
+    ['projects', 'contracts'].forEach(collectionName => {
+        (dataStore[collectionName] || []).forEach(item => {
+            const status = normalizeStatus(item.status);
+            if (status === 'Concluído' || status === 'Cancelado') return;
+            add(item.prazo, collectionName === 'projects' ? 'Projeto' : 'Contrato', item.name, 'Prazo principal', collectionName, collectionName, item.id);
+            (Array.isArray(item.roadmap) ? item.roadmap : []).forEach(step => {
+                add(step?.data, 'Marco', step?.etapa || item.name, `${collectionName === 'projects' ? 'Projeto' : 'Contrato'}: ${item.name || 'Sem título'}`, 'gantt', collectionName, item.id);
+            });
+        });
+    });
+    (dataStore.calendarEvents || []).forEach(item => add(item.prazo || item.date, 'Evento', item.name, item.area || 'Calendário estratégico', 'calendar'));
+    (dataStore.dispatchMeetings || []).forEach(item => add(item.date, 'Reunião', item.title || 'Reunião de despacho', `${Array.isArray(item.items) ? item.items.length : 0} itens em pauta`, 'despachos'));
+    return events.sort((a, b) => a.date - b.date || a.name.localeCompare(b.name, 'pt-BR'));
+}
+
+function overviewAttentionItems(today) {
+    const map = new Map();
+    const ensure = (collectionName, item) => {
+        const key = `${collectionName}:${item.id}`;
+        if (!map.has(key)) map.set(key, { key, collectionName, id: item.id, name: item.name || 'Item sem título', coord: item.coord || '', reasons: [], score: 0 });
+        return map.get(key);
+    };
+    ['projects', 'contracts'].forEach(collectionName => {
+        (dataStore[collectionName] || []).forEach(item => {
+            const status = normalizeStatus(item.status);
+            if (status === 'Concluído' || status === 'Cancelado') return;
+            const entry = ensure(collectionName, item);
+            const prazo = overviewDate(item.prazo);
+            if (prazo && overviewDayStart(prazo) < today) { entry.reasons.push(`Prazo vencido em ${overviewFullDateLabel(prazo)}`); entry.score += 6; }
+            if (status === 'Em Execução (com risco)') { entry.reasons.push('Execução com risco'); entry.score += 5; }
+            if (collectionName === 'projects' && item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim()) { entry.reasons.push(`Decisão necessária${item.decisionLevel ? ` · ${item.decisionLevel}` : ''}`); entry.score += 7; }
+            if (item.onDiretoriaValidation) { entry.reasons.push('Aguardando validação da Diretoria'); entry.score += 4; }
+            if (item.priority === 'Urgente') entry.score += 2;
+            if (!entry.reasons.length) map.delete(entry.key);
+        });
+    });
+    return [...map.values()].sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, 'pt-BR'));
+}
+
+window.openOverviewFiltered = (tab, status) => {
+    window.switchTab(tab);
+    setTimeout(() => {
+        if (status && typeof window.setListFilter === 'function') window.setListFilter(status);
+    }, 0);
+};
+
+window.openOverviewItem = (collectionName, id) => {
+    window.switchTab(collectionName);
+    setTimeout(() => {
+        if (typeof window.editItem === 'function') window.editItem(id, collectionName);
+    }, 0);
+};
+
+window.openOverviewCoord = (coord) => {
+    window.switchTab('projects');
+    setTimeout(() => {
+        if (typeof window.setFilter === 'function') window.setFilter(coord);
+    }, 0);
+};
+
+window.renderOverview = () => {
+    const root = document.getElementById('overviewView');
+    if (!root) return;
+    const projects = dataStore.projects || [];
+    const contracts = dataStore.contracts || [];
+    const indicators = (dataStore.indicators && dataStore.indicators.length) ? dataStore.indicators : (Array.isArray(INITIAL_INDICATORS) ? INITIAL_INDICATORS : []);
+    const today = overviewDayStart();
+    const activeStatuses = new Set(['Backlog', 'Em Execução', 'Em Execução (com risco)']);
+    const activeProjects = projects.filter(item => activeStatuses.has(normalizeStatus(item.status)));
+    const completedProjects = projects.filter(item => normalizeStatus(item.status) === 'Concluído');
+    const activeContracts = contracts.filter(item => activeStatuses.has(normalizeStatus(item.status)));
+    const decisions = projects.filter(item => normalizeStatus(item.status) !== 'Concluído' && normalizeStatus(item.status) !== 'Cancelado' && item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim());
+    const attentionItems = overviewAttentionItems(today);
+    const agenda = overviewCollectAgenda(today);
+    const next30 = agenda.filter(item => item.diff <= 30);
+    const pendingMeetingItems = (dataStore.dispatchMeetings || []).reduce((sum, meeting) => sum + (Array.isArray(meeting.items) ? meeting.items.filter(item => item.status !== 'Deliberado' && item.status !== 'Retirado').length : 0), 0);
+    const totalResources = contracts.reduce((sum, item) => sum + overviewCurrencyNumber(item.resourceValue), 0);
+    const definedIndicators = indicators.filter(ind => indicatorNumber(ind.meta) > 0);
+    const onTrackIndicators = definedIndicators.filter(ind => calcIndicatorPercent(ind) >= 70);
+    const search = String(document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+
+    const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+    setText('ovProjectsTotal', projects.length);
+    setText('ovProjectsNote', `${activeProjects.length} ativos · ${completedProjects.length} concluídos`);
+    setText('ovAttentionTotal', attentionItems.length);
+    setText('ovAttentionNote', `${projects.filter(item => normalizeStatus(item.status) === 'Em Execução (com risco)').length} em risco · ${attentionItems.filter(item => item.reasons.some(reason => reason.startsWith('Prazo vencido'))).length} atrasados`);
+    setText('ovContractsTotal', contracts.length);
+    setText('ovContractsNote', `${activeContracts.length} ativos · ${totalResources.toLocaleString('pt-BR', { style:'currency', currency:'BRL' })}`);
+    setText('ovIndicatorsOnTrack', onTrackIndicators.length);
+    setText('ovIndicatorsNote', `${definedIndicators.length} indicadores com meta definida`);
+    setText('ovDecisionsTotal', decisions.length + pendingMeetingItems);
+    setText('ovDecisionsNote', `${decisions.length} decisões de projeto · ${pendingMeetingItems} itens de pauta`);
+    setText('ovNext30Total', next30.length);
+    setText('ovNext30Note', `${agenda.length} compromissos mapeados em 60 dias`);
+
+    const summaryParts = [
+        `${activeProjects.length} projetos estão ativos`,
+        attentionItems.length ? `${attentionItems.length} itens exigem atenção gerencial` : 'não há itens críticos identificados',
+        decisions.length ? `${decisions.length} decisões de projeto aguardam encaminhamento` : 'não há decisões de projeto pendentes',
+        `${next30.length} marcos ou eventos estão previstos para os próximos 30 dias`
+    ];
+    if (definedIndicators.length) summaryParts.push(`${onTrackIndicators.length} de ${definedIndicators.length} indicadores com meta estão em avanço igual ou superior a 70%`);
+    setText('overviewExecutiveSummary', `${summaryParts.join('; ')}.`);
+    const now = new Date();
+    const updated = document.getElementById('overviewUpdatedAt');
+    if (updated) updated.innerHTML = `Atualização automática<br/><strong>${now.toLocaleDateString('pt-BR')} · ${now.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })}</strong>`;
+
+    const portfolio = document.getElementById('overviewPortfolioStatus');
+    if (portfolio) portfolio.innerHTML = overviewStatusHtml('Projetos', projects, 'projects') + overviewStatusHtml('Contratos e convênios', contracts, 'contracts');
+
+    const attentionList = document.getElementById('overviewAttentionList');
+    if (attentionList) {
+        const filtered = attentionItems.filter(item => !search || `${item.name} ${item.coord} ${item.reasons.join(' ')}`.toLowerCase().includes(search)).slice(0, 7);
+        attentionList.innerHTML = filtered.length ? filtered.map(item => {
+            const mainReason = item.reasons[0] || 'Acompanhamento necessário';
+            const iconClass = item.reasons.some(reason => reason.startsWith('Decisão')) ? 'red' : (item.reasons.some(reason => reason.startsWith('Prazo')) ? 'orange' : 'blue');
+            const icon = item.reasons.some(reason => reason.startsWith('Decisão')) ? 'fa-gavel' : (item.reasons.some(reason => reason.startsWith('Prazo')) ? 'fa-clock' : 'fa-triangle-exclamation');
+            return `<button class="overview-list-item" type="button" data-overview-item data-collection="${escapeHtml(item.collectionName)}" data-id="${escapeHtml(item.id)}"><span class="overview-list-icon ${iconClass}"><i class="fas ${icon}"></i></span><span><span class="overview-list-title">${escapeHtml(item.name)}</span><span class="overview-list-meta">${escapeHtml(item.reasons.join(' · '))}</span></span><span class="overview-list-value">${escapeHtml(item.coord || (item.collectionName === 'projects' ? 'Projeto' : 'Contrato'))}</span></button>`;
+        }).join('') : '<div class="overview-empty">Nenhum item crítico encontrado para os filtros atuais.</div>';
+        attentionList.querySelectorAll('[data-overview-item]').forEach(button => button.addEventListener('click', () => window.openOverviewItem(button.dataset.collection, button.dataset.id)));
+    }
+
+    const agendaList = document.getElementById('overviewAgendaList');
+    if (agendaList) {
+        const filteredAgenda = agenda.filter(item => !search || `${item.name} ${item.meta} ${item.type}`.toLowerCase().includes(search)).slice(0, 7);
+        const typeStyle = {
+            'Projeto': ['blue', 'fa-diagram-project'], 'Contrato': ['purple', 'fa-file-contract'], 'Marco': ['green', 'fa-flag'], 'Evento': ['green', 'fa-calendar-day'], 'Reunião': ['orange', 'fa-users']
+        };
+        agendaList.innerHTML = filteredAgenda.length ? filteredAgenda.map(item => {
+            const style = typeStyle[item.type] || ['blue', 'fa-calendar'];
+            const attrs = item.collection && item.id ? `data-overview-item data-collection="${escapeHtml(item.collection)}" data-id="${escapeHtml(item.id)}"` : `data-overview-tab="${escapeHtml(item.tab)}"`;
+            return `<button class="overview-list-item" type="button" ${attrs}><span class="overview-list-icon ${style[0]}"><i class="fas ${style[1]}"></i></span><span><span class="overview-list-title">${escapeHtml(item.name)}</span><span class="overview-list-meta">${escapeHtml(item.type)} · ${escapeHtml(item.meta || '')}</span></span><span class="overview-list-value">${overviewDateLabel(item.date)}${item.diff === 0 ? ' · Hoje' : ''}</span></button>`;
+        }).join('') : '<div class="overview-empty">Nenhum prazo, marco ou evento encontrado nos próximos 60 dias.</div>';
+        agendaList.querySelectorAll('[data-overview-item]').forEach(button => button.addEventListener('click', () => window.openOverviewItem(button.dataset.collection, button.dataset.id)));
+        agendaList.querySelectorAll('[data-overview-tab]').forEach(button => button.addEventListener('click', () => window.switchTab(button.dataset.overviewTab)));
+    }
+
+    const indicatorList = document.getElementById('overviewIndicatorsList');
+    if (indicatorList) {
+        const filteredIndicators = definedIndicators.filter(ind => !search || `${ind.name} ${ind.product} ${ind.code}`.toLowerCase().includes(search)).sort((a, b) => calcIndicatorPercent(a) - calcIndicatorPercent(b)).slice(0, 6);
+        indicatorList.innerHTML = filteredIndicators.length ? filteredIndicators.map(ind => {
+            const pct = Math.max(0, calcIndicatorPercent(ind));
+            const width = Math.min(pct, 100);
+            const color = pct >= 100 ? '#059669' : pct >= 70 ? '#005ca8' : pct >= 50 ? '#d97706' : '#dc2626';
+            return `<button type="button" onclick="switchTab('indicators')" class="overview-indicator-row w-full text-left"><span><span class="overview-indicator-title">${escapeHtml(ind.name || 'Indicador')}</span><span class="overview-indicator-track"><span class="overview-indicator-fill" style="display:block;width:${width}%;background:${color}"></span></span></span><span class="overview-indicator-pct" style="color:${color}">${pct}%</span></button>`;
+        }).join('') : '<div class="overview-empty">Ainda não há indicadores com meta definida para compor esta leitura.</div>';
+    }
+
+    const coordGrid = document.getElementById('overviewCoordGrid');
+    if (coordGrid) {
+        const groups = new Map();
+        projects.forEach(item => {
+            const coord = item.coord || 'Não definido';
+            if (!groups.has(coord)) groups.set(coord, { coord, total:0, done:0, risk:0, active:0 });
+            const group = groups.get(coord);
+            group.total += 1;
+            const status = normalizeStatus(item.status);
+            if (status === 'Concluído') group.done += 1;
+            if (status === 'Em Execução (com risco)') group.risk += 1;
+            if (activeStatuses.has(status)) group.active += 1;
+        });
+        const coordRows = [...groups.values()].sort((a,b) => b.total - a.total || a.coord.localeCompare(b.coord, 'pt-BR')).slice(0, 6);
+        coordGrid.innerHTML = coordRows.length ? coordRows.map(group => {
+            const donePct = group.total ? Math.round((group.done / group.total) * 100) : 0;
+            return `<button type="button" class="overview-coord-card" data-overview-coord="${escapeHtml(group.coord)}"><div class="overview-coord-name">${escapeHtml(group.coord)}</div><div class="overview-coord-main">${group.total}</div><div class="overview-coord-note">${group.active} ativos · ${group.risk} em risco · ${group.done} concluídos</div><div class="overview-coord-track"><div class="overview-coord-fill" style="width:${donePct}%"></div></div></button>`;
+        }).join('') : '<div class="overview-empty" style="grid-column:1/-1">Nenhum projeto cadastrado para consolidar por coordenação.</div>';
+        coordGrid.querySelectorAll('[data-overview-coord]').forEach(button => button.addEventListener('click', () => window.openOverviewCoord(button.dataset.overviewCoord)));
+    }
+};
+
+window.syncActiveTabHeader = (tab) => {
+    const iconEl = document.getElementById('viewTitleIcon');
+    if (!iconEl) return;
+    const iconMap = {
+        overview: 'fa-eye',
+        projects: 'fa-diagram-project',
+        contracts: 'fa-file-contract',
+        gantt: 'fa-stream',
+        pca2027: 'fa-clipboard-check',
+        indicators: 'fa-chart-line',
+        despachos: 'fa-clipboard-list',
+        calendar: 'fa-calendar-alt',
+        portaria: 'fa-balance-scale'
+    };
+    const titleMap = {
+        overview: 'Visão Geral',
+        projects: 'Projetos',
+        contracts: 'Contratos',
+        gantt: 'Cronograma',
+        pca2027: 'PCA 2027',
+        indicators: 'Indicadores',
+        despachos: 'Despachos',
+        calendar: 'Calendário',
+        portaria: 'Portaria nº 44/25'
+    };
+    const resolvedTab = tab === 'operational' ? 'projects' : tab;
+    const iconClass = iconMap[resolvedTab] || 'fa-eye';
+    iconEl.className = `fas ${iconClass}`;
+    if (titleMap[resolvedTab]) document.title = `${titleMap[resolvedTab]} · DSV - Painel de Gestão`;
+};
+
+window.switchTab = (tab) => {
+    if (tab === 'operational') tab = 'projects';
+    activeTab = tab;
+    if (typeof window.syncActiveTabHeader === 'function') window.syncActiveTabHeader(tab);
+    currentListFilter = 'all';
+    currentFilter = 'all';
+    currentPriorityFilter = 'all';
+
+    const app = document.getElementById('appShell');
+    const addBtn = document.getElementById('addBtn');
+    const addBtnText = document.getElementById('addBtnText');
+    app.classList.remove('contracts-theme', 'operational-theme', 'portaria-theme', 'gantt-page-scroll');
+
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.className = 'tab-btn w-auto md:w-full flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg whitespace-nowrap text-slate-400';
+    });
+    const mapBg = {
+        overview: 'bg-blue-700', projects: 'bg-sky-600', contracts: 'bg-purple-600', operational: 'bg-orange-500',
+        portaria: 'bg-cyan-600', calendar: 'bg-indigo-600', indicators: 'bg-pink-600', despachos: 'bg-slate-800',
+        gantt: 'bg-emerald-600', pca2027: 'bg-blue-700'
+    };
+    const activeButton = document.getElementById(`tab-${tab}`);
+    if (activeButton) activeButton.className += ` ${mapBg[tab] || 'bg-blue-700'} text-white`;
+
+    if (addBtn) addBtn.className = 'action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl transition-all text-sm font-black uppercase tracking-widest hover:border-current';
+    ['overviewView','standardView','portariaView','calendarView','indicatorsView','despachosView','ganttView','pca2027View'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+    document.getElementById('statsWrapper')?.classList.add('hidden');
+    if (addBtn?.parentElement) addBtn.parentElement.classList.add('hidden');
+    document.getElementById('pmgInfoBtn')?.classList.add('hidden');
+
+    const canceledCard = document.getElementById('cardCancelado');
+    if (canceledCard) canceledCard.classList.toggle('hidden', !['projects','contracts'].includes(tab));
+
+    const title = document.getElementById('viewTitle');
+    const subtitle = document.getElementById('viewSubtitle');
+    const subtitles = {
+        overview: 'Panorama executivo de projetos, contratos, indicadores, decisões, agenda e entregas da Diretoria de Segurança Viária.',
+        projects: 'Gestão do portfólio, responsáveis, riscos, decisões e andamento das entregas.',
+        contracts: 'Acompanhamento de contratos, convênios, recursos, prazos e vínculos institucionais.',
+        gantt: 'Visão temporal integrada de projetos, contratos e marcos de entrega.',
+        pca2027: 'Planejamento das contratações anuais e acompanhamento das demandas previstas.',
+        indicators: 'Monitoramento de metas estratégicas e indicadores gerenciais.',
+        despachos: 'Preparação de pautas, deliberações e encaminhamentos executivos.',
+        calendar: 'Agenda estratégica de eventos, prazos e compromissos institucionais.',
+        portaria: 'Estrutura e atribuições da Diretoria de Segurança Viária conforme a Portaria nº 44/2025.'
+    };
+    if (subtitle) subtitle.textContent = subtitles[tab] || subtitles.overview;
+
+    if (tab === 'overview') {
+        if (title) title.textContent = 'Painel de Gestão DSV';
+        document.getElementById('overviewView')?.classList.remove('hidden');
+        window.renderOverview?.();
+    } else if (tab === 'projects') {
+        addBtn?.classList.add('btn-theme-project');
+        if (addBtnText) addBtnText.textContent = 'Adicionar Projeto';
+        if (title) title.textContent = 'Portfólio de Projetos';
+        document.getElementById('standardView')?.classList.remove('hidden');
+        document.getElementById('statsWrapper')?.classList.remove('hidden');
+        if (addBtn?.parentElement) addBtn.parentElement.classList.remove('hidden');
+        document.getElementById('pmgInfoBtn')?.classList.remove('hidden');
+        showCharts(true, false);
+    } else if (tab === 'contracts') {
+        addBtn?.classList.add('btn-theme-contract');
+        if (addBtnText) addBtnText.textContent = 'Adicionar Contrato';
+        app.classList.add('contracts-theme');
+        if (title) title.textContent = 'Contratos | Convênios';
+        document.getElementById('standardView')?.classList.remove('hidden');
+        document.getElementById('statsWrapper')?.classList.remove('hidden');
+        if (addBtn?.parentElement) addBtn.parentElement.classList.remove('hidden');
+        showCharts(true, false);
+    } else if (tab === 'portaria') {
+        app.classList.add('portaria-theme');
+        if (title) title.textContent = 'Portaria Detran nº 44/2025';
+        document.getElementById('portariaView')?.classList.remove('hidden');
+        window.renderPortaria?.();
+    } else if (tab === 'calendar') {
+        if (title) title.textContent = 'Calendário Estratégico';
+        document.getElementById('calendarView')?.classList.remove('hidden');
+        window.renderCalendar?.();
+    } else if (tab === 'indicators') {
+        if (title) title.textContent = 'Indicadores Estratégicos';
+        document.getElementById('indicatorsView')?.classList.remove('hidden');
+        window.renderIndicators?.();
+    } else if (tab === 'despachos') {
+        if (title) title.textContent = 'Pauta de Despachos';
+        document.getElementById('despachosView')?.classList.remove('hidden');
+        window.renderDespachos?.();
+    } else if (tab === 'gantt') {
+        app.classList.add('gantt-page-scroll');
+        if (title) title.textContent = 'Cronograma Integrado';
+        document.getElementById('ganttView')?.classList.remove('hidden');
+        window.renderGantt?.();
+    } else if (tab === 'pca2027') {
+        if (title) title.textContent = 'PCA 2027';
+        document.getElementById('pca2027View')?.classList.remove('hidden');
+    }
+
+    const filterService = document.getElementById('filterService');
+    if (filterService) filterService.value = 'all';
+    const operationalFilters = document.getElementById('operationalFilters');
+    if (operationalFilters) operationalFilters.style.display = tab === 'projects' ? 'flex' : 'none';
+    const filterServiceLabel = document.querySelector('#operationalFilters label');
+    if (filterServiceLabel) filterServiceLabel.textContent = tab === 'projects' ? 'Filtrar por Divisão/Serviço responsável' : 'Filtrar por Serviço';
+    const statsRow2 = document.getElementById('statsRow2');
+    if (statsRow2) statsRow2.style.display = tab === 'contracts' ? 'block' : 'none';
+
+    document.querySelectorAll('.active-coord').forEach(button => button.classList.remove('active-coord'));
+    document.querySelectorAll('.active-filter').forEach(card => card.classList.remove('active-filter'));
+    document.getElementById('cardTotal')?.classList.add('active-filter');
+    document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend'));
+
+    const coordWrapper = document.getElementById('coordFiltersWrapper');
+    if (coordWrapper) {
+        const showCoord = ['projects','contracts','gantt'].includes(tab);
+        coordWrapper.style.display = showCoord ? '' : 'none';
+        coordWrapper.classList.toggle('hidden', !showCoord);
+    }
+    updateProjectContractViewModeButtons();
+    if (!['overview','portaria','calendar','indicators','despachos','gantt','pca2027'].includes(tab)) window.renderData();
+};
+
         window.setGanttFilter = (filter) => {
             currentGanttFilter = filter;
             document.getElementById('btnGanttAll').className = `px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${filter === 'all' ? 'shadow-sm bg-white text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`;
@@ -7313,6 +9262,7 @@ window.openAddBacklogItemModal = (meetingId) => {
             wrapper.classList.toggle('hidden', !shouldShow);
             cardsBtn.classList.toggle('active', projectContractViewMode !== 'table');
             tableBtn.classList.toggle('active', projectContractViewMode === 'table');
+            document.getElementById('exportProjectsJsonBtn')?.classList.toggle('hidden', activeTab !== 'projects');
         }
 
         window.setProjectContractViewMode = (mode) => {
@@ -7362,6 +9312,21 @@ window.openAddBacklogItemModal = (meetingId) => {
             return `<div class="table-service-list">${services.map(s => `<span class="table-pill ${colorClass}" title="${escapeHtml(getCargoFullName(s))}">${escapeHtml(getCargoAcronym(s))}</span>`).join('')}</div>`;
         }
 
+        window.setTableSortMode = (value) => {
+            tableSortMode = value || 'name-asc';
+            localStorage.setItem('dsvTableSortMode', tableSortMode);
+            window.renderData();
+        };
+        window.setTableStatusFilter = (value) => { tableStatusFilter = value || 'all'; window.renderData(); };
+        window.setTableCoordFilter = (value) => { tableCoordFilter = value || 'all'; window.renderData(); };
+        window.resetTableControls = () => {
+            tableSortMode = 'name-asc';
+            tableStatusFilter = 'all';
+            tableCoordFilter = 'all';
+            localStorage.setItem('dsvTableSortMode', tableSortMode);
+            window.renderData();
+        };
+
         function renderProjectContractTable(items, today) {
             const container = document.getElementById('projectsList');
             if (!container) return;
@@ -7369,10 +9334,36 @@ window.openAddBacklogItemModal = (meetingId) => {
             const isProjects = activeTab === 'projects';
             container.className = 'space-y-4';
 
+            const availableStatuses = [...new Set(items.map(item => normalizeStatus(item.status)).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+            const availableCoords = [...new Set(items.map(item => item.coord).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+            if (tableStatusFilter !== 'all' && !availableStatuses.includes(tableStatusFilter)) tableStatusFilter = 'all';
+            if (tableCoordFilter !== 'all' && !availableCoords.includes(tableCoordFilter)) tableCoordFilter = 'all';
+            let tableItems = [...items];
+            if (tableStatusFilter !== 'all') tableItems = tableItems.filter(item => normalizeStatus(item.status) === tableStatusFilter);
+            if (tableCoordFilter !== 'all') tableItems = tableItems.filter(item => item.coord === tableCoordFilter);
+
+            const statusOrder = Object.fromEntries(UNIFIED_STATUS.map((status, index) => [status, index]));
+            const priorityOrder = { Urgente: 0, Alta: 1, Média: 2, Baixa: 3 };
+            const complexityOrder = { Alta: 0, Média: 1, Baixa: 2 };
+            tableItems.sort((a, b) => {
+                const nameCompare = String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR', { sensitivity: 'base' });
+                if (tableSortMode === 'name-desc') return -nameCompare;
+                if (tableSortMode === 'deadline-asc' || tableSortMode === 'deadline-desc') {
+                    const aDate = a.prazo || '9999-12-31';
+                    const bDate = b.prazo || '9999-12-31';
+                    const result = aDate.localeCompare(bDate);
+                    return tableSortMode === 'deadline-desc' ? -result : result;
+                }
+                if (tableSortMode === 'status') return (statusOrder[normalizeStatus(a.status)] ?? 99) - (statusOrder[normalizeStatus(b.status)] ?? 99) || nameCompare;
+                if (tableSortMode === 'priority') return (priorityOrder[a.priority] ?? 99) - (priorityOrder[b.priority] ?? 99) || nameCompare;
+                if (tableSortMode === 'complexity') return (complexityOrder[a.complexity] ?? 99) - (complexityOrder[b.complexity] ?? 99) || nameCompare;
+                return nameCompare;
+            });
+
             const title = isContracts ? 'Tabela de contratos e convênios' : 'Tabela de projetos';
             const subtitle = isContracts
-                ? 'Visualização operacional dos contratos filtrados, com programa, recurso, vínculo e ações rápidas.'
-                : 'Visualização operacional dos projetos filtrados, com status, complexidade, decisão e ações rápidas.';
+                ? 'Visualização operacional com filtros, ordenação, vínculo e ações rápidas.'
+                : 'Visualização operacional com filtros, ordenação, hierarquia, progresso e ações rápidas.';
             const columns = isContracts ? `
                 <th>Contrato / Convênio</th>
                 <th>Coord.</th>
@@ -7382,7 +9373,6 @@ window.openAddBacklogItemModal = (meetingId) => {
                 <th>Recurso</th>
                 <th>Projeto vinculado</th>
                 <th>Prazo</th>
-                <th>Docs</th>
                 <th>Ações</th>
             ` : `
                 <th>Projeto</th>
@@ -7391,29 +9381,24 @@ window.openAddBacklogItemModal = (meetingId) => {
                 <th>Status</th>
                 <th>Prioridade</th>
                 <th>Complexidade</th>
+                <th>Progresso</th>
+                <th>Projeto maior</th>
                 <th>Decisão</th>
                 <th>Prazo</th>
-                <th>Docs</th>
                 <th>Ações</th>
             `;
 
-            const rows = items.map(item => {
+            const rows = tableItems.map(item => {
                 const status = normalizeStatus(item.status);
-                const docs = getDocLinksArray(item);
-                const docHtml = docs.length
-                    ? `<a href="${sanitizeMarkdownUrl(docs[0].url)}" target="_blank" rel="noopener noreferrer" class="table-pill text-blue-700 bg-blue-50 border-blue-100"><i class="fas fa-paperclip"></i>${docs.length} ${docs.length === 1 ? 'doc' : 'docs'}</a>`
-                    : '<span class="table-meta-muted">--</span>';
                 const actionHtml = `
                     <div class="table-actions">
+                        ${isProjects ? `<button onclick="event.stopPropagation(); shareProject('${item.id}')" class="table-action-btn" title="Copiar link do projeto"><i class="fas fa-share-nodes"></i></button>` : ''}
                         <button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${activeTab}')" class="table-action-btn ${item.onDispatch ? 'active-dispatch' : ''}" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}"><i class="fas fa-clipboard-list"></i></button>
                         <button onclick="event.stopPropagation(); togglePlanner('${item.id}', '${activeTab}')" class="table-action-btn ${item.onPlanner ? 'active-planner' : ''}" title="${item.onPlanner ? 'Remover do Planner da Presidência' : 'Sinalizar no Planner da Presidência'}"><i class="fas fa-tasks"></i></button>
                         <button onclick="event.stopPropagation(); toggleDiretoriaValidation('${item.id}', '${activeTab}')" class="table-action-btn ${item.onDiretoriaValidation ? 'active-validation' : ''}" title="${item.onDiretoriaValidation ? 'Remover da Validação da Diretoria' : 'Marcar para Validação da Diretoria'}"><i class="fas fa-user-check"></i></button>
                         <button onclick="event.stopPropagation(); editItem('${item.id}', '${activeTab}')" class="table-action-btn" title="Editar"><i class="fas fa-edit"></i></button>
                     </div>`;
-                const primary = `
-                    <div class="table-primary-title">${escapeHtml(item.name || 'Sem título')}</div>
-                    ${item.desc ? `<div class="table-primary-desc">${escapeHtml(compactText(item.desc, 160))}</div>` : ''}
-                `;
+                const primary = `<div class="table-primary-title">${escapeHtml(item.name || 'Sem título')}</div>`;
                 const baseCells = `
                     <td>${primary}</td>
                     <td><span class="table-pill">${escapeHtml(item.coord || 'N/A')}</span></td>
@@ -7432,7 +9417,6 @@ window.openAddBacklogItemModal = (meetingId) => {
                         <td><span class="font-black text-slate-700">${formatCurrencyBR(item.resourceValue)}</span></td>
                         <td>${projectName ? `<span class="table-pill" title="${escapeHtml(projectName)}">${escapeHtml(compactText(projectName, 48))}</span>` : '<span class="table-meta-muted">--</span>'}</td>
                         <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
-                        <td>${docHtml}</td>
                         <td>${actionHtml}</td>
                     </tr>`;
                 }
@@ -7442,30 +9426,56 @@ window.openAddBacklogItemModal = (meetingId) => {
                 const decisionHtml = decisionActive
                     ? `<span class="table-pill decision-pill text-amber-700 bg-amber-50 border-amber-100" title="${escapeHtml(item.decisionDesc)}"><i class="fas fa-scale-balanced"></i>${escapeHtml(item.decisionLevel || 'Decisão')}</span>`
                     : '<span class="table-meta-muted">--</span>';
+                const progress = getProjectProgressSummary(item);
+                const progressHtml = progress.total
+                    ? `<div class="min-w-[110px]"><div class="flex justify-between gap-2 text-[9px] font-black text-slate-500"><span>${progress.kind === 'subprojects' ? 'Subprojetos' : 'Tarefas'}</span><span>${progress.pct}%</span></div><div class="progress-summary-track !mt-1 !h-[6px]"><div class="progress-summary-fill" style="width:${progress.pct}%"></div></div></div>`
+                    : '<span class="table-meta-muted">--</span>';
+                const parent = getProjectParent(item.parentProjectId);
                 return `<tr onclick="editItem('${item.id}', '${activeTab}')">
                     ${baseCells}
                     <td><span class="table-pill priority-pill ${item.priority === 'Urgente' ? 'text-red-700 bg-red-50 border-red-100' : 'text-slate-600 bg-slate-50 border-slate-200'}">${escapeHtml(item.priority || '--')}</span></td>
                     <td><span class="table-pill ${complexity === 'Alta' ? 'tag-g' : (complexity === 'Baixa' ? 'tag-p' : 'tag-m')}">${escapeHtml(complexity)}</span></td>
+                    <td>${progressHtml}</td>
+                    <td>${parent ? `<button class="project-link-chip" onclick="event.stopPropagation(); editItem('${parent.id}','projects')" title="Abrir projeto maior"><i class="fas fa-arrow-up-right-dots"></i><span>${escapeHtml(compactText(parent.name, 42))}</span></button>` : '<span class="table-meta-muted">--</span>'}</td>
                     <td>${decisionHtml}</td>
                     <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
-                    <td>${docHtml}</td>
                     <td>${actionHtml}</td>
                 </tr>`;
             }).join('');
 
+            const sortOptions = `
+                <option value="name-asc" ${tableSortMode === 'name-asc' ? 'selected' : ''}>Nome A–Z</option>
+                <option value="name-desc" ${tableSortMode === 'name-desc' ? 'selected' : ''}>Nome Z–A</option>
+                <option value="deadline-asc" ${tableSortMode === 'deadline-asc' ? 'selected' : ''}>Prazo mais próximo</option>
+                <option value="deadline-desc" ${tableSortMode === 'deadline-desc' ? 'selected' : ''}>Prazo mais distante</option>
+                <option value="status" ${tableSortMode === 'status' ? 'selected' : ''}>Status</option>
+                ${isProjects ? `<option value="priority" ${tableSortMode === 'priority' ? 'selected' : ''}>Prioridade</option><option value="complexity" ${tableSortMode === 'complexity' ? 'selected' : ''}>Complexidade</option>` : ''}
+            `;
+            const statusOptions = '<option value="all">Todos os status</option>' + availableStatuses.map(status => `<option value="${escapeHtml(status)}" ${tableStatusFilter === status ? 'selected' : ''}>${escapeHtml(status)}</option>`).join('');
+            const coordOptions = '<option value="all">Todas as coordenações</option>' + availableCoords.map(coord => `<option value="${escapeHtml(coord)}" ${tableCoordFilter === coord ? 'selected' : ''}>${escapeHtml(coord)}</option>`).join('');
+            const colSpan = isContracts ? 9 : 11;
+
             container.innerHTML = `
                 <div class="table-view-card">
                     <div class="table-view-toolbar">
-                        <div>
-                            <div class="table-view-title"><i class="fas fa-table-list mr-2"></i>${title}</div>
-                            <div class="table-view-subtitle">${subtitle}</div>
+                        <div class="table-toolbar-stack">
+                            <div>
+                                <div class="table-view-title"><i class="fas fa-table-list mr-2"></i>${title}</div>
+                                <div class="table-view-subtitle">${subtitle}</div>
+                            </div>
+                            <div class="table-controls">
+                                <select class="table-control" onchange="setTableStatusFilter(this.value)">${statusOptions}</select>
+                                <select class="table-control" onchange="setTableCoordFilter(this.value)">${coordOptions}</select>
+                                <select class="table-control" onchange="setTableSortMode(this.value)">${sortOptions}</select>
+                                <button class="table-reset-btn" onclick="resetTableControls()" type="button" title="Limpar filtros e ordenação"><i class="fas fa-rotate-left"></i></button>
+                            </div>
                         </div>
-                        <span class="table-view-count">${items.length} ${items.length === 1 ? 'registro' : 'registros'}</span>
+                        <span class="table-view-count">${tableItems.length} de ${items.length} ${items.length === 1 ? 'registro' : 'registros'}</span>
                     </div>
                     <div class="table-view-scroll">
                         <table class="table-view">
                             <thead><tr>${columns}</tr></thead>
-                            <tbody>${rows || `<tr><td colspan="10"><div class="table-empty-state"><i class="fas fa-inbox text-2xl mb-3 block"></i>Nenhum registro encontrado com os filtros atuais.</div></td></tr>`}</tbody>
+                            <tbody>${rows || `<tr><td colspan="${colSpan}"><div class="table-empty-state"><i class="fas fa-inbox text-2xl mb-3 block"></i>Nenhum registro encontrado com os filtros atuais.</div></td></tr>`}</tbody>
                         </table>
                     </div>
                 </div>
@@ -7473,6 +9483,7 @@ window.openAddBacklogItemModal = (meetingId) => {
         }
 
         window.renderData = () => {
+            if (activeTab === 'overview') { window.renderOverview?.(); return; }
             if (activeTab === 'calendar') { window.renderCalendar(); return; }
             if (activeTab === 'portaria') { window.renderPortaria(); return; }
             if (activeTab === 'indicators') { window.renderIndicators(); return; }
@@ -7483,7 +9494,6 @@ window.openAddBacklogItemModal = (meetingId) => {
             const search = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
             let filtered = dataStore[activeTab] || [];
-            if (activeTab === 'projects') { filtered = filtered.filter(i => !i.type || i.type === 'Projeto'); }
             
             if(search) filtered = filtered.filter(i => { const activeDecisionText = (activeTab === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : ''; const activeDecisionLevel = activeDecisionText ? i.decisionLevel : ''; const hay = [i.name, i.desc, i.encaminhamentos, activeDecisionText, activeDecisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
             if(currentFilter !== 'all') filtered = filtered.filter(i => i.coord === currentFilter);
@@ -7686,7 +9696,7 @@ Object.keys(cols).forEach(key => {
 
         // Função auxiliar para criar HTML do card
         function createCardHtml(item, today) {
-            const sortedRoadmap = (item.roadmap || []).sort((a,b) => (a.noDate || !a.data ? '9999-12-31' : a.data).localeCompare(b.noDate || !b.data ? '9999-12-31' : b.data));
+            const sortedRoadmap = sortRoadmapItems(item.roadmap || []);
             const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const semData = r.noDate || !r.data; const isPast = !semData && r.data < today; const dotClass = semData ? 'bg-slate-400 ring-4 ring-slate-100' : (isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'); const dateClass = semData ? 'text-slate-500 font-black' : (isPast ? 'text-slate-400' : 'text-blue-600 font-black'); const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; const dateLabel = semData ? 'Data a definir' : new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${dateLabel}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
             const respectBadge = (activeTab === 'contracts' && item.program === 'Respeito à Vida' && (item.programComponent === '1' || item.programComponent === '3'))
                 ? `<span class=\"ml-2 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-100\">Respeito à Vida — C${item.programComponent}</span>`
@@ -7777,6 +9787,44 @@ Object.keys(cols).forEach(key => {
                 servicesBadgeHtml = `<p class="text-[9px] text-slate-400 font-bold uppercase truncate">${item.service}</p>`;
             }
 
+            const parentProject = activeTab === 'projects' ? getProjectParent(item.parentProjectId) : null;
+            const subprojectProgress = activeTab === 'projects' ? getSubprojectProgress(item.id) : { children: [], total: 0, done: 0, pct: 0 };
+            const taskProgress = activeTab === 'projects' ? getTaskProgress(item.tasks || []) : { total: 0, done: 0, pct: 0 };
+            const hierarchySummaryHtml = activeTab === 'projects' && (parentProject || subprojectProgress.total) ? `
+                <div class="card-summary-section">
+                    <p class="card-summary-section-title"><i class="fas fa-diagram-project"></i> Hierarquia do projeto</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${parentProject ? `<button class="project-link-chip" type="button" onclick="event.stopPropagation(); editItem('${parentProject.id}','projects')" title="Abrir projeto guarda-chuva"><i class="fas fa-arrow-up-right-dots"></i><span>${escapeHtml(parentProject.name)}</span></button>` : '<span class="text-[10px] font-bold text-slate-400">Projeto independente</span>'}
+                        ${subprojectProgress.total ? `<span class="project-link-chip"><i class="fas fa-code-branch"></i><span>${subprojectProgress.total} ${subprojectProgress.total === 1 ? 'subprojeto' : 'subprojetos'}</span></span>` : ''}
+                    </div>
+                </div>` : '';
+            const progressBlocks = [];
+            if (taskProgress.total) progressBlocks.push(`
+                <div class="progress-summary-card">
+                    <div class="progress-summary-head"><span><i class="fas fa-list-check mr-1"></i>Tarefas</span><span class="progress-summary-value">${taskProgress.done}/${taskProgress.total} · ${taskProgress.pct}%</span></div>
+                    <div class="progress-summary-track"><div class="progress-summary-fill" style="width:${taskProgress.pct}%"></div></div>
+                </div>`);
+            if (subprojectProgress.total) progressBlocks.push(`
+                <div class="progress-summary-card">
+                    <div class="progress-summary-head"><span><i class="fas fa-code-branch mr-1"></i>Subprojetos</span><span class="progress-summary-value">${subprojectProgress.done}/${subprojectProgress.total} · ${subprojectProgress.pct}%</span></div>
+                    <div class="progress-summary-track"><div class="progress-summary-fill" style="width:${subprojectProgress.pct}%"></div></div>
+                </div>`);
+            const progressSummaryHtml = progressBlocks.length ? `<div class="space-y-2">${progressBlocks.join('')}</div>` : '';
+            const tasksDetailHtml = activeTab === 'projects' && normalizeTasks(item.tasks || []).length ? `
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase mb-2"><i class="fas fa-list-check mr-1"></i>Tarefas e subtarefas</p>
+                    <div class="space-y-2">${normalizeTasks(item.tasks || []).map(task => `
+                        <div class="rounded-xl border border-slate-200 bg-white p-3">
+                            <div class="flex items-center gap-2 text-sm font-bold ${task.done ? 'text-emerald-700' : 'text-slate-700'}"><i class="fas ${task.done ? 'fa-circle-check' : 'fa-circle'} text-xs"></i>${escapeHtml(task.title)}</div>
+                            ${task.subtasks.length ? `<div class="mt-2 ml-5 space-y-1">${task.subtasks.map(subtask => `<div class="text-xs ${subtask.done ? 'text-emerald-700' : 'text-slate-500'}"><i class="fas ${subtask.done ? 'fa-check' : 'fa-minus'} mr-2"></i>${escapeHtml(subtask.title)}</div>`).join('')}</div>` : ''}
+                        </div>`).join('')}</div>
+                </div>` : '';
+            const childrenDetailHtml = activeTab === 'projects' && subprojectProgress.total ? `
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase mb-2"><i class="fas fa-code-branch mr-1"></i>Subprojetos vinculados</p>
+                    <div class="child-project-list">${subprojectProgress.children.map(child => `<button class="child-project-item" type="button" onclick="event.stopPropagation(); editItem('${child.id}','projects')"><span>${escapeHtml(child.name || 'Projeto sem nome')}</span><span class="table-pill ${window.getStatusColor(normalizeStatus(child.status))}">${escapeHtml(normalizeStatus(child.status) || 'Sem status')}</span></button>`).join('')}</div>
+                </div>` : '';
+
             const priorityBadgeHtml = item.priority === 'Urgente'
                 ? '<span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black bg-red-100 text-red-600 border-red-200">Urgente</span>'
                 : '';
@@ -7799,6 +9847,8 @@ Object.keys(cols).forEach(key => {
                                     </div>
                                     <div class="card-summary-stack">
                                         ${servicesBadgeHtml}
+                                        ${hierarchySummaryHtml}
+                                        ${progressSummaryHtml}
                                         ${decisionResumoHtml ? `<div class="decision-summary-grid">${decisionResumoHtml}</div>` : ''}
                                         ${encaminhamentosResumoHtml}
                                     </div>
@@ -7806,6 +9856,7 @@ Object.keys(cols).forEach(key => {
                             </div>
                         </div>
                         <div class="card-actions card-top-actions">
+                            ${activeTab === 'projects' ? `<button onclick="event.stopPropagation(); shareProject('${item.id}')" class="btn-dispatch" title="Copiar link do projeto"><i class="fas fa-share-nodes"></i></button>` : ''}
                             <button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${activeTab}')" class="btn-dispatch ${item.onDispatch ? 'active-dispatch' : ''}" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}">
                                 <i class="fas fa-clipboard-list"></i>
                             </button>
@@ -7835,6 +9886,8 @@ Object.keys(cols).forEach(key => {
                     <div class="py-5 space-y-5">
                         <div class="space-y-5">
                             <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><div class="text-sm text-slate-700 leading-relaxed font-medium markdown-content">${md(item.desc, 'Sem descrição.')}</div></div>
+                            ${tasksDetailHtml}
+                            ${childrenDetailHtml}
                             ${shouldShowEncaminhamentosResumo ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><div class="text-sm text-slate-700 leading-relaxed font-bold markdown-content">${md(encaminhamentosResumoText)}</div></div>` : ''}
                             ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><div class="text-sm text-red-700 leading-relaxed font-bold markdown-content">${md(item.risks)}</div></div>` : ''}
                             ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><div class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 markdown-content">${md(item.obs)}</div></div>` : ''}
@@ -8018,7 +10071,7 @@ Object.keys(cols).forEach(key => {
 window.setListFilter = f => { f = normalizeStatus(f); if(f === 'Concluído' && typeof window.openCompletedModal === 'function') { window.openCompletedModal(); return; } if(f === 'Cancelado' && typeof window.openCanceledModal === 'function') { window.openCanceledModal(); return; } currentListFilter = f; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter')); const map = {'all':'cardTotal','Backlog':'cardBacklog','Em Execução':'cardExecucao','Em Execução (com risco)':'cardExecucaoRisco','Cancelado':'cardCancelado','Concluído':'cardConcluido'}; if(map[f] && document.getElementById(map[f])) document.getElementById(map[f]).classList.add('active-filter'); window.renderData(); };
         window.setPriorityFilter = p => { currentPriorityFilter = (currentPriorityFilter === p) ? 'all' : p; document.querySelectorAll('[id^="legend-prio-"]').forEach(el => el.classList.remove('active-legend')); if(currentPriorityFilter !== 'all') { const map = {'Urgente':'urg', 'Alta':'high', 'Média':'mid', 'Baixa':'low'}; document.getElementById('legend-prio-'+map[currentPriorityFilter]).classList.add('active-legend'); } window.renderData(); };
         window.setFilter = f => { currentFilter = f; const btns = document.querySelectorAll('.coord-btn'); btns.forEach(b => b.classList.remove('active-coord')); if(f !== 'all') { document.getElementById('coordBtnContainer').classList.add('coord-list-active'); const b = document.getElementById('coord-'+f); if(b) b.classList.add('active-coord'); } else document.getElementById('coordBtnContainer').classList.remove('coord-list-active'); if (activeTab === 'gantt') window.renderGantt(); else window.renderData(); };
-        window.updateStatusUI = s => { document.getElementById('sysStatusDot').className = `w-2 h-2 rounded-full ${s === 'online' ? 'bg-emerald-400' : 'bg-red-500'}`; document.getElementById('sysStatusText').innerText = s === 'online' ? 'Online' : 'Sincronizando...'; };
+        window.updateStatusUI = () => { const status = document.getElementById('sysStatusText')?.closest('[data-system-status]'); if (status) status.remove(); };
         
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -8031,7 +10084,7 @@ window.setListFilter = f => { f = normalizeStatus(f); if(f === 'Concluído' && t
             updateAuthIndicator(user);
             if (window.__dsvListenersStarted) return;
             window.__dsvListenersStarted = true;
- initListeners(); setTimeout(() => window.switchTab('projects'), 500); // Indicadores: listeners de busca/filtro
+ initListeners(); setTimeout(() => { const hasSharedProject = new URLSearchParams(window.location.search).has('project'); window.switchTab(hasSharedProject ? 'projects' : 'overview'); if (hasSharedProject) tryOpenSharedProject(); }, 500); // Indicadores: listeners de busca/filtro
                     const s = document.getElementById('indicatorSearch');
                     const c = document.getElementById('indicatorClearSearch');
                     const tf = document.getElementById('indicatorTypeFilter');
@@ -8523,17 +10576,25 @@ const filenameBase = (safeTitle || 'pauta')
 
 
 
-        window.toggleSidebar = () => {
+        window.updateSidebarToggleVisual = () => {
             const app = document.getElementById('appShell');
             const toggleBtn = document.getElementById('sidebarToggle');
+            const icon = document.getElementById('sidebarToggleMaterialIcon');
+            if (!app || !toggleBtn) return;
+            const expanded = app.classList.contains('sidebar-expanded');
+            const shortLabel = expanded ? 'Recolher menu' : 'Expandir menu';
+            toggleBtn.setAttribute('aria-expanded', String(expanded));
+            toggleBtn.setAttribute('aria-label', expanded ? 'Recolher menu lateral' : 'Expandir menu lateral');
+            toggleBtn.setAttribute('title', shortLabel);
+            toggleBtn.setAttribute('data-tooltip', shortLabel);
+            if (icon) icon.textContent = expanded ? 'chevron_left' : 'chevron_right';
+        };
+
+        window.toggleSidebar = () => {
+            const app = document.getElementById('appShell');
             if (!app) return;
-            const expanded = app.classList.toggle('sidebar-expanded');
-            if (toggleBtn) {
-                const label = expanded ? 'Recolher menu lateral' : 'Expandir menu lateral';
-                toggleBtn.setAttribute('aria-expanded', String(expanded));
-                toggleBtn.setAttribute('aria-label', label);
-                toggleBtn.setAttribute('title', expanded ? 'Recolher menu' : 'Expandir menu');
-            }
+            app.classList.toggle('sidebar-expanded');
+            window.updateSidebarToggleVisual();
         };
 
 </script>
@@ -8825,5 +10886,44 @@ const filenameBase = (safeTitle || 'pauta')
   }
 }
 </style>
+<script id="ds-paineis-detran-v1-js">
+(function(){
+  window.openDSMobileSidebar = function(){
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('dsSidebarBackdrop');
+    if(sidebar) sidebar.classList.add('mobile-open');
+    if(backdrop) backdrop.classList.add('active');
+  };
+  window.closeDSMobileSidebar = function(){
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('dsSidebarBackdrop');
+    if(sidebar) sidebar.classList.remove('mobile-open');
+    if(backdrop) backdrop.classList.remove('active');
+  };
+  document.addEventListener('DOMContentLoaded', function(){
+    const app = document.getElementById('appShell');
+    const toggle = document.getElementById('sidebarToggle');
+    const stored = localStorage.getItem('dsv_sidebar_expanded');
+    if(app && window.innerWidth >= 1024){ if(stored === 'false') app.classList.remove('sidebar-expanded'); else app.classList.add('sidebar-expanded'); }
+    if(typeof window.updateSidebarToggleVisual === 'function') window.updateSidebarToggleVisual();
+    if(toggle){
+      toggle.addEventListener('click', function(){
+        setTimeout(function(){
+          if(app) localStorage.setItem('dsv_sidebar_expanded', String(app.classList.contains('sidebar-expanded')));
+        },0);
+      });
+    }
+    document.querySelectorAll('#sidebar .tab-btn').forEach(function(btn){
+      btn.addEventListener('click', window.closeDSMobileSidebar);
+    });
+    document.addEventListener('keydown', function(event){
+      if(event.key === 'Escape') window.closeDSMobileSidebar();
+    });
+    window.addEventListener('resize', function(){
+      if(window.innerWidth >= 1024) window.closeDSMobileSidebar();
+    });
+  });
+})();
+</script>
 </body>
 </html>
