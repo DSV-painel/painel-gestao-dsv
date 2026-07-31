@@ -309,7 +309,8 @@
         .coord-progress-card.hidden { display: none !important; }
         .coord-progress-chart { width: 112px; height: 112px; border-radius: 50%; position: relative; flex-shrink: 0; transition: all 0.4s ease; }
         .coord-progress-chart::after { content: ''; position: absolute; inset: 16px; border-radius: 999px; background: white; box-shadow: inset 0 0 0 1px #e2e8f0; }
-        .coord-progress-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; text-align: center; }
+        /* inset igual ao do ::after: mantém o conteúdo dentro do furo da rosca, sem invadir o anel. */
+        .coord-progress-center { position: absolute; inset: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; text-align: center; padding: 0 2px; }
         .coord-progress-legend-item { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.65rem 0.8rem; border-radius: 0.9rem; background: #f8fafc; border: 1px solid #e2e8f0; }
         .coord-progress-dot { width: 0.7rem; height: 0.7rem; border-radius: 999px; flex-shrink: 0; }
         
@@ -3066,6 +3067,18 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 .table-view tbody tr:hover {
   background: #f8fafc;
 }
+/* Coluna "Ações" fixada à direita: continua visível sem depender do scroll horizontal.
+   O :not([colspan]) preserva a célula do estado vazio, que ocupa a linha inteira. */
+.table-view thead th:last-child,
+.table-view tbody td:last-child:not([colspan]) {
+  position: sticky;
+  right: 0;
+  background: #ffffff;
+  box-shadow: -8px 0 10px -8px rgba(15,23,42,.18);
+}
+.table-view tbody td:last-child:not([colspan]) { z-index: 2; }
+.table-view thead th:last-child { z-index: 4; }
+.table-view tbody tr:hover td:last-child:not([colspan]) { background: #f8fafc; }
 .table-primary-title {
   color: #0f172a;
   font-size: 14px;
@@ -3120,8 +3133,9 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   display: flex;
   align-items: center;
   gap: .35rem;
-  flex-wrap: wrap;
-  min-width: 158px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  min-width: max-content;
 }
 .table-action-btn {
   width: 34px;
@@ -3360,13 +3374,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .ds-topbar-title{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 auto;}
 .ds-title-icon{width:46px;height:46px;border-radius:13px;background:var(--ds-blue-dark);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:18px;box-shadow:0 5px 12px rgba(0,64,119,.14);}
 .ds-title-copy{min-width:0;}
-.ds-title-copy h2{margin:0;color:var(--ds-text-primary);font-size:clamp(20px,2vw,27px);line-height:1.15;font-weight:800;letter-spacing:-.025em;text-transform:none;}
+.ds-title-copy h2{margin:0;color:var(--ds-text-primary);font-size:clamp(20px,2vw,27px);line-height:1.15;font-weight:800;letter-spacing:-.025em;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ds-title-copy p{margin:6px 0 0;max-width:760px;color:var(--ds-text-secondary);font-size:13.5px;line-height:1.45;font-weight:600;}
 .ds-context-info{min-height:38px;padding:0 12px;border-radius:9px;border:1px solid var(--ds-blue-dark);background:#fff;color:var(--ds-blue-dark);align-items:center;gap:7px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
 .ds-context-info:not(.hidden){display:inline-flex!important;}
 .ds-context-info:hover{background:var(--ds-surface-blue);}
 .ds-mobile-menu{display:none;width:42px;height:42px;border-radius:10px;border:1px solid var(--ds-border);background:#fff;color:var(--ds-blue-dark);align-items:center;justify-content:center;flex:0 0 auto;}
-.header-actions{width:auto!important;max-width:560px;flex:0 0 auto;}
+.header-actions{width:auto!important;max-width:560px;flex:0 1 auto;min-width:0;}
 .auth-inline-badge{border-color:var(--ds-border)!important;background:var(--ds-surface-soft)!important;border-radius:12px!important;box-shadow:none!important;padding:7px 8px!important;}
 .auth-inline-label{color:var(--ds-text-secondary)!important;}
 .auth-inline-email{color:var(--ds-text-primary)!important;}
@@ -3434,6 +3448,12 @@ main button[class*="bg-blue-"],main button[class*="bg-sky-"]{box-shadow:none;}
 .portaria-circle-node.type-Coordenadoria{background:var(--ds-blue-medium)!important;}
 .portaria-circle-node.type-Divisão{background:#5B9BC7!important;}
 .portaria-detail-head{background:var(--ds-blue-dark)!important;}
+
+/* Abaixo de 1400px (ex.: 1920x1080 a 150% de zoom) não há largura para o subtítulo
+   sem que ele quebre em várias linhas e estique a topbar. */
+@media (max-width:1400px){
+  .ds-title-copy p{display:none;}
+}
 
 @media (min-width:1024px){
   #sidebar{width:var(--ds-sidebar-collapsed)!important;min-width:var(--ds-sidebar-collapsed)!important;max-width:var(--ds-sidebar-collapsed)!important;height:100%!important;}
@@ -5326,7 +5346,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 <div class="coord-progress-chart" id="coordProgressChart" style="background:#e2e8f0;">
 <div class="coord-progress-center">
 <span class="text-2xl font-black text-slate-800" id="coordProgressTotal">0</span>
-<span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Projetos</span>
+<span class="text-[9px] font-black uppercase tracking-[0.06em] text-slate-400">Projetos</span>
 </div>
 </div>
 <div>
