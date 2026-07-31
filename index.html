@@ -309,7 +309,8 @@
         .coord-progress-card.hidden { display: none !important; }
         .coord-progress-chart { width: 112px; height: 112px; border-radius: 50%; position: relative; flex-shrink: 0; transition: all 0.4s ease; }
         .coord-progress-chart::after { content: ''; position: absolute; inset: 16px; border-radius: 999px; background: white; box-shadow: inset 0 0 0 1px #e2e8f0; }
-        .coord-progress-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; text-align: center; }
+        /* inset igual ao do ::after: mantém o conteúdo dentro do furo da rosca, sem invadir o anel. */
+        .coord-progress-center { position: absolute; inset: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; text-align: center; padding: 0 2px; }
         .coord-progress-legend-item { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.65rem 0.8rem; border-radius: 0.9rem; background: #f8fafc; border: 1px solid #e2e8f0; }
         .coord-progress-dot { width: 0.7rem; height: 0.7rem; border-radius: 999px; flex-shrink: 0; }
         
@@ -3066,6 +3067,18 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 .table-view tbody tr:hover {
   background: #f8fafc;
 }
+/* Coluna "Ações" fixada à direita: continua visível sem depender do scroll horizontal.
+   O :not([colspan]) preserva a célula do estado vazio, que ocupa a linha inteira. */
+.table-view thead th:last-child,
+.table-view tbody td:last-child:not([colspan]) {
+  position: sticky;
+  right: 0;
+  background: #ffffff;
+  box-shadow: -8px 0 10px -8px rgba(15,23,42,.18);
+}
+.table-view tbody td:last-child:not([colspan]) { z-index: 2; }
+.table-view thead th:last-child { z-index: 4; }
+.table-view tbody tr:hover td:last-child:not([colspan]) { background: #f8fafc; }
 .table-primary-title {
   color: #0f172a;
   font-size: 14px;
@@ -3120,8 +3133,9 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   display: flex;
   align-items: center;
   gap: .35rem;
-  flex-wrap: wrap;
-  min-width: 158px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  min-width: max-content;
 }
 .table-action-btn {
   width: 34px;
@@ -3360,13 +3374,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .ds-topbar-title{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 auto;}
 .ds-title-icon{width:46px;height:46px;border-radius:13px;background:var(--ds-blue-dark);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:18px;box-shadow:0 5px 12px rgba(0,64,119,.14);}
 .ds-title-copy{min-width:0;}
-.ds-title-copy h2{margin:0;color:var(--ds-text-primary);font-size:clamp(20px,2vw,27px);line-height:1.15;font-weight:800;letter-spacing:-.025em;text-transform:none;}
+.ds-title-copy h2{margin:0;color:var(--ds-text-primary);font-size:clamp(20px,2vw,27px);line-height:1.15;font-weight:800;letter-spacing:-.025em;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ds-title-copy p{margin:6px 0 0;max-width:760px;color:var(--ds-text-secondary);font-size:13.5px;line-height:1.45;font-weight:600;}
 .ds-context-info{min-height:38px;padding:0 12px;border-radius:9px;border:1px solid var(--ds-blue-dark);background:#fff;color:var(--ds-blue-dark);align-items:center;gap:7px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
 .ds-context-info:not(.hidden){display:inline-flex!important;}
 .ds-context-info:hover{background:var(--ds-surface-blue);}
 .ds-mobile-menu{display:none;width:42px;height:42px;border-radius:10px;border:1px solid var(--ds-border);background:#fff;color:var(--ds-blue-dark);align-items:center;justify-content:center;flex:0 0 auto;}
-.header-actions{width:auto!important;max-width:560px;flex:0 0 auto;}
+.header-actions{width:auto!important;max-width:560px;flex:0 1 auto;min-width:0;}
 .auth-inline-badge{border-color:var(--ds-border)!important;background:var(--ds-surface-soft)!important;border-radius:12px!important;box-shadow:none!important;padding:7px 8px!important;}
 .auth-inline-label{color:var(--ds-text-secondary)!important;}
 .auth-inline-email{color:var(--ds-text-primary)!important;}
@@ -3380,7 +3394,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 /* Área principal e componentes */
 main{background:var(--ds-page)!important;}
 #standardView,#portariaView,#calendarView,#indicatorsView,#despachosView,#ganttView,#pca2027View{color:var(--ds-text-body);}
-#standardView>div,#coordProgressSection,#portariaView,#calendarView,#indicatorsView,#despachosView,#ganttView,#pca2027View{max-width:1480px;width:100%;margin-left:auto!important;margin-right:auto!important;}
+#standardView>div,#coordProgressSection,#portariaView,#calendarView,#indicatorsView,#despachosView,#ganttView,#pca2027View{max-width:1760px;width:100%;margin-left:auto!important;margin-right:auto!important;}
 main .bg-white.rounded-xl,
 main .bg-white.rounded-2xl,
 main .bg-white.rounded-3xl,
@@ -3434,6 +3448,12 @@ main button[class*="bg-blue-"],main button[class*="bg-sky-"]{box-shadow:none;}
 .portaria-circle-node.type-Coordenadoria{background:var(--ds-blue-medium)!important;}
 .portaria-circle-node.type-Divisão{background:#5B9BC7!important;}
 .portaria-detail-head{background:var(--ds-blue-dark)!important;}
+
+/* Abaixo de 1400px (ex.: 1920x1080 a 150% de zoom) não há largura para o subtítulo
+   sem que ele quebre em várias linhas e estique a topbar. */
+@media (max-width:1400px){
+  .ds-title-copy p{display:none;}
+}
 
 @media (min-width:1024px){
   #sidebar{width:var(--ds-sidebar-collapsed)!important;min-width:var(--ds-sidebar-collapsed)!important;max-width:var(--ds-sidebar-collapsed)!important;height:100%!important;}
@@ -5277,7 +5297,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </div>
 <!-- Container Principal -->
 <div class="flex-1 flex flex-col transition-colors duration-300 pb-20 md:pb-0" id="standardView">
-<div class="px-4 md:px-6 pt-6 flex flex-col xl:flex-row gap-6" id="statsWrapper">
+<div class="px-3 md:px-4 pt-6 flex flex-col xl:flex-row gap-6" id="statsWrapper">
 <div class="flex-1 status-filter-stack transition-all duration-500" id="statsRow1">
 <!-- Stats Cards -->
 <div class="status-filter-row status-filter-row-top">
@@ -5320,13 +5340,13 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </div>
 </div>
 </div>
-<div class="px-4 md:px-6 pt-5 hidden" id="coordProgressSection">
+<div class="px-3 md:px-4 pt-5 hidden" id="coordProgressSection">
 <div class="coord-progress-card p-5 md:p-6 flex flex-col lg:flex-row gap-5 lg:items-center lg:justify-between">
 <div class="flex items-center gap-4">
 <div class="coord-progress-chart" id="coordProgressChart" style="background:#e2e8f0;">
 <div class="coord-progress-center">
 <span class="text-2xl font-black text-slate-800" id="coordProgressTotal">0</span>
-<span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Projetos</span>
+<span class="text-[9px] font-black uppercase tracking-[0.06em] text-slate-400">Projetos</span>
 </div>
 </div>
 <div>
@@ -5370,7 +5390,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </div>
 </div>
 <!-- ... (Demais Filtros e Botão Adicionar mantidos) ... -->
-<div class="px-4 md:px-6 pt-5 hidden" id="statsRow2">
+<div class="px-3 md:px-4 pt-5 hidden" id="statsRow2">
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm w-full flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
 <div>
@@ -5395,7 +5415,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </div>
 </div>
 </div>
-<div class="px-4 md:px-6 pt-5 flex flex-col sm:flex-row gap-4 hidden" id="operationalFilters">
+<div class="px-3 md:px-4 pt-5 flex flex-col sm:flex-row gap-4 hidden" id="operationalFilters">
 <div class="flex-1">
 <label class="text-xs font-semibold text-slate-500 text-slate-400 uppercase ml-2 mb-1 block">Filtrar por Divisão/Serviço</label>
 <select class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none font-medium" id="filterService" onchange="renderData()">
@@ -5433,7 +5453,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </select>
 </div>
 </div>
-<div class="px-4 md:px-6 pt-5 view-mode-wrapper" id="viewModeWrapper">
+<div class="px-3 md:px-4 pt-5 view-mode-wrapper" id="viewModeWrapper">
 <div aria-label="Modo de visualização" class="view-mode-toggle" role="group">
 <button class="view-mode-btn active" id="viewModeCardsBtn" onclick="setProjectContractViewMode('cards')" type="button">
 <i class="fas fa-grip"></i> Cards
@@ -5448,12 +5468,12 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </button>
 </div>
 </div>
-<div class="px-4 md:px-6 pt-5">
+<div class="px-3 md:px-4 pt-5">
 <button class="action-btn w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 transition-all text-sm font-black uppercase tracking-widest hover:border-current btn-theme-project" id="addBtn" onclick="openNewModal()">
 <i class="fas fa-plus-circle mr-2" id="addBtnIcon"></i> <span id="addBtnText">Adicionar Projeto</span>
 </button>
 </div>
-<div class="flex-1 px-4 md:px-6 py-6 space-y-4" id="listContainer">
+<div class="flex-1 px-3 md:px-4 py-6 space-y-4" id="listContainer">
 <div class="space-y-4" id="projectsList"></div>
 </div>
 <!-- ... (Legend Section) ... -->
@@ -9508,6 +9528,18 @@ window.openAddBacklogItemModal = (meetingId) => {
             `;
         }
 
+        // Filtros do painel (busca global, coordenação, divisão/serviço e prioridade),
+        // compartilhados entre o board e as caixas de Concluídos/Cancelados.
+        window.applyPanelFilters = (items, collection = activeTab) => {
+            let out = items || [];
+            const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            if(search) out = out.filter(i => { const activeDecisionText = (collection === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : ''; const activeDecisionLevel = activeDecisionText ? i.decisionLevel : ''; const hay = [i.name, i.desc, i.encaminhamentos, activeDecisionText, activeDecisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
+            if(currentFilter !== 'all') out = out.filter(i => i.coord === currentFilter);
+            if(collection === 'operational' || collection === 'projects') { const serviceFilter = document.getElementById('filterService')?.value || 'all'; if(serviceFilter !== 'all') { out = out.filter(i => { const s = i.services || (i.service ? [i.service] : []); return s.includes(serviceFilter); }); } }
+            if(currentPriorityFilter !== 'all') out = out.filter(i => i.priority === currentPriorityFilter);
+            return out;
+        };
+
         window.renderData = () => {
             if (activeTab === 'overview') { window.renderOverview?.(); return; }
             if (activeTab === 'calendar') { window.renderCalendar(); return; }
@@ -9517,14 +9549,8 @@ window.openAddBacklogItemModal = (meetingId) => {
 
             updateProjectContractViewModeButtons();
             const container = document.getElementById('projectsList');
-            const search = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
-            let filtered = dataStore[activeTab] || [];
-            
-            if(search) filtered = filtered.filter(i => { const activeDecisionText = (activeTab === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : ''; const activeDecisionLevel = activeDecisionText ? i.decisionLevel : ''; const hay = [i.name, i.desc, i.encaminhamentos, activeDecisionText, activeDecisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
-            if(currentFilter !== 'all') filtered = filtered.filter(i => i.coord === currentFilter);
-            if(activeTab === 'operational' || activeTab === 'projects') { const serviceFilter = document.getElementById('filterService').value; if(serviceFilter !== 'all') { filtered = filtered.filter(i => { const s = i.services || (i.service ? [i.service] : []); return s.includes(serviceFilter); }); } }
-            if(currentPriorityFilter !== 'all') filtered = filtered.filter(i => i.priority === currentPriorityFilter);
+            let filtered = window.applyPanelFilters(dataStore[activeTab] || []);
 
             updateCoordProgressSection(dataStore.projects || []);
             
@@ -10442,21 +10468,12 @@ const filenameBase = (safeTitle || 'pauta')
             if (!listEl) return;
 
             const q = (document.getElementById('completedSearchInput')?.value || '').toLowerCase().trim();
-            let items = (dataStore[activeTab] || []).slice();
 
             // Mantém consistência com filtros do painel
+            let items = window.applyPanelFilters((dataStore[activeTab] || []).slice());
+
+            // Busca própria da caixa, que refina por título sobre os filtros do painel
             if (q) items = items.filter(i => (i.name || '').toLowerCase().includes(q));
-            if (currentFilter !== 'all') items = items.filter(i => i.coord === currentFilter);
-            if (activeTab === 'operational') {
-                const serviceFilter = document.getElementById('filterService')?.value || 'all';
-                if (serviceFilter !== 'all') {
-                    items = items.filter(i => {
-                        const s = i.services || (i.service ? [i.service] : []);
-                        return s.includes(serviceFilter);
-                    });
-                }
-            }
-            if (currentPriorityFilter !== 'all') items = items.filter(i => i.priority === currentPriorityFilter);
 
             // Apenas concluídos
             items = items.filter(i => normalizeStatus(i.status) === 'Concluído');
@@ -10537,20 +10554,12 @@ const filenameBase = (safeTitle || 'pauta')
             if (!listEl) return;
 
             const q = (document.getElementById('canceledSearchInput')?.value || '').toLowerCase().trim();
-            let items = (dataStore[activeTab] || []).slice();
 
+            // Mantém consistência com filtros do painel
+            let items = window.applyPanelFilters((dataStore[activeTab] || []).slice());
+
+            // Busca própria da caixa, que refina por título sobre os filtros do painel
             if (q) items = items.filter(i => (i.name || '').toLowerCase().includes(q));
-            if (currentFilter !== 'all') items = items.filter(i => i.coord === currentFilter);
-            if (activeTab === 'operational') {
-                const serviceFilter = document.getElementById('filterService')?.value || 'all';
-                if (serviceFilter !== 'all') {
-                    items = items.filter(i => {
-                        const s = i.services || (i.service ? [i.service] : []);
-                        return s.includes(serviceFilter);
-                    });
-                }
-            }
-            if (currentPriorityFilter !== 'all') items = items.filter(i => i.priority === currentPriorityFilter);
 
             items = items.filter(i => normalizeStatus(i.status) === 'Cancelado');
 
@@ -10661,7 +10670,7 @@ const filenameBase = (safeTitle || 'pauta')
 <div class="text-base font-black text-slate-900 flex items-center gap-2">
                         Concluídos <span class="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full" id="completedCount">0</span>
 </div>
-<div class="text-xs text-slate-500 mt-1">Use a busca e os filtros do painel (coordenação/prioridade) para refinar.</div>
+<div class="text-xs text-slate-500 mt-1">Segue a busca e os filtros do painel (coordenação, prioridade e divisão/serviço). Use o campo abaixo para refinar por título.</div>
 </div>
 <button class="bg-slate-100 text-slate-800 font-black px-4 py-2 rounded-2xl hover:bg-slate-200 transition-all uppercase text-xs tracking-widest" onclick="closeCompletedModal()" type="button">
                     Fechar
@@ -10688,7 +10697,7 @@ const filenameBase = (safeTitle || 'pauta')
 <div class="text-base font-black text-slate-900 flex items-center gap-2">
                         Cancelados <span class="text-xs font-black text-red-700 bg-red-50 px-2 py-1 rounded-full" id="canceledCount">0</span>
 </div>
-<div class="text-xs text-slate-500 mt-1">Use a busca e os filtros do painel (coordenação/prioridade) para refinar.</div>
+<div class="text-xs text-slate-500 mt-1">Segue a busca e os filtros do painel (coordenação, prioridade e divisão/serviço). Use o campo abaixo para refinar por título.</div>
 </div>
 <button class="bg-slate-100 text-slate-800 font-black px-4 py-2 rounded-2xl hover:bg-slate-200 transition-all uppercase text-xs tracking-widest" onclick="closeCanceledModal()" type="button">
                     Fechar
