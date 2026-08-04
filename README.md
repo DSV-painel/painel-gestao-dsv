@@ -7,6 +7,7 @@ A ferramenta reúne, em um único ambiente, informações sobre projetos, contra
 ## Principais funcionalidades
 
 - Cadastro e acompanhamento de projetos e contratos;
+- Histórico de comentários por projeto, com data, horário e autor;
 - Visualização em cards, tabela e cronograma Gantt;
 - Filtros por status, prioridade, coordenação e unidade responsável;
 - Gestão de indicadores estratégicos e gerenciais;
