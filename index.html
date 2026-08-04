@@ -5032,7 +5032,8 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </div>
 <div class="text-right">
 <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">Progresso</div>
-<div class="text-lg font-black text-blue-700" id="taskFormProgress">0%</div>
+<div class="text-lg font-black text-slate-300" id="taskFormProgress">—</div>
+<div class="text-[10px] font-black uppercase tracking-wider text-slate-400" id="taskFormProgressSource"></div>
 </div>
 </div>
 <div class="task-list" id="tasksContainer"></div>
@@ -6735,7 +6736,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
             const tasksSection = document.getElementById('tasksSection');
             const tasksContainer = document.getElementById('tasksContainer');
             if (tasksContainer) tasksContainer.innerHTML = '';
-            if (document.getElementById('taskFormProgress')) document.getElementById('taskFormProgress').textContent = '0%';
+            setTaskFormProgressDisplay(null);
             
                         const programField = document.getElementById('contractProgramField');
             const componentField = document.getElementById('contractComponentField');
@@ -6985,10 +6986,24 @@ document.getElementById('projRisks').value = '';
             return { total, done, pct: total ? Math.round((done / total) * 100) : 0 };
         }
 
-        window.updateTaskFormProgress = () => {
-            const progress = getTaskProgress(window.getTasksFromForm?.() || []);
+        function setTaskFormProgressDisplay(progress) {
             const value = document.getElementById('taskFormProgress');
-            if (value) value.textContent = `${progress.pct}%`;
+            const source = document.getElementById('taskFormProgressSource');
+            const empty = !progress || !progress.total;
+            if (value) {
+                value.textContent = empty ? '—' : `${progress.pct}%`;
+                value.classList.toggle('text-slate-300', empty);
+                value.classList.toggle('text-blue-700', !empty);
+            }
+            if (source) source.textContent = (!empty && progress.kind === 'subprojects') ? 'Subprojetos' : '';
+        }
+
+        window.updateTaskFormProgress = () => {
+            const tasks = getTaskProgress(window.getTasksFromForm?.() || []);
+            const progress = tasks.total
+                ? { ...tasks, kind: 'tasks' }
+                : { ...getSubprojectProgress(document.getElementById('editId')?.value), kind: 'subprojects' };
+            setTaskFormProgressDisplay(progress);
             updateProjectDirtyState();
         };
 
