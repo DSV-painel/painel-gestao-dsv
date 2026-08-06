@@ -8031,6 +8031,8 @@ window.toggleRiskInput();
             const size = item.type === 'Diretoria' ? '92px' : item.type === 'Coordenadoria' ? '82px' : item.type === 'Divisão' ? '68px' : '58px';
             const popSide = node.x > 1120 ? 'popover-left' : 'popover-right';
             const popVertical = node.y > 1260 ? 'popover-up' : (node.y < 280 ? 'popover-down' : '');
+            // a maioria dos títulos já começa com o tipo ("Coordenadoria de..."); só prefixa quando falta
+            const nodeLabel = item.title.toLowerCase().startsWith(item.type.toLowerCase()) ? item.title : `${item.type} ${item.title}`;
             const attribHtml = (item.items || []).map((sub, idx) => `
                 <div class="portaria-popover-item">
                     <span class="portaria-popover-num">${romanPortaria(idx)}</span>
@@ -8041,17 +8043,26 @@ window.toggleRiskInput();
                         class="portaria-circle-node type-${escapeHtml(item.type)} ${active ? 'active' : ''} ${dim ? 'is-dimmed' : ''}"
                         style="--x:${node.x};--y:${node.y};--size:${size};"
                         onclick="selectPortariaNodeDecoded('${safeTitle}')"
+                        aria-label="${escapeHtml(nodeLabel)}, ${escapeHtml(item.art)}"
                         title="${escapeHtml(item.title)}">
                     <span class="acro">${escapeHtml(node.acronym || item.title.substring(0, 3).toUpperCase())}</span>
                     <span class="art">${escapeHtml(item.art)}</span>
-                    <span class="portaria-node-popover ${popSide} ${popVertical}" aria-hidden="true">
+                    <span class="portaria-node-popover ${popSide} ${popVertical}" onclick="event.stopPropagation()">
                         <span class="portaria-popover-head">
                             <span class="portaria-popover-type"><i class="fas fa-sitemap"></i>${escapeHtml(item.type)} · ${escapeHtml(item.art)}</span>
                             <span class="portaria-popover-title">${escapeHtml(item.title)}</span>
                             <span class="portaria-popover-preamble">${escapeHtml(item.preamble)}</span>
                         </span>
                         <span class="portaria-popover-body">
-                            <span class="portaria-popover-count"><i class="fas fa-list-check"></i>${(item.items || []).length} atribuições</span>
+                            <span class="portaria-popover-toolbar">
+                                <span class="portaria-popover-count"><i class="fas fa-list-check"></i>${(item.items || []).length} atribuições</span>
+                                <span class="portaria-popover-copy" role="button" tabindex="0"
+                                      title="Copiar atribuições"
+                                      onclick="event.stopPropagation(); copyPortariaAtribuicoes('${safeTitle}', this)"
+                                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();copyPortariaAtribuicoes('${safeTitle}', this);}">
+                                    <i class="fas fa-copy"></i><span class="portaria-popover-copy-label">Copiar</span>
+                                </span>
+                            </span>
                             <span class="portaria-popover-list">${attribHtml}</span>
                         </span>
                     </span>
@@ -8159,6 +8170,44 @@ window.toggleRiskInput();
 
         window.selectPortariaNodeDecoded = (encodedTitle) => {
             window.selectPortariaNode(decodeURIComponent(encodedTitle));
+        };
+
+        function buildPortariaAtribuicoesText(item) {
+            const linhas = [`${item.title} (${item.art})`];
+            if (item.preamble) linhas.push(item.preamble);
+            linhas.push('');
+            (item.items || []).forEach((sub, idx) => linhas.push(`${romanPortaria(idx)} - ${sub}`));
+            return linhas.join('\n');
+        }
+
+        window.copyPortariaAtribuicoes = async (encodedTitle, el) => {
+            const item = findPortariaItemByTitle(decodeURIComponent(encodedTitle));
+            if (!item) return;
+            const texto = buildPortariaAtribuicoesText(item);
+            try {
+                await navigator.clipboard.writeText(texto);
+            } catch (err) {
+                const input = document.createElement('textarea');
+                input.value = texto;
+                input.style.position = 'fixed';
+                input.style.opacity = '0';
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                input.remove();
+            }
+            showShareFeedback('Atribuições copiadas.');
+            if (el) {
+                const label = el.querySelector('.portaria-popover-copy-label');
+                el.classList.add('is-copied');
+                if (label) label.textContent = 'Copiado!';
+                clearTimeout(el.__copyTimer);
+                el.__copyTimer = setTimeout(() => {
+                    if (!el.isConnected) return;
+                    el.classList.remove('is-copied');
+                    if (label) label.textContent = 'Copiar';
+                }, 1800);
+            }
         };
 
         window.selectPortariaParent = () => {
@@ -11079,6 +11128,76 @@ body { line-height: 1.55; }
   html { font-size: 16.5px; }
 }
 </style>
+
+<style id="portaria-copiar-atribuicoes-v1">
+/* =====================================================
+   PORTARIA – copiar as atribuições
+   O card flutuante vive dentro de um <button>, que bloqueia a seleção
+   de texto e herda o cursor de ponteiro. Aqui o texto volta a ser
+   selecionável e ganha o botão "Copiar" ao lado da contagem.
+   ===================================================== */
+#portariaView .portaria-node-popover {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+#portariaView .portaria-popover-title,
+#portariaView .portaria-popover-preamble,
+#portariaView .portaria-popover-text {
+  cursor: text !important;
+}
+
+#portariaView .portaria-popover-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .5rem !important;
+  /* fixa no topo para o "Copiar" continuar visível nas unidades com muitos incisos */
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 2 !important;
+  background: #ffffff !important;
+  padding: .3rem 0 .5rem !important;
+  margin-bottom: .35rem !important;
+}
+#portariaView .portaria-popover-count {
+  margin-bottom: 0 !important;
+}
+
+#portariaView .portaria-popover-copy {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: .35rem !important;
+  flex: none !important;
+  padding: .32rem .6rem !important;
+  border-radius: 999px !important;
+  border: 1px solid #004077 !important;
+  background: #004077 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  transition: background .16s ease, border-color .16s ease !important;
+}
+#portariaView .portaria-popover-copy:hover {
+  background: #0072bc !important;
+  border-color: #0072bc !important;
+}
+#portariaView .portaria-popover-copy:focus-visible {
+  outline: 2px solid #0072bc !important;
+  outline-offset: 2px !important;
+}
+#portariaView .portaria-popover-copy.is-copied,
+#portariaView .portaria-popover-copy.is-copied:hover {
+  background: #15803d !important;
+  border-color: #15803d !important;
+}
+</style>
+
 <script id="ds-paineis-detran-v1-js">
 (function(){
   window.openDSMobileSidebar = function(){
