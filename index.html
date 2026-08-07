@@ -5013,7 +5013,6 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 <div class="text-right">
 <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">Progresso</div>
 <div class="text-lg font-black text-slate-300" id="taskFormProgress">—</div>
-<div class="text-[10px] font-black uppercase tracking-wider text-slate-400" id="taskFormProgressSource"></div>
 </div>
 </div>
 <div class="task-list" id="tasksContainer"></div>
@@ -6975,14 +6974,12 @@ document.getElementById('projRisks').value = '';
 
         function setTaskFormProgressDisplay(progress) {
             const value = document.getElementById('taskFormProgress');
-            const source = document.getElementById('taskFormProgressSource');
             const empty = !progress || !progress.total;
             if (value) {
                 value.textContent = empty ? '—' : `${progress.pct}%`;
                 value.classList.toggle('text-slate-300', empty);
                 value.classList.toggle('text-blue-700', !empty);
             }
-            if (source) source.textContent = (!empty && progress.kind === 'subprojects') ? 'Subprojetos' : '';
         }
 
         window.updateTaskFormProgress = () => {
@@ -9565,7 +9562,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                     : '<span class="table-meta-muted">--</span>';
                 const progress = getProjectProgressSummary(item);
                 const progressHtml = progress.total
-                    ? `<div class="min-w-[110px]"><div class="flex justify-between gap-2 text-[9px] font-black text-slate-500"><span>${progress.kind === 'subprojects' ? 'Subprojetos' : 'Tarefas'}</span><span>${progress.pct}%</span></div><div class="progress-summary-track !mt-1 !h-[6px]"><div class="progress-summary-fill" style="width:${progress.pct}%"></div></div></div>`
+                    ? `<div class="min-w-[110px]"><div class="flex justify-end gap-2 text-[9px] font-black text-slate-500"><span>${progress.pct}%</span></div><div class="progress-summary-track !mt-1 !h-[6px]"><div class="progress-summary-fill" style="width:${progress.pct}%"></div></div></div>`
                     : '<span class="table-meta-muted">--</span>';
                 const parent = getProjectParent(item.parentProjectId);
                 return `<tr onclick="editItem('${item.id}', '${activeTab}')">
