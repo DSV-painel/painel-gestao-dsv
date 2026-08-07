@@ -640,24 +640,22 @@
   align-items: center;
   gap: 0.4rem;
 }
+/* Badges compactos: exibem apenas a sigla da divisão/serviço (nome completo no title). */
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 .services-grid .unit-badge {
-  width: 100%;
-  min-height: 44px;
-  padding: 0.55rem 0.7rem;
-  border-radius: 0.8rem;
-  font-size: 12px;
-  line-height: 1.35;
-  align-items: flex-start;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.55rem;
+  font-size: 11px;
+  line-height: 1.3;
+  align-items: center;
   justify-content: flex-start;
-  white-space: normal;
+  white-space: nowrap;
 }
 .services-grid .unit-badge i {
-  margin-top: 0.1rem;
   flex-shrink: 0;
 }
 .card-main-content {
@@ -710,9 +708,6 @@
 }
 .card-toggle-btn:hover { background: #eff6ff; color: #2563eb; }
 .accordion-row.active .card-toggle-btn { background: #eff6ff; color: #2563eb; }
-@media (max-width: 900px) {
-  .services-grid { grid-template-columns: 1fr; }
-}
 
 /* Alinhamento geral de campos e caixas de texto */
 .input-style { min-height: 44px; line-height: 1.45; }
@@ -2559,20 +2554,15 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 .services-grid {
   width: 100%;
   max-width: 100%;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;
 }
 .services-grid .unit-badge {
-  width: 100%;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  overflow-wrap: anywhere;
-  word-break: normal;
 }
 .services-grid .unit-badge span {
   min-width: 0;
   max-width: 100%;
-  overflow-wrap: anywhere;
 }
 .decision-summary-grid .summary-box {
   width: 100%;
@@ -2589,10 +2579,6 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   .summary-inline-note {
     padding: 0.85rem;
   }
-  .services-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .services-grid .unit-badge,
   .decision-summary-grid .summary-meta-chip {
     width: 100%;
   }
@@ -2610,7 +2596,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
     border-radius: 0.95rem;
   }
   .services-grid .unit-badge {
-    padding: 0.55rem 0.6rem;
+    padding: 0.3rem 0.5rem;
   }
 }
 
@@ -2637,8 +2623,6 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 .summary-inline-note .summary-box-body,
 .summary-box-body.markdown-content,
 .summary-inline-note .markdown-content,
-.services-grid .unit-badge,
-.services-grid .unit-badge span,
 .summary-meta-chip {
   max-width: 100%;
   min-width: 0;
@@ -6332,6 +6316,14 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
             const found = CARGO_OPTIONS.find(c => c.value === normalized || c.label === normalized || c.acronym === normalized);
             return found ? found.label : (normalized || 'Sem divisão/serviço definido');
         };
+        // Reescreve apenas o rótulo visível das options (o value continua sendo o nome
+        // completo, usado por addServiceTag e pelo filtro de divisão/serviço).
+        const applyAcronymLabelsToSelect = (selectId) => {
+            document.querySelectorAll(`#${selectId} optgroup option`).forEach(opt => {
+                if (!opt.value) return;
+                opt.textContent = `${getCargoAcronym(opt.value)} — ${getCargoFullName(opt.value)}`;
+            });
+        };
         const normalizeCargoList = (item = {}) => {
             // A aba Cronograma passa a usar como base única as Divisões/Serviços responsáveis.
             // Os campos antigos de cargo ficam apenas como fallback para registros legados sem serviços preenchidos.
@@ -6642,7 +6634,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
                 type: el.type || '',
                 value: el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value
             }));
-            const serviceTags = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(el => el.innerText);
+            const serviceTags = getTagValues('serviceTagsContainer');
             return JSON.stringify({ fields, serviceTags });
         }
 
@@ -6885,9 +6877,11 @@ document.getElementById('projRisks').value = '';
         };
 
         // Funções de Tags
-        const getTagsFromContainer = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); };
-        const createTag = (text, containerId, inputId, colorClass = 'tag-blue') => { const container = document.getElementById(containerId); const input = inputId ? document.getElementById(inputId) : null; if(!container) return; const tag = document.createElement('div'); tag.className = `actor-tag ${colorClass}`; tag.innerHTML = `<span>${text}</span><i class="fas fa-times cursor-pointer hover:opacity-75" onclick="this.parentElement.remove()"></i>`; if(input) { container.insertBefore(tag, input); } else { container.appendChild(tag); } };
-        window.addServiceTag = (val) => { if(!val) return; const container = document.getElementById('serviceTagsContainer'); const existing = Array.from(container.querySelectorAll('span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'serviceTagsContainer', null, 'tag-orange'); };
+        // O texto visível da tag pode ser uma sigla; o valor real fica em data-value.
+        const getTagValues = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag')).map(t => t.dataset.value || t.querySelector('span')?.innerText || '').filter(Boolean); };
+        const getTagsFromContainer = (containerId) => getTagValues(containerId);
+        const createTag = (text, containerId, inputId, colorClass = 'tag-blue', value = text, title = '') => { const container = document.getElementById(containerId); const input = inputId ? document.getElementById(inputId) : null; if(!container) return; const tag = document.createElement('div'); tag.className = `actor-tag ${colorClass}`; tag.dataset.value = value; if(title) tag.title = title; tag.innerHTML = `<span>${escapeHtml(text)}</span><i class="fas fa-times cursor-pointer hover:opacity-75" onclick="this.parentElement.remove()"></i>`; if(input) { container.insertBefore(tag, input); } else { container.appendChild(tag); } };
+        window.addServiceTag = (val) => { if(!val) return; const value = resolveCargoValue(val); if(!value) return; if(getTagValues('serviceTagsContainer').includes(value)) return; createTag(getCargoAcronym(value), 'serviceTagsContainer', null, 'tag-orange', value, getCargoFullName(value)); };
         window.addCargoTag = (val) => { if(!val) return; const container = document.getElementById('cargoTagsContainer'); if(!container) return; const existing = Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'cargoTagsContainer', null, 'tag-purple'); };
         const setupTagInput = (inputId, containerId, colorClass) => { const input = document.getElementById(inputId); if(!input) return; input.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); const val = this.value.trim().replace(',', ''); if(val) { createTag(val, containerId, inputId, colorClass); this.value = ''; } } }); };
         
@@ -7396,7 +7390,7 @@ document.getElementById('projRisks').value = '';
             const roadmapDraft = [];
             document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmapDraft.push({ data: noDate ? '' : d, etapa: e, noDate }); });
             const roadmap = sortRoadmapItems(roadmapDraft);
-            const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
+            const servicesList = getTagValues('serviceTagsContainer');
             const cargosList = [...servicesList]; // compatibilidade: o Cronograma usa Divisões/Serviços responsáveis como base
             const existingForAudit = (dataStore[collectionName] || []).find(i => i.id === id) || null;
 
@@ -9901,19 +9895,15 @@ Object.keys(cols).forEach(key => {
             }
 
             let servicesBadgeHtml = '';
-            if (activeTab === 'operational' || activeTab === 'projects') {
-                const sList = item.services || (item.service ? [item.service] : []);
-                if (sList.length) {
-                    const color = activeTab === 'projects' ? 'text-indigo-700 bg-indigo-50 border-indigo-100' : 'text-orange-600 bg-orange-50 border-orange-100';
-                    const servicesTitle = activeTab === 'projects' ? 'Divisões / serviços responsáveis' : 'Serviços envolvidos';
-                    servicesBadgeHtml = `
-                        <div class="card-summary-section">
-                            <p class="card-summary-section-title"><i class="fas fa-sitemap"></i>${servicesTitle}</p>
-                            <div class="services-grid">${sList.map(s => `<span class="unit-badge ${color}"><i class="fas fa-sitemap text-[8px]"></i><span>${s}</span></span>`).join('')}</div>
-                        </div>`;
-                }
-            } else if (item.service) {
-                servicesBadgeHtml = `<p class="text-[9px] text-slate-400 font-bold uppercase truncate">${item.service}</p>`;
+            const sList = normalizeCargoList(item);
+            if (sList.length) {
+                const color = activeTab === 'operational' ? 'text-orange-600 bg-orange-50 border-orange-100' : 'text-indigo-700 bg-indigo-50 border-indigo-100';
+                const servicesTitle = activeTab === 'operational' ? 'Serviços envolvidos' : 'Divisões / serviços responsáveis';
+                servicesBadgeHtml = `
+                    <div class="card-summary-section">
+                        <p class="card-summary-section-title"><i class="fas fa-sitemap"></i>${servicesTitle}</p>
+                        <div class="services-grid">${sList.map(s => `<span class="unit-badge ${color}" title="${escapeHtml(getCargoFullName(s))}"><i class="fas fa-sitemap text-[8px]"></i><span>${escapeHtml(getCargoAcronym(s))}</span></span>`).join('')}</div>
+                    </div>`;
             }
 
             const parentProject = activeTab === 'projects' ? getProjectParent(item.parentProjectId) : null;
@@ -10213,7 +10203,7 @@ window.setListFilter = f => { f = normalizeStatus(f); if(f === 'Concluído' && t
             updateAuthIndicator(user);
             if (window.__dsvListenersStarted) return;
             window.__dsvListenersStarted = true;
- initListeners(); setTimeout(() => { const hasSharedProject = new URLSearchParams(window.location.search).has('project'); window.switchTab(hasSharedProject ? 'projects' : 'overview'); if (hasSharedProject) tryOpenSharedProject(); }, 500); // Indicadores: listeners de busca/filtro
+ initListeners(); applyAcronymLabelsToSelect('projServiceAdder'); applyAcronymLabelsToSelect('filterService'); setTimeout(() => { const hasSharedProject = new URLSearchParams(window.location.search).has('project'); window.switchTab(hasSharedProject ? 'projects' : 'overview'); if (hasSharedProject) tryOpenSharedProject(); }, 500); // Indicadores: listeners de busca/filtro
                     const s = document.getElementById('indicatorSearch');
                     const c = document.getElementById('indicatorClearSearch');
                     const tf = document.getElementById('indicatorTypeFilter');
