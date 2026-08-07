@@ -640,24 +640,22 @@
   align-items: center;
   gap: 0.4rem;
 }
+/* Badges compactos: exibem apenas a sigla da divisão/serviço (nome completo no title). */
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 .services-grid .unit-badge {
-  width: 100%;
-  min-height: 44px;
-  padding: 0.55rem 0.7rem;
-  border-radius: 0.8rem;
-  font-size: 12px;
-  line-height: 1.35;
-  align-items: flex-start;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.55rem;
+  font-size: 11px;
+  line-height: 1.3;
+  align-items: center;
   justify-content: flex-start;
-  white-space: normal;
+  white-space: nowrap;
 }
 .services-grid .unit-badge i {
-  margin-top: 0.1rem;
   flex-shrink: 0;
 }
 .card-main-content {
@@ -710,9 +708,6 @@
 }
 .card-toggle-btn:hover { background: #eff6ff; color: #2563eb; }
 .accordion-row.active .card-toggle-btn { background: #eff6ff; color: #2563eb; }
-@media (max-width: 900px) {
-  .services-grid { grid-template-columns: 1fr; }
-}
 
 /* Alinhamento geral de campos e caixas de texto */
 .input-style { min-height: 44px; line-height: 1.45; }
@@ -2559,20 +2554,15 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 .services-grid {
   width: 100%;
   max-width: 100%;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;
 }
 .services-grid .unit-badge {
-  width: 100%;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  overflow-wrap: anywhere;
-  word-break: normal;
 }
 .services-grid .unit-badge span {
   min-width: 0;
   max-width: 100%;
-  overflow-wrap: anywhere;
 }
 .decision-summary-grid .summary-box {
   width: 100%;
@@ -2589,10 +2579,6 @@ textarea.input-style { min-height: 92px; resize: vertical; }
   .summary-inline-note {
     padding: 0.85rem;
   }
-  .services-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .services-grid .unit-badge,
   .decision-summary-grid .summary-meta-chip {
     width: 100%;
   }
@@ -2610,7 +2596,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
     border-radius: 0.95rem;
   }
   .services-grid .unit-badge {
-    padding: 0.55rem 0.6rem;
+    padding: 0.3rem 0.5rem;
   }
 }
 
@@ -2637,8 +2623,6 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 .summary-inline-note .summary-box-body,
 .summary-box-body.markdown-content,
 .summary-inline-note .markdown-content,
-.services-grid .unit-badge,
-.services-grid .unit-badge span,
 .summary-meta-chip {
   max-width: 100%;
   min-width: 0;
@@ -4849,9 +4833,9 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 <p class="mt-2 text-[11px] text-slate-400 font-semibold">Vincule este registro a um projeto maior. O progresso do projeto guarda-chuva considera os subprojetos concluídos.</p>
 </div>
 <div class="flex flex-col">
-<label class="field-label">Observações Gerais</label>
-<textarea class="input-style resize-none" id="projObs" placeholder="Digite uma observação e pressione Enter para salvar no histórico. (Shift+Enter para quebrar linha)" rows="3"></textarea>
-<div class="mt-2 text-[11px] font-bold text-slate-400">Enter = salvar no histórico • Shift+Enter = nova linha</div>
+<label class="field-label"><i class="fas fa-comments mr-1"></i> Comentários</label>
+<textarea class="input-style resize-none" id="projObs" placeholder="Escreva um comentário e pressione Enter para registrá-lo no histórico com data, hora e autor. (Shift+Enter para quebrar linha)" rows="3"></textarea>
+<div class="mt-2 text-[11px] font-bold text-slate-400">Enter = registrar comentário • Shift+Enter = nova linha</div>
 <div class="mt-3 space-y-2" id="projObsHistory"></div>
 </div>
 <div class="flex flex-col hidden-field space-y-3 pt-3 border-t border-slate-100" id="contractRelationWrapper">
@@ -5003,10 +4987,6 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 <label class="field-label text-red-600"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos e Pontos de Atenção</label>
 <textarea class="input-style resize-none border-red-200 bg-red-50 focus:ring-red-200 placeholder-red-300 text-red-900" id="projRisks" placeholder="Descreva os riscos, impedimentos ou motivos do atraso..." rows="3"></textarea>
 </div>
-<div class="flex flex-col animate-fade-in" id="encaminhamentosField">
-<label class="field-label text-slate-700"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</label>
-<textarea class="input-style resize-none preserve-lines" id="projEncaminhamentos" placeholder="Use Markdown. Ex: - [ ] Responsável — ação — prazo; **prioridade:** alta" rows="4"></textarea>
-</div>
 </div>
 </div>
 </div>
@@ -5032,7 +5012,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </div>
 <div class="text-right">
 <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">Progresso</div>
-<div class="text-lg font-black text-blue-700" id="taskFormProgress">0%</div>
+<div class="text-lg font-black text-slate-300" id="taskFormProgress">—</div>
 </div>
 </div>
 <div class="task-list" id="tasksContainer"></div>
@@ -6335,6 +6315,14 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
             const found = CARGO_OPTIONS.find(c => c.value === normalized || c.label === normalized || c.acronym === normalized);
             return found ? found.label : (normalized || 'Sem divisão/serviço definido');
         };
+        // Reescreve apenas o rótulo visível das options (o value continua sendo o nome
+        // completo, usado por addServiceTag e pelo filtro de divisão/serviço).
+        const applyAcronymLabelsToSelect = (selectId) => {
+            document.querySelectorAll(`#${selectId} optgroup option`).forEach(opt => {
+                if (!opt.value) return;
+                opt.textContent = `${getCargoAcronym(opt.value)} — ${getCargoFullName(opt.value)}`;
+            });
+        };
         const normalizeCargoList = (item = {}) => {
             // A aba Cronograma passa a usar como base única as Divisões/Serviços responsáveis.
             // Os campos antigos de cargo ficam apenas como fallback para registros legados sem serviços preenchidos.
@@ -6645,7 +6633,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
                 type: el.type || '',
                 value: el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value
             }));
-            const serviceTags = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(el => el.innerText);
+            const serviceTags = getTagValues('serviceTagsContainer');
             return JSON.stringify({ fields, serviceTags });
         }
 
@@ -6735,7 +6723,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
             const tasksSection = document.getElementById('tasksSection');
             const tasksContainer = document.getElementById('tasksContainer');
             if (tasksContainer) tasksContainer.innerHTML = '';
-            if (document.getElementById('taskFormProgress')) document.getElementById('taskFormProgress').textContent = '0%';
+            setTaskFormProgressDisplay(null);
             
                         const programField = document.getElementById('contractProgramField');
             const componentField = document.getElementById('contractComponentField');
@@ -6754,13 +6742,10 @@ typeField.classList.add('hidden-field');
                         programField.classList.add('hidden-field');
             componentField.classList.add('hidden-field');
 document.getElementById('projRisks').value = '';
-            const encaminhamentosField = document.getElementById('encaminhamentosField');
-            if (document.getElementById('projEncaminhamentos')) document.getElementById('projEncaminhamentos').value = '';
             ['projNextAction','projNextActionOwner','projNextActionDeadline','projDecisionDesc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
             const decisionNeededEl = document.getElementById('projDecisionNeeded'); if (decisionNeededEl) decisionNeededEl.value = 'Não';
             const decisionLevelEl = document.getElementById('projDecisionLevel'); if (decisionLevelEl) decisionLevelEl.value = 'Diretoria DSV';
             if (typeof window.toggleDecisionFields === 'function') window.toggleDecisionFields();
-            if (encaminhamentosField) encaminhamentosField.classList.toggle('hidden-field', activeTab === 'operational');
             document.getElementById('riskField').classList.add('hidden-field');
             
 
@@ -6891,9 +6876,11 @@ document.getElementById('projRisks').value = '';
         };
 
         // Funções de Tags
-        const getTagsFromContainer = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); };
-        const createTag = (text, containerId, inputId, colorClass = 'tag-blue') => { const container = document.getElementById(containerId); const input = inputId ? document.getElementById(inputId) : null; if(!container) return; const tag = document.createElement('div'); tag.className = `actor-tag ${colorClass}`; tag.innerHTML = `<span>${text}</span><i class="fas fa-times cursor-pointer hover:opacity-75" onclick="this.parentElement.remove()"></i>`; if(input) { container.insertBefore(tag, input); } else { container.appendChild(tag); } };
-        window.addServiceTag = (val) => { if(!val) return; const container = document.getElementById('serviceTagsContainer'); const existing = Array.from(container.querySelectorAll('span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'serviceTagsContainer', null, 'tag-orange'); };
+        // O texto visível da tag pode ser uma sigla; o valor real fica em data-value.
+        const getTagValues = (containerId) => { const container = document.getElementById(containerId); if(!container) return []; return Array.from(container.querySelectorAll('.actor-tag')).map(t => t.dataset.value || t.querySelector('span')?.innerText || '').filter(Boolean); };
+        const getTagsFromContainer = (containerId) => getTagValues(containerId);
+        const createTag = (text, containerId, inputId, colorClass = 'tag-blue', value = text, title = '') => { const container = document.getElementById(containerId); const input = inputId ? document.getElementById(inputId) : null; if(!container) return; const tag = document.createElement('div'); tag.className = `actor-tag ${colorClass}`; tag.dataset.value = value; if(title) tag.title = title; tag.innerHTML = `<span>${escapeHtml(text)}</span><i class="fas fa-times cursor-pointer hover:opacity-75" onclick="this.parentElement.remove()"></i>`; if(input) { container.insertBefore(tag, input); } else { container.appendChild(tag); } };
+        window.addServiceTag = (val) => { if(!val) return; const value = resolveCargoValue(val); if(!value) return; if(getTagValues('serviceTagsContainer').includes(value)) return; createTag(getCargoAcronym(value), 'serviceTagsContainer', null, 'tag-orange', value, getCargoFullName(value)); };
         window.addCargoTag = (val) => { if(!val) return; const container = document.getElementById('cargoTagsContainer'); if(!container) return; const existing = Array.from(container.querySelectorAll('.actor-tag span')).map(s => s.innerText); if(existing.includes(val)) return; createTag(val, 'cargoTagsContainer', null, 'tag-purple'); };
         const setupTagInput = (inputId, containerId, colorClass) => { const input = document.getElementById(inputId); if(!input) return; input.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); const val = this.value.trim().replace(',', ''); if(val) { createTag(val, containerId, inputId, colorClass); this.value = ''; } } }); };
         
@@ -6985,10 +6972,22 @@ document.getElementById('projRisks').value = '';
             return { total, done, pct: total ? Math.round((done / total) * 100) : 0 };
         }
 
-        window.updateTaskFormProgress = () => {
-            const progress = getTaskProgress(window.getTasksFromForm?.() || []);
+        function setTaskFormProgressDisplay(progress) {
             const value = document.getElementById('taskFormProgress');
-            if (value) value.textContent = `${progress.pct}%`;
+            const empty = !progress || !progress.total;
+            if (value) {
+                value.textContent = empty ? '—' : `${progress.pct}%`;
+                value.classList.toggle('text-slate-300', empty);
+                value.classList.toggle('text-blue-700', !empty);
+            }
+        }
+
+        window.updateTaskFormProgress = () => {
+            const tasks = getTaskProgress(window.getTasksFromForm?.() || []);
+            const progress = tasks.total
+                ? { ...tasks, kind: 'tasks' }
+                : { ...getSubprojectProgress(document.getElementById('editId')?.value), kind: 'subprojects' };
+            setTaskFormProgressDisplay(progress);
             updateProjectDirtyState();
         };
 
@@ -7176,9 +7175,35 @@ document.getElementById('projRisks').value = '';
         };
 
         
-        // ===== Observações Gerais: histórico (obsLog) =====
+        // ===== Comentários do projeto: histórico (obsLog) =====
         function formatDateTime(ts){
             try { return new Date(ts).toLocaleString('pt-BR'); } catch { return ''; }
+        }
+
+        const MIGRATED_ENCAMINHAMENTOS_LABEL = 'Migrado de Encaminhamentos';
+
+        // Monta o histórico de comentários a partir do registro, absorvendo os formatos legados:
+        // - obs (string única, anterior ao histórico)
+        // - encaminhamentos (campo removido na issue #21, virou comentário migrado)
+        function getObsLogFromItem(item) {
+            const log = (item && Array.isArray(item.obsLog)) ? [...item.obsLog] : [];
+            if (!log.length && item?.obs && String(item.obs).trim()) {
+                log.push({ ts: item.updatedAt || Date.now(), text: String(item.obs).trim() });
+            }
+            const encaminhamentos = String(item?.encaminhamentos || '').trim();
+            if (encaminhamentos && !log.some(o => o?.migratedFrom === 'encaminhamentos')) {
+                log.push({
+                    ts: item.updatedAt || Date.now(),
+                    text: encaminhamentos,
+                    author: MIGRATED_ENCAMINHAMENTOS_LABEL,
+                    migratedFrom: 'encaminhamentos'
+                });
+            }
+            return log;
+        }
+
+        function getObsAuthorLabel(entry) {
+            return String(entry?.author || entry?.authorEmail || '').trim();
         }
 
         window.renderObsHistory = function(obsLog = []) {
@@ -7186,7 +7211,7 @@ document.getElementById('projRisks').value = '';
             if (!el) return;
 
             if (!Array.isArray(obsLog) || obsLog.length === 0) {
-                el.innerHTML = `<div class="text-xs italic text-slate-400">Sem histórico de observações.</div>`;
+                el.innerHTML = `<div class="text-xs italic text-slate-400">Sem comentários registrados.</div>`;
                 return;
             }
 
@@ -7198,13 +7223,16 @@ document.getElementById('projRisks').value = '';
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 relative">
                     <button
                         type="button"
-                        title="Excluir observação"
+                        title="Excluir comentário"
                         class="absolute top-2 right-2 w-6 h-6 rounded-md flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-white transition-all"
                         onclick="window.deleteObsEntry(${o.__idx})"
                     >&times;</button>
 
-                    <div class="flex items-center justify-between gap-3 pr-7">
-                        <div class="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1 pr-7">
+                        <div class="text-[10px] font-black uppercase tracking-wider text-slate-700">
+                            <i class="fas fa-user text-slate-300 mr-1"></i>${escapeHtml(getObsAuthorLabel(o) || 'Autor não registrado')}
+                        </div>
+                        <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">
                             ${formatDateTime(o.ts || Date.now())}
                         </div>
                     </div>
@@ -7227,13 +7255,9 @@ document.getElementById('projRisks').value = '';
 
             const collectionName = ['projects', 'contracts', 'operational'].includes(currentProjectCollection) ? currentProjectCollection : activeTab;
             const existing = dataStore[collectionName]?.find(i => i.id === id);
-            let obsLog = [];
+            const obsLog = getObsLogFromItem(existing);
 
-            // migração simples: se era legado (obs string) e ainda não tem obsLog
-            if (existing?.obsLog && Array.isArray(existing.obsLog)) obsLog = [...existing.obsLog];
-            else if (existing?.obs && String(existing.obs).trim()) obsLog = [{ ts: Date.now(), text: String(existing.obs).trim() }];
-
-            if (!Array.isArray(obsLog) || obsLog.length === 0) {
+            if (obsLog.length === 0) {
                 window.renderObsHistory([]);
                 return;
             }
@@ -7248,19 +7272,20 @@ document.getElementById('projRisks').value = '';
             try {
                 await setDoc(
                     doc(db, 'artifacts', appId, 'public', 'data', collectionName, id),
-                    { obsLog, obs: lastText, ...buildAuditFields(existing) },
+                    { obsLog, obs: lastText, encaminhamentos: '', ...buildAuditFields(existing) },
                     { merge: true }
                 );
 
                 if (existing) {
                     existing.obsLog = obsLog;
                     existing.obs = lastText;
+                    existing.encaminhamentos = '';
                 }
 
                 window.renderObsHistory(obsLog);
             } catch (err) {
-                console.error('Erro ao excluir observação:', err);
-                alert('Erro ao excluir observação no Firebase. Veja o console.');
+                console.error('Erro ao excluir comentário:', err);
+                alert('Erro ao excluir comentário no Firebase. Veja o console.');
             }
         };
 
@@ -7285,19 +7310,15 @@ document.getElementById('projRisks').value = '';
             // histórico atual (cache local)
             const collectionName = ['projects', 'contracts', 'operational'].includes(currentProjectCollection) ? currentProjectCollection : activeTab;
             const existing = dataStore[collectionName]?.find(i => i.id === id);
-            let obsLog = [];
+            const obsLog = getObsLogFromItem(existing);
 
-            // migração simples: se era legado (obs string) e ainda não tem obsLog
-            if (existing?.obsLog && Array.isArray(existing.obsLog)) obsLog = [...existing.obsLog];
-            else if (existing?.obs && String(existing.obs).trim()) obsLog = [{ ts: Date.now(), text: String(existing.obs).trim() }];
-
-            const entry = { ts: Date.now(), text };
-            obsLog.push(entry);
+            const author = getCurrentUserAudit();
+            obsLog.push({ ts: Date.now(), text, author: author.label, authorEmail: author.email, authorUid: author.uid });
 
             try {
                 await setDoc(
                     doc(db, 'artifacts', appId, 'public', 'data', collectionName, id),
-                    { obsLog, obs: text, ...buildAuditFields(existing) },
+                    { obsLog, obs: text, encaminhamentos: '', ...buildAuditFields(existing) },
                     { merge: true }
                 );
 
@@ -7305,15 +7326,37 @@ document.getElementById('projRisks').value = '';
                 if (existing) {
                     existing.obsLog = obsLog;
                     existing.obs = text;
+                    existing.encaminhamentos = '';
                 }
 
                 ta.value = '';
                 window.renderObsHistory(obsLog);
             } catch (err) {
-                console.error('Erro ao salvar observação:', err);
-                alert('Erro ao salvar observação no Firebase. Veja o console.');
+                console.error('Erro ao salvar comentário:', err);
+                alert('Erro ao salvar comentário no Firebase. Veja o console.');
             }
         };
+
+        // Converte, uma única vez, o texto legado de "Encaminhamentos" em comentário do histórico.
+        // A conversão é preguiçosa: acontece ao abrir o registro para edição.
+        async function migrateEncaminhamentosToObsLog(item, obsLog, collectionName) {
+            if (!currentUser || !item?.id) return;
+            if (!String(item.encaminhamentos || '').trim()) return;
+            if (!['projects', 'contracts', 'operational'].includes(collectionName)) return;
+
+            try {
+                // sem buildAuditFields: apenas abrir o registro não deve marcar o usuário como quem o atualizou
+                await setDoc(
+                    doc(db, 'artifacts', appId, 'public', 'data', collectionName, item.id),
+                    { obsLog, encaminhamentos: '' },
+                    { merge: true }
+                );
+                item.obsLog = obsLog;
+                item.encaminhamentos = '';
+            } catch (err) {
+                console.error('Erro ao migrar encaminhamentos para o histórico de comentários:', err);
+            }
+        }
 
         // Enter salva no histórico | Shift+Enter quebra linha
         (function bindObsEnterToSave(){
@@ -7344,7 +7387,7 @@ document.getElementById('projRisks').value = '';
             const roadmapDraft = [];
             document.querySelectorAll('#roadmapContainer > div').forEach(row => { const d = row.querySelector('.roadmap-date')?.value || ''; const e = row.querySelector('.roadmap-step')?.value || ''; const noDate = !!row.querySelector('.roadmap-no-date')?.checked; if (e && (d || noDate)) roadmapDraft.push({ data: noDate ? '' : d, etapa: e, noDate }); });
             const roadmap = sortRoadmapItems(roadmapDraft);
-            const servicesList = Array.from(document.querySelectorAll('#serviceTagsContainer .actor-tag span')).map(s => s.innerText);
+            const servicesList = getTagValues('serviceTagsContainer');
             const cargosList = [...servicesList]; // compatibilidade: o Cronograma usa Divisões/Serviços responsáveis como base
             const existingForAudit = (dataStore[collectionName] || []).find(i => i.id === id) || null;
 
@@ -7360,7 +7403,7 @@ document.getElementById('projRisks').value = '';
             const normalizedDecisionDesc = decisionIsActive ? rawDecisionDesc : '';
 
             const data = {
-                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, encaminhamentos: document.getElementById('projEncaminhamentos') ? document.getElementById('projEncaminhamentos').value : '', decisionNeeded: normalizedDecisionNeeded, decisionLevel: normalizedDecisionLevel, decisionDesc: normalizedDecisionDesc, services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
+                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, decisionNeeded: normalizedDecisionNeeded, decisionLevel: normalizedDecisionLevel, decisionDesc: normalizedDecisionDesc, services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
             };
             if (collectionName === 'projects') { data.tasks = window.getTasksFromForm?.() || []; data.parentProjectId = document.getElementById('projParentProject')?.value || ''; }
             if (collectionName === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (collectionName === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
@@ -7799,11 +7842,10 @@ Item: ${itemLabel}`,
 
             document.getElementById('projName').value = item.name || '';
             document.getElementById('projDesc').value = item.desc || '';
-            document.getElementById('projObs').value = ''; // campo vira "nova observação"
-            const obsLog = (Array.isArray(item.obsLog) && item.obsLog.length)
-                ? item.obsLog
-                : (item.obs ? [{ ts: Date.now(), text: String(item.obs) }] : []);
+            document.getElementById('projObs').value = ''; // campo vira "novo comentário"
+            const obsLog = getObsLogFromItem(item);
             window.renderObsHistory(obsLog);
+            migrateEncaminhamentosToObsLog(item, obsLog, t);
             document.getElementById('projSei').value = item.sei || '';
             document.getElementById('projPrazo').value = item.prazo || '';
             document.getElementById('projCoord').value = item.coord || '';
@@ -7816,17 +7858,14 @@ Item: ${itemLabel}`,
             const links = getDocLinksArray(item);
             if (links.length === 0) links.push('');
             links.forEach(l => window.addDocLinkRow(l));
-            document.getElementById('projRisks').value = item.risks || ''; 
-            if (document.getElementById('projEncaminhamentos')) document.getElementById('projEncaminhamentos').value = item.encaminhamentos || '';
+            document.getElementById('projRisks').value = item.risks || '';
             const savedDecisionDesc = String(item.decisionDesc || '').trim();
             const savedDecisionNeeded = ((item.decisionNeeded === 'Sim' && savedDecisionDesc) || (!item.decisionNeeded && savedDecisionDesc)) ? 'Sim' : 'Não';
             if (document.getElementById('projDecisionNeeded')) document.getElementById('projDecisionNeeded').value = savedDecisionNeeded;
             if (document.getElementById('projDecisionLevel')) document.getElementById('projDecisionLevel').value = savedDecisionNeeded === 'Sim' ? (item.decisionLevel || 'Diretoria DSV') : 'Diretoria DSV';
             if (document.getElementById('projDecisionDesc')) document.getElementById('projDecisionDesc').value = savedDecisionNeeded === 'Sim' ? savedDecisionDesc : '';
             if (typeof window.toggleDecisionFields === 'function') window.toggleDecisionFields();
-            const encaminhamentosFieldEdit = document.getElementById('encaminhamentosField');
-            if (encaminhamentosFieldEdit) encaminhamentosFieldEdit.classList.toggle('hidden-field', t === 'operational');
-            document.getElementById('projDuration').value = item.duration || ''; 
+            document.getElementById('projDuration').value = item.duration || '';
             document.getElementById('projComplexity').value = item.complexity || 'Média';
 window.toggleRiskInput(); 
             sortRoadmapItems(item.roadmap || []).forEach(r => window.addRoadmapRow(r.data || '', r.etapa || '', !!r.noDate || !r.data));
@@ -7983,6 +8022,8 @@ window.toggleRiskInput();
             const size = item.type === 'Diretoria' ? '92px' : item.type === 'Coordenadoria' ? '82px' : item.type === 'Divisão' ? '68px' : '58px';
             const popSide = node.x > 1120 ? 'popover-left' : 'popover-right';
             const popVertical = node.y > 1260 ? 'popover-up' : (node.y < 280 ? 'popover-down' : '');
+            // a maioria dos títulos já começa com o tipo ("Coordenadoria de..."); só prefixa quando falta
+            const nodeLabel = item.title.toLowerCase().startsWith(item.type.toLowerCase()) ? item.title : `${item.type} ${item.title}`;
             const attribHtml = (item.items || []).map((sub, idx) => `
                 <div class="portaria-popover-item">
                     <span class="portaria-popover-num">${romanPortaria(idx)}</span>
@@ -7993,17 +8034,26 @@ window.toggleRiskInput();
                         class="portaria-circle-node type-${escapeHtml(item.type)} ${active ? 'active' : ''} ${dim ? 'is-dimmed' : ''}"
                         style="--x:${node.x};--y:${node.y};--size:${size};"
                         onclick="selectPortariaNodeDecoded('${safeTitle}')"
+                        aria-label="${escapeHtml(nodeLabel)}, ${escapeHtml(item.art)}"
                         title="${escapeHtml(item.title)}">
                     <span class="acro">${escapeHtml(node.acronym || item.title.substring(0, 3).toUpperCase())}</span>
                     <span class="art">${escapeHtml(item.art)}</span>
-                    <span class="portaria-node-popover ${popSide} ${popVertical}" aria-hidden="true">
+                    <span class="portaria-node-popover ${popSide} ${popVertical}" onclick="event.stopPropagation()">
                         <span class="portaria-popover-head">
                             <span class="portaria-popover-type"><i class="fas fa-sitemap"></i>${escapeHtml(item.type)} · ${escapeHtml(item.art)}</span>
                             <span class="portaria-popover-title">${escapeHtml(item.title)}</span>
                             <span class="portaria-popover-preamble">${escapeHtml(item.preamble)}</span>
                         </span>
                         <span class="portaria-popover-body">
-                            <span class="portaria-popover-count"><i class="fas fa-list-check"></i>${(item.items || []).length} atribuições</span>
+                            <span class="portaria-popover-toolbar">
+                                <span class="portaria-popover-count"><i class="fas fa-list-check"></i>${(item.items || []).length} atribuições</span>
+                                <span class="portaria-popover-copy" role="button" tabindex="0"
+                                      title="Copiar atribuições"
+                                      onclick="event.stopPropagation(); copyPortariaAtribuicoes('${safeTitle}', this)"
+                                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();copyPortariaAtribuicoes('${safeTitle}', this);}">
+                                    <i class="fas fa-copy"></i><span class="portaria-popover-copy-label">Copiar</span>
+                                </span>
+                            </span>
                             <span class="portaria-popover-list">${attribHtml}</span>
                         </span>
                     </span>
@@ -8111,6 +8161,44 @@ window.toggleRiskInput();
 
         window.selectPortariaNodeDecoded = (encodedTitle) => {
             window.selectPortariaNode(decodeURIComponent(encodedTitle));
+        };
+
+        function buildPortariaAtribuicoesText(item) {
+            const linhas = [`${item.title} (${item.art})`];
+            if (item.preamble) linhas.push(item.preamble);
+            linhas.push('');
+            (item.items || []).forEach((sub, idx) => linhas.push(`${romanPortaria(idx)} - ${sub}`));
+            return linhas.join('\n');
+        }
+
+        window.copyPortariaAtribuicoes = async (encodedTitle, el) => {
+            const item = findPortariaItemByTitle(decodeURIComponent(encodedTitle));
+            if (!item) return;
+            const texto = buildPortariaAtribuicoesText(item);
+            try {
+                await navigator.clipboard.writeText(texto);
+            } catch (err) {
+                const input = document.createElement('textarea');
+                input.value = texto;
+                input.style.position = 'fixed';
+                input.style.opacity = '0';
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                input.remove();
+            }
+            showShareFeedback('Atribuições copiadas.');
+            if (el) {
+                const label = el.querySelector('.portaria-popover-copy-label');
+                el.classList.add('is-copied');
+                if (label) label.textContent = 'Copiado!';
+                clearTimeout(el.__copyTimer);
+                el.__copyTimer = setTimeout(() => {
+                    if (!el.isConnected) return;
+                    el.classList.remove('is-copied');
+                    if (label) label.textContent = 'Copiar';
+                }, 1800);
+            }
         };
 
         window.selectPortariaParent = () => {
@@ -9474,7 +9562,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                     : '<span class="table-meta-muted">--</span>';
                 const progress = getProjectProgressSummary(item);
                 const progressHtml = progress.total
-                    ? `<div class="min-w-[110px]"><div class="flex justify-between gap-2 text-[9px] font-black text-slate-500"><span>${progress.kind === 'subprojects' ? 'Subprojetos' : 'Tarefas'}</span><span>${progress.pct}%</span></div><div class="progress-summary-track !mt-1 !h-[6px]"><div class="progress-summary-fill" style="width:${progress.pct}%"></div></div></div>`
+                    ? `<div class="min-w-[110px]"><div class="flex justify-end gap-2 text-[9px] font-black text-slate-500"><span>${progress.pct}%</span></div><div class="progress-summary-track !mt-1 !h-[6px]"><div class="progress-summary-fill" style="width:${progress.pct}%"></div></div></div>`
                     : '<span class="table-meta-muted">--</span>';
                 const parent = getProjectParent(item.parentProjectId);
                 return `<tr onclick="editItem('${item.id}', '${activeTab}')">
@@ -9533,7 +9621,7 @@ window.openAddBacklogItemModal = (meetingId) => {
         window.applyPanelFilters = (items, collection = activeTab) => {
             let out = items || [];
             const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
-            if(search) out = out.filter(i => { const activeDecisionText = (collection === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : ''; const activeDecisionLevel = activeDecisionText ? i.decisionLevel : ''; const hay = [i.name, i.desc, i.encaminhamentos, activeDecisionText, activeDecisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
+            if(search) out = out.filter(i => { const activeDecisionText = (collection === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : ''; const activeDecisionLevel = activeDecisionText ? i.decisionLevel : ''; const hay = [i.name, i.desc, ...getObsLogFromItem(i).map(o => o.text), activeDecisionText, activeDecisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
             if(currentFilter !== 'all') out = out.filter(i => i.coord === currentFilter);
             if(collection === 'operational' || collection === 'projects') { const serviceFilter = document.getElementById('filterService')?.value || 'all'; if(serviceFilter !== 'all') { out = out.filter(i => { const s = i.services || (i.service ? [i.service] : []); return s.includes(serviceFilter); }); } }
             if(currentPriorityFilter !== 'all') out = out.filter(i => i.priority === currentPriorityFilter);
@@ -9765,39 +9853,29 @@ Object.keys(cols).forEach(key => {
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
-            const cleanText = (value) => String(value || '').replace(/\s+/g, ' ').trim();
             const stripSummaryLabel = (value) => String(value || '')
                 .replace(/^\s*(pr[oó]xima\s+a[cç][aã]o|a[cç][oõ]es?\s+seguintes?|encaminhamentos?|decis[aã]o\s+necess[aá]ria|ponto\s+de\s+decis[aã]o)\s*[:\-–—]\s*/i, '')
                 .trim();
-            const normalizeForCompare = (value) => cleanText(stripSummaryLabel(value)).toLowerCase()
-                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, ' ')
-                .trim();
-            const isRepeatedInfo = (a, b) => {
-                const x = normalizeForCompare(a);
-                const y = normalizeForCompare(b);
-                if (!x || !y) return false;
-                return x === y || (x.length > 18 && y.includes(x)) || (y.length > 18 && x.includes(y));
-            };
-            const removeRepeatedLines = (text, references = []) => {
-                const refList = references.filter(Boolean);
-                const seen = new Set();
-                return String(text || '')
-                    .split(/\n+/)
-                    .map(line => stripSummaryLabel(line))
-                    .map(line => line.trim())
-                    .filter(line => {
-                        if (!line) return false;
-                        const normalizedLine = normalizeForCompare(line);
-                        if (!normalizedLine || seen.has(normalizedLine)) return false;
-                        seen.add(normalizedLine);
-                        return !refList.some(ref => isRepeatedInfo(line, ref));
-                    })
-                    .join('\n');
-            };
             const decisionResumoText = stripSummaryLabel(item.decisionDesc || '').trim();
-            const encaminhamentosResumoText = removeRepeatedLines(item.encaminhamentos, [decisionResumoText]);
-            const shouldShowEncaminhamentosResumo = Boolean((activeTab === 'projects' || activeTab === 'contracts') && encaminhamentosResumoText);
+
+            // Comentários do registro (mais recentes primeiro), com data/hora e autor
+            const itemComments = [...getObsLogFromItem(item)].sort((a, b) => (b.ts || 0) - (a.ts || 0));
+            const commentsDetailHtml = itemComments.length ? `
+                <div class="pt-2">
+                    <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2"><i class="fas fa-comments mr-1"></i> Comentários</p>
+                    <div class="space-y-2">
+                        ${itemComments.map(o => `
+                            <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
+                                <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
+                                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-700"><i class="fas fa-user text-slate-300 mr-1"></i>${escapeHtml(getObsAuthorLabel(o) || 'Autor não registrado')}</span>
+                                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">${formatDateTime(o.ts || Date.now())}</span>
+                                </div>
+                                <div class="text-sm text-slate-600 leading-relaxed markdown-content">${md(o.text)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : '';
 
             let decisionResumoHtml = '';
             const shouldShowDecisionResumo = Boolean(activeTab === 'projects' && decisionResumoText && item.decisionNeeded !== 'Não');
@@ -9813,30 +9891,16 @@ Object.keys(cols).forEach(key => {
                 `;
             }
 
-            let encaminhamentosResumoHtml = '';
-            if (shouldShowEncaminhamentosResumo) {
-                encaminhamentosResumoHtml = `
-                    <div class="summary-inline-note">
-                        <p class="summary-box-title text-blue-700"><i class="fas fa-list-check"></i> Encaminhamentos</p>
-                        <div class="summary-box-body markdown-content markdown-compact clamp-2">${md(encaminhamentosResumoText)}</div>
-                    </div>
-                `;
-            }
-
             let servicesBadgeHtml = '';
-            if (activeTab === 'operational' || activeTab === 'projects') {
-                const sList = item.services || (item.service ? [item.service] : []);
-                if (sList.length) {
-                    const color = activeTab === 'projects' ? 'text-indigo-700 bg-indigo-50 border-indigo-100' : 'text-orange-600 bg-orange-50 border-orange-100';
-                    const servicesTitle = activeTab === 'projects' ? 'Divisões / serviços responsáveis' : 'Serviços envolvidos';
-                    servicesBadgeHtml = `
-                        <div class="card-summary-section">
-                            <p class="card-summary-section-title"><i class="fas fa-sitemap"></i>${servicesTitle}</p>
-                            <div class="services-grid">${sList.map(s => `<span class="unit-badge ${color}"><i class="fas fa-sitemap text-[8px]"></i><span>${s}</span></span>`).join('')}</div>
-                        </div>`;
-                }
-            } else if (item.service) {
-                servicesBadgeHtml = `<p class="text-[9px] text-slate-400 font-bold uppercase truncate">${item.service}</p>`;
+            const sList = normalizeCargoList(item);
+            if (sList.length) {
+                const color = activeTab === 'operational' ? 'text-orange-600 bg-orange-50 border-orange-100' : 'text-indigo-700 bg-indigo-50 border-indigo-100';
+                const servicesTitle = activeTab === 'operational' ? 'Serviços envolvidos' : 'Divisões / serviços responsáveis';
+                servicesBadgeHtml = `
+                    <div class="card-summary-section">
+                        <p class="card-summary-section-title"><i class="fas fa-sitemap"></i>${servicesTitle}</p>
+                        <div class="services-grid">${sList.map(s => `<span class="unit-badge ${color}" title="${escapeHtml(getCargoFullName(s))}"><i class="fas fa-sitemap text-[8px]"></i><span>${escapeHtml(getCargoAcronym(s))}</span></span>`).join('')}</div>
+                    </div>`;
             }
 
             const parentProject = activeTab === 'projects' ? getProjectParent(item.parentProjectId) : null;
@@ -9916,7 +9980,6 @@ Object.keys(cols).forEach(key => {
                                         ${hierarchySummaryHtml}
                                         ${progressSummaryHtml}
                                         ${decisionResumoHtml ? `<div class="decision-summary-grid">${decisionResumoHtml}</div>` : ''}
-                                        ${encaminhamentosResumoHtml}
                                     </div>
                                 </div>
                             </div>
@@ -9942,9 +10005,8 @@ Object.keys(cols).forEach(key => {
                             <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><div class="text-sm text-slate-700 leading-relaxed font-medium markdown-content">${md(item.desc, 'Sem descrição.')}</div></div>
                             ${tasksDetailHtml}
                             ${childrenDetailHtml}
-                            ${shouldShowEncaminhamentosResumo ? `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><p class="text-xs font-semibold text-slate-500 text-blue-600 uppercase mb-2"><i class="fas fa-list-check mr-1"></i> Encaminhamentos</p><div class="text-sm text-slate-700 leading-relaxed font-bold markdown-content">${md(encaminhamentosResumoText)}</div></div>` : ''}
                             ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><div class="text-sm text-red-700 leading-relaxed font-bold markdown-content">${md(item.risks)}</div></div>` : ''}
-                            ${item.obs ? `<div class="pt-2"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Observações Gerais</p><div class="text-sm text-slate-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 markdown-content">${md(item.obs)}</div></div>` : ''}
+                            ${commentsDetailHtml}
                             ${getDocLinksArray(item).length ? `<div class="pt-2">
                                 <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2"><i class="fas fa-paperclip mr-1"></i> Documentos</p>
                                 <div class="space-y-2">
@@ -10138,7 +10200,7 @@ window.setListFilter = f => { f = normalizeStatus(f); if(f === 'Concluído' && t
             updateAuthIndicator(user);
             if (window.__dsvListenersStarted) return;
             window.__dsvListenersStarted = true;
- initListeners(); setTimeout(() => { const hasSharedProject = new URLSearchParams(window.location.search).has('project'); window.switchTab(hasSharedProject ? 'projects' : 'overview'); if (hasSharedProject) tryOpenSharedProject(); }, 500); // Indicadores: listeners de busca/filtro
+ initListeners(); applyAcronymLabelsToSelect('projServiceAdder'); applyAcronymLabelsToSelect('filterService'); setTimeout(() => { const hasSharedProject = new URLSearchParams(window.location.search).has('project'); window.switchTab(hasSharedProject ? 'projects' : 'overview'); if (hasSharedProject) tryOpenSharedProject(); }, 500); // Indicadores: listeners de busca/filtro
                     const s = document.getElementById('indicatorSearch');
                     const c = document.getElementById('indicatorClearSearch');
                     const tf = document.getElementById('indicatorTypeFilter');
@@ -10800,7 +10862,7 @@ const filenameBase = (safeTitle || 'pauta')
 
 /* ===============================
    AJUSTE FINAL – cards-resumo mais largos
-   Faz os blocos de Divisões, Decisão e Encaminhamentos ocuparem a largura útil
+   Faz os blocos de Divisões e Decisão ocuparem a largura útil
    do card principal, respeitando as margens esquerda e direita.
    =============================== */
 .accordion-row .card-header-layout {
@@ -10863,7 +10925,7 @@ const filenameBase = (safeTitle || 'pauta')
    AJUSTE – cards-resumo ainda mais largos
    Faz os blocos internos usarem a largura total do card principal.
    Os botões ficam no canto superior direito no desktop, sem reduzir a largura
-   dos blocos de Divisões, Decisão e Encaminhamentos.
+   dos blocos de Divisões e Decisão.
    =============================== */
 @media (min-width: 861px) {
   .accordion-row .card-header-layout {
@@ -11053,6 +11115,76 @@ body { line-height: 1.55; }
   html { font-size: 16.5px; }
 }
 </style>
+
+<style id="portaria-copiar-atribuicoes-v1">
+/* =====================================================
+   PORTARIA – copiar as atribuições
+   O card flutuante vive dentro de um <button>, que bloqueia a seleção
+   de texto e herda o cursor de ponteiro. Aqui o texto volta a ser
+   selecionável e ganha o botão "Copiar" ao lado da contagem.
+   ===================================================== */
+#portariaView .portaria-node-popover {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+#portariaView .portaria-popover-title,
+#portariaView .portaria-popover-preamble,
+#portariaView .portaria-popover-text {
+  cursor: text !important;
+}
+
+#portariaView .portaria-popover-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .5rem !important;
+  /* fixa no topo para o "Copiar" continuar visível nas unidades com muitos incisos */
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 2 !important;
+  background: #ffffff !important;
+  padding: .3rem 0 .5rem !important;
+  margin-bottom: .35rem !important;
+}
+#portariaView .portaria-popover-count {
+  margin-bottom: 0 !important;
+}
+
+#portariaView .portaria-popover-copy {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: .35rem !important;
+  flex: none !important;
+  padding: .32rem .6rem !important;
+  border-radius: 999px !important;
+  border: 1px solid #004077 !important;
+  background: #004077 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  transition: background .16s ease, border-color .16s ease !important;
+}
+#portariaView .portaria-popover-copy:hover {
+  background: #0072bc !important;
+  border-color: #0072bc !important;
+}
+#portariaView .portaria-popover-copy:focus-visible {
+  outline: 2px solid #0072bc !important;
+  outline-offset: 2px !important;
+}
+#portariaView .portaria-popover-copy.is-copied,
+#portariaView .portaria-popover-copy.is-copied:hover {
+  background: #15803d !important;
+  border-color: #15803d !important;
+}
+</style>
+
 <script id="ds-paineis-detran-v1-js">
 (function(){
   window.openDSMobileSidebar = function(){
