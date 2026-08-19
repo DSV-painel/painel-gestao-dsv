@@ -6905,10 +6905,8 @@ document.getElementById('projRisks').value = '';
                 </div>
             `;
             container.appendChild(row);
-            const dateInput = row.querySelector('.roadmap-date');
-            const noDateInput = row.querySelector('.roadmap-no-date');
-            if (dateInput) dateInput.addEventListener('change', () => setTimeout(window.sortRoadmapFormRows, 0));
-            if (noDateInput) noDateInput.addEventListener('change', () => setTimeout(window.sortRoadmapFormRows, 0));
+            // Não reordena as linhas enquanto a data está sendo editada.
+            // A ordenação permanece no salvamento e na exibição do Roadmap.
             updateProjectDirtyState();
         };
 
