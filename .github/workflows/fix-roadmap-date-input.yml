@@ -1,0 +1,55 @@
+name: Fix roadmap date input
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-roadmap-date-input.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-roadmap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Remove automatic roadmap reordering while editing dates
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          old = """            const dateInput = row.querySelector('.roadmap-date');
+                      const noDateInput = row.querySelector('.roadmap-no-date');
+                      if (dateInput) dateInput.addEventListener('change', () => setTimeout(window.sortRoadmapFormRows, 0));
+                      if (noDateInput) noDateInput.addEventListener('change', () => setTimeout(window.sortRoadmapFormRows, 0));
+          """
+          if old not in text:
+              raise SystemExit('Target roadmap listener snippet not found; no changes applied.')
+          new = """            // Não reordena as linhas enquanto a data está sendo editada.
+                      // A ordenação permanece no salvamento e na exibição do Roadmap.
+          """
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+      - name: Validate patch
+        run: |
+          git diff --check
+          if grep -F "dateInput.addEventListener('change', () => setTimeout(window.sortRoadmapFormRows, 0))" index.html; then
+            echo 'Automatic date listener still present.'
+            exit 1
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Corrige digitação de data no roadmap"
+          git push origin HEAD:main
