@@ -1,0 +1,45 @@
+name: Publish dashboard update
+
+on:
+  push:
+    branches:
+      - melhoria-ficha-panorama-tabela
+    paths:
+      - '.publish-dsv/**'
+      - '.github/workflows/publish-dashboard-update.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild index.html from approved package
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .publish-dsv/part-*.b64 > /tmp/dashboard.b64
+          base64 --decode /tmp/dashboard.b64 | gzip --decompress > index.html
+          test "$(wc -c < index.html)" -eq 655330
+          echo "83448cb9c9d99394060b3dba9d0590ed03c1636c9f2e5a55860dac0a743b2e86  index.html" | sha256sum -c -
+
+      - name: Commit rebuilt dashboard
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No index.html changes to commit."
+          else
+            git commit -m "feat: aprimora cards, ficha e tabela do painel"
+            git push origin HEAD:${GITHUB_REF_NAME}
+          fi
