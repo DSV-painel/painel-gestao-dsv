@@ -667,7 +667,7 @@
 .card-footer-meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem;
   padding-top: 0.55rem;
   margin-top: 0.1rem;
@@ -740,6 +740,58 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 }
 
 
+
+
+/* Convênios / contratos — KPIs de valores responsivos */
+#statsRow2 .contract-money-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+}
+#statsRow2 .contract-money-card {
+  min-width: 0;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 0.8rem !important;
+}
+#statsRow2 .contract-money-copy {
+  width: 100%;
+  min-width: 0;
+}
+#statsRow2 .contract-money-value {
+  width: 100%;
+  min-width: 0;
+  color: #0f172a;
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  line-height: 1.08;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+#statsRow2 .contract-money-symbol {
+  display: inline-block;
+  margin-right: 0.4rem;
+  color: #94a3b8;
+  font-size: 0.68em;
+  font-weight: 800;
+  vertical-align: 0.08em;
+}
+#appShell.sidebar-expanded #statsRow2 .contract-money-grid {
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)) !important;
+}
+#appShell.sidebar-expanded #statsRow2 .contract-money-value {
+  font-size: clamp(1.35rem, 1.8vw, 1.85rem);
+}
+@media (max-width: 760px) {
+  #statsRow2 .contract-money-grid,
+  #appShell.sidebar-expanded #statsRow2 .contract-money-grid {
+    grid-template-columns: 1fr !important;
+  }
+  #statsRow2 .contract-money-value {
+    font-size: 1.55rem;
+  }
+}
 
 /* ===============================
    RESPONSIVIDADE – cards executivos / decisão necessária
@@ -3154,6 +3206,28 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 }
 
 
+/* Tabela resumida — mesma hierarquia dos cards: resumo > ficha > edição */
+.table-summary-view { min-width: 680px; }
+.table-summary-view th:first-child { width: 52%; }
+.table-summary-view th:nth-child(2) { width: 22%; }
+.table-summary-view th:nth-child(3) { width: 20%; }
+.table-summary-view .table-open-column { width: 58px; text-align: center; }
+.table-summary-row { cursor: pointer; transition: background-color .18s ease, box-shadow .18s ease; }
+.table-summary-row:hover td { background: #f8fafc; }
+.table-summary-row:hover .table-primary-title { color: #005ca8; }
+.table-row-hint { margin-top: .3rem; display: inline-flex; align-items: center; gap: .35rem; color: #94a3b8; font-size: 11px; font-weight: 800; }
+.table-row-hint i { font-size: 10px; }
+.table-open-cell { text-align: center; vertical-align: middle !important; }
+.table-view-only-btn { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+.table-summary-row:hover .table-view-only-btn { background: #004077; border-color: #004077; color: #fff; }
+.table-summary-card .table-view thead th:last-child,
+.table-summary-card .table-view tbody td:last-child:not([colspan]) { box-shadow: none; }
+@media (max-width: 767px) {
+  .table-summary-view { min-width: 600px; }
+  .table-row-hint { display: none; }
+}
+
+
 /* --- Ajustes finos solicitados (26/07) --- */
 .ds-sidebar-head{padding:16px 14px 12px!important;}
 .ds-brand-row{min-height:auto!important;}
@@ -3229,6 +3303,16 @@ textarea.input-style { min-height: 92px; resize: vertical; }
     background:#f8fafc!important;
   }
 }
+
+
+/* Tabela completa + ficha como camada intermediária */
+.table-view:not(.table-summary-view) { min-width: 1380px; }
+.table-view tbody tr.table-summary-row { cursor: pointer; }
+.table-view tbody tr.table-summary-row:hover .table-primary-title { color: #005ca8; }
+.table-view tbody tr.table-summary-row .table-actions { justify-content: center; }
+.table-view tbody tr.table-summary-row .table-view-only-btn { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+.table-view tbody tr.table-summary-row:hover .table-view-only-btn { background: #004077; border-color: #004077; color: #fff; }
+
 </style>
 <style id="portaria-sem-pr-vp-final">
 #portariaView .portaria-context-node,
@@ -4391,6 +4475,372 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
   .subtasks-container,.add-subtask-btn{margin-left:.5rem;}
 }
 </style>
+
+<style id="dsv-panorama-card-style">
+/* =========================================================
+   Cards compactos + ficha de panorama — Projetos / Contratos
+   ========================================================= */
+.compact-record-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 6px minmax(0, 1fr) auto;
+  gap: 0;
+  align-items: stretch;
+  min-height: 116px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(15,23,42,.05);
+  overflow: hidden;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.compact-record-card:hover {
+  border-color: #bfdbfe;
+  box-shadow: 0 10px 24px rgba(15,23,42,.08);
+  transform: translateY(-1px);
+}
+.contracts-theme .compact-record-card:hover { border-color: #e9d5ff; }
+.contract-compact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:.75rem; }
+.compact-record-status-bar { width: 6px; height: 100%; }
+.compact-record-body {
+  min-width: 0;
+  padding: 1rem 1rem 1rem .95rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .7rem;
+}
+.compact-record-name {
+  margin: 0;
+  font-size: .95rem;
+  line-height: 1.35;
+  color: #0f172a;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.compact-record-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  align-items: center;
+}
+.compact-record-area,
+.compact-record-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .38rem;
+  min-height: 28px;
+  padding: .34rem .58rem;
+  border-radius: .65rem;
+  font-size: 11px;
+  line-height: 1.15;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.compact-record-status { border: 1px solid; }
+.compact-record-area {
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+.compact-record-actions {
+  padding: .9rem .9rem .9rem .35rem;
+  display: flex;
+  gap: .45rem;
+  align-items: center;
+  justify-content: center;
+}
+.compact-record-action {
+  width: 38px;
+  height: 38px;
+  border-radius: .75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #64748b;
+  transition: all .18s ease;
+}
+.compact-record-action:hover { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+.contracts-theme .compact-record-action:hover { background: #faf5ff; color: #7e22ce; border-color: #e9d5ff; }
+.compact-record-action.primary-view { background: #f8fafc; color: #334155; }
+.compact-record-action.primary-view:hover { background: #004077; color: #fff; border-color: #004077; }
+.contracts-theme .compact-record-action.primary-view:hover { background: #7e22ce; border-color: #7e22ce; }
+
+#itemPanoramaModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  width: 100%;
+  height: 100%;
+  background: rgba(15,23,42,.72);
+  backdrop-filter: blur(5px);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.panorama-shell {
+  width: min(1120px, 100%);
+  max-height: 92vh;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.5rem;
+  box-shadow: 0 28px 70px rgba(15,23,42,.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.panorama-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+}
+.panorama-title-wrap { min-width: 0; display: flex; gap: .85rem; align-items: flex-start; }
+.panorama-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: .85rem;
+  background: #004077;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px rgba(0,64,119,.18);
+}
+.panorama-kicker { font-size: 10.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; color: #64748b; }
+.panorama-title { margin-top: .2rem; font-size: 1.1rem; line-height: 1.3; font-weight: 900; color: #0f172a; overflow-wrap: anywhere; }
+.panorama-head-actions { display: flex; align-items: center; gap: .5rem; flex: 0 0 auto; }
+.panorama-edit-btn {
+  min-height: 40px;
+  padding: .62rem .85rem;
+  border-radius: .75rem;
+  background: #004077;
+  color: white;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  transition: all .18s ease;
+}
+.panorama-edit-btn:hover { background: #005ca8; }
+.panorama-action-strip {
+  flex: 0 0 auto;
+  padding: .8rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+.panorama-action-strip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.panorama-action-strip-label {
+  display: flex;
+  flex-direction: column;
+  gap: .12rem;
+  min-width: 0;
+}
+.panorama-action-strip-label strong {
+  font-size: 10.5px;
+  line-height: 1.2;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: #475569;
+}
+.panorama-action-strip-label span {
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #94a3b8;
+}
+.panorama-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .5rem;
+}
+.panorama-action-btn {
+  min-height: 38px;
+  padding: .55rem .72rem;
+  border-radius: .75rem;
+  border: 1px solid #dbe3eb;
+  background: #fff;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  font-size: 10.5px;
+  line-height: 1;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .045em;
+  transition: all .18s ease;
+  white-space: nowrap;
+}
+.panorama-action-btn:hover { transform: translateY(-1px); filter: saturate(1.04); }
+.panorama-action-btn i { font-size: 13px; }
+
+/* Ações rápidas — cores suaves e institucionais */
+.panorama-action-btn.share {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+.panorama-action-btn.share:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+.panorama-action-btn.planner {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #4f46e5;
+}
+.panorama-action-btn.planner:hover {
+  background: #e0e7ff;
+  border-color: #a5b4fc;
+  color: #4338ca;
+}
+.panorama-action-btn.dispatch {
+  background: #ecfeff;
+  border-color: #a5f3fc;
+  color: #0e7490;
+}
+.panorama-action-btn.dispatch:hover {
+  background: #cffafe;
+  border-color: #67e8f9;
+  color: #155e75;
+}
+.panorama-action-btn.decision {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #047857;
+}
+.panorama-action-btn.decision:hover {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+.panorama-action-btn.is-active.planner {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+  box-shadow: inset 0 0 0 1px rgba(37,99,235,.06);
+}
+.panorama-action-btn.is-active.dispatch {
+  background: #cffafe;
+  border-color: #67e8f9;
+  color: #155e75;
+  box-shadow: inset 0 0 0 1px rgba(14,116,144,.06);
+}
+.panorama-action-btn.is-active.decision {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+  box-shadow: inset 0 0 0 1px rgba(5,150,105,.06);
+}
+.panorama-action-btn.is-active:hover { filter: saturate(1.06); }
+.panorama-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: .75rem;
+  background: #f8fafc;
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.panorama-close-btn:hover { color: #dc2626; background: #fef2f2; }
+.panorama-body { flex: 1 1 auto; overflow-y: auto; padding: 1.25rem; background: #f8fafc; }
+.panorama-hero {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.15rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.panorama-hero-meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+.panorama-description { font-size: 13.5px; line-height: 1.55; color: #334155; }
+.panorama-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1rem; align-items: start; }
+.panorama-section {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.15rem;
+  padding: 1rem;
+  min-width: 0;
+}
+.panorama-section.full { grid-column: 1 / -1; }
+.panorama-section-title {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin: 0 0 .85rem;
+  padding-bottom: .65rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 11px;
+  color: #475569;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.panorama-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .7rem; }
+.panorama-info {
+  min-width: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: .85rem;
+  padding: .7rem .75rem;
+  background: #f8fafc;
+}
+.panorama-info-label { display:block; margin-bottom:.25rem; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.06em; color:#94a3b8; }
+.panorama-info-value { display:block; font-size:13px; font-weight:800; line-height:1.4; color:#334155; overflow-wrap:anywhere; }
+.panorama-tags { display:flex; flex-wrap:wrap; gap:.4rem; }
+.panorama-tag { display:inline-flex; align-items:center; gap:.35rem; padding:.36rem .55rem; border-radius:.65rem; background:#fff7ed; border:1px solid #fed7aa; color:#c2410c; font-size:11px; font-weight:900; }
+.panorama-callout { border-radius:.9rem; padding:.8rem; font-size:13px; line-height:1.5; font-weight:700; }
+.panorama-callout.risk { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
+.panorama-callout.decision { background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; }
+.panorama-empty { color:#94a3b8; font-size:12.5px; font-style:italic; }
+.panorama-task { border:1px solid #e2e8f0; border-radius:.85rem; padding:.7rem; background:#f8fafc; }
+.panorama-task + .panorama-task { margin-top:.5rem; }
+.panorama-roadmap { position:relative; display:flex; flex-direction:column; gap:.55rem; }
+.panorama-roadmap-item { display:grid; grid-template-columns:110px 1fr; gap:.7rem; align-items:start; border:1px solid #e2e8f0; border-radius:.85rem; padding:.7rem; background:#f8fafc; }
+.panorama-roadmap-date { font-size:11px; font-weight:900; color:#2563eb; text-transform:uppercase; }
+.panorama-roadmap-step { font-size:13px; font-weight:800; color:#334155; line-height:1.4; }
+.panorama-comment { border:1px solid #fde68a; background:#fffbeb; border-radius:.85rem; padding:.75rem; }
+.panorama-comment + .panorama-comment { margin-top:.5rem; }
+.panorama-comment-meta { display:flex; flex-wrap:wrap; gap:.5rem; font-size:10px; font-weight:900; text-transform:uppercase; color:#92400e; margin-bottom:.3rem; }
+.panorama-comment-text { color:#78350f; font-size:13px; line-height:1.45; }
+@media (max-width: 760px) {
+  .compact-record-card { grid-template-columns: 5px minmax(0,1fr); }
+  .compact-record-actions { grid-column: 2; padding: 0 .9rem .9rem; justify-content: flex-end; }
+  .panorama-head { padding: .9rem; }
+  .panorama-head-actions .panorama-edit-btn span { display:none; }
+  .panorama-action-strip { padding: .75rem .85rem; }
+  .panorama-action-strip-inner { align-items: stretch; flex-direction: column; gap: .65rem; }
+  .panorama-quick-actions { justify-content: stretch; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .panorama-action-btn { width: 100%; }
+  .panorama-edit-btn { width:40px; padding:0; justify-content:center; }
+  .panorama-body { padding: .85rem; }
+  .panorama-grid, .panorama-info-grid { grid-template-columns: 1fr; }
+  .panorama-section.full { grid-column: auto; }
+  .panorama-roadmap-item { grid-template-columns: 1fr; gap:.2rem; }
+}
+</style>
+
 </head>
 <body class="bg-slate-50 text-slate-900 text-sm overflow-hidden" id="mainBody">
 <!-- Login Gate (Firebase Auth: Email/Senha) -->
@@ -4761,6 +5211,28 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </div>
 </div>
 </div>
+
+<!-- Ficha de panorama — Projetos / Contratos -->
+<div id="itemPanoramaModal" style="display:none;">
+  <div class="panorama-shell" role="dialog" aria-modal="true" aria-labelledby="panoramaTitle">
+    <div class="panorama-head">
+      <div class="panorama-title-wrap">
+        <div class="panorama-icon" id="panoramaIcon"><i class="fas fa-eye"></i></div>
+        <div class="min-w-0">
+          <div class="panorama-kicker" id="panoramaKicker">Panorama do registro</div>
+          <h3 class="panorama-title" id="panoramaTitle">Visualização</h3>
+        </div>
+      </div>
+      <div class="panorama-head-actions">
+        <button type="button" class="panorama-edit-btn" id="panoramaEditBtn"><i class="fas fa-pen"></i><span>Editar ficha</span></button>
+        <button type="button" class="panorama-close-btn" onclick="toggleModal('itemPanoramaModal')" title="Fechar"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="panorama-action-strip" id="panoramaActionStrip"></div>
+    <div class="panorama-body" id="panoramaBody"></div>
+  </div>
+</div>
+
 <div class="items-center justify-center p-2 sm:p-4" id="projectModal" style="display: none;">
 <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden border border-slate-200 flex flex-col max-h-[95vh] sm:max-h-[90vh]">
 <div class="px-4 sm:px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
@@ -5371,27 +5843,27 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 </div>
 <!-- ... (Demais Filtros e Botão Adicionar mantidos) ... -->
 <div class="px-3 md:px-4 pt-5 hidden" id="statsRow2">
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm w-full flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-<div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 contract-money-grid">
+<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm w-full contract-money-card">
+<div class="contract-money-copy">
 <p class="text-xs text-purple-500 uppercase font-black mb-1 tracking-widest">Total de Recurso Utilizado</p>
 <p class="text-sm text-slate-400">Somatório de todos os contratos e convênios ativos</p>
 </div>
-<div class="text-3xl sm:text-4xl font-black text-slate-800" id="statResource"><span class="text-xl sm:text-2xl text-slate-400 mr-2 align-middle">R$</span>0,00</div>
+<div class="contract-money-value" id="statResource"><span class="contract-money-symbol">R$</span>0,00</div>
 </div>
-<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm w-full flex items-center justify-between gap-4">
-<div>
+<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm w-full contract-money-card">
+<div class="contract-money-copy">
 <p class="text-xs text-purple-500 uppercase font-black mb-1 tracking-widest">Respeito à Vida</p>
 <p class="text-sm text-slate-400">Componente 1 — total de repasse</p>
 </div>
-<div class="text-3xl sm:text-4xl font-black text-slate-800" id="statRV1"><span class="text-xl sm:text-2xl text-slate-400 mr-2 align-middle">R$</span>0,00</div>
+<div class="contract-money-value" id="statRV1"><span class="contract-money-symbol">R$</span>0,00</div>
 </div>
-<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm w-full flex items-center justify-between gap-4">
-<div>
+<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm w-full contract-money-card">
+<div class="contract-money-copy">
 <p class="text-xs text-purple-500 uppercase font-black mb-1 tracking-widest">Respeito à Vida</p>
 <p class="text-sm text-slate-400">Componente 3 — total de repasse</p>
 </div>
-<div class="text-3xl sm:text-4xl font-black text-slate-800" id="statRV3"><span class="text-xl sm:text-2xl text-slate-400 mr-2 align-middle">R$</span>0,00</div>
+<div class="contract-money-value" id="statRV3"><span class="contract-money-symbol">R$</span>0,00</div>
 </div>
 </div>
 </div>
@@ -7137,13 +7609,19 @@ document.getElementById('projRisks').value = '';
         function tryOpenSharedProject() {
             if (sharedProjectOpened || !currentUser) return;
             const params = new URLSearchParams(window.location.search);
+            const contractId = params.get('contract');
             const projectId = params.get('project');
-            if (!projectId) return;
-            const project = (dataStore.projects || []).find(item => item.id === projectId);
-            if (!project) return;
+            const collection = contractId ? 'contracts' : 'projects';
+            const recordId = contractId || projectId;
+            if (!recordId) return;
+            const record = (dataStore[collection] || []).find(item => item.id === recordId);
+            if (!record) return;
             sharedProjectOpened = true;
-            window.switchTab?.('projects');
-            setTimeout(() => window.editItem?.(projectId, 'projects'), 120);
+            window.switchTab?.(collection);
+            setTimeout(() => {
+                if (params.get('panorama') === '1') window.openItemPanorama?.(recordId, collection);
+                else window.editItem?.(recordId, collection);
+            }, 120);
         }
 
         window.exportAllProjectsJson = () => {
@@ -7789,6 +8267,208 @@ Item: ${itemLabel}`,
 
 
         
+
+
+        // =========================================================
+        // FICHA DE PANORAMA — PROJETOS / CONTRATOS
+        // =========================================================
+        function panoramaDate(value) {
+            if (!value) return 'Não informado';
+            try { return new Date(value + 'T00:00:00').toLocaleDateString('pt-BR'); }
+            catch (e) { return String(value); }
+        }
+
+        function panoramaInfo(label, value) {
+            const safeValue = (value === null || value === undefined || String(value).trim() === '') ? 'Não informado' : String(value);
+            return `<div class="panorama-info"><span class="panorama-info-label">${escapeHtml(label)}</span><span class="panorama-info-value">${escapeHtml(safeValue)}</span></div>`;
+        }
+
+        function panoramaSection(title, icon, body, full = false) {
+            return `<section class="panorama-section ${full ? 'full' : ''}"><h4 class="panorama-section-title"><i class="fas ${icon}"></i>${escapeHtml(title)}</h4>${body}</section>`;
+        }
+
+        window.closePanoramaAndEdit = (id, type) => {
+            const modal = document.getElementById('itemPanoramaModal');
+            if (modal) modal.style.display = 'none';
+            window.editItem(id, type);
+        };
+
+        window.sharePanoramaRecord = async (id, collectionName) => {
+            const collection = ['projects', 'contracts'].includes(collectionName) ? collectionName : activeTab;
+            const item = dataStore[collection]?.find(i => i.id === id);
+            if (!item) return;
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', collection);
+            url.searchParams.delete('project');
+            url.searchParams.delete('contract');
+            if (collection === 'contracts') url.searchParams.set('contract', id);
+            else url.searchParams.set('project', id);
+            url.searchParams.set('panorama', '1');
+            url.hash = '';
+            try {
+                await navigator.clipboard.writeText(url.toString());
+                showShareFeedback('Link da ficha copiado.');
+            } catch (err) {
+                const input = document.createElement('textarea');
+                input.value = url.toString();
+                input.style.position = 'fixed';
+                input.style.opacity = '0';
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                input.remove();
+                showShareFeedback('Link da ficha copiado.');
+            }
+        };
+
+        window.runPanoramaAction = async (action, id, collection) => {
+            if (action === 'planner') await window.togglePlanner(id, collection);
+            if (action === 'dispatch') await window.toggleDispatch(id, collection);
+            if (action === 'decision') await window.toggleDiretoriaValidation(id, collection);
+            const modal = document.getElementById('itemPanoramaModal');
+            if (modal && modal.style.display !== 'none') window.openItemPanorama(id, collection);
+        };
+
+        function renderPanoramaActions(item, collection) {
+            const shareLabel = collection === 'contracts' ? 'Compartilhar link' : 'Compartilhar link';
+            return `
+                <div class="panorama-action-strip-inner">
+                    <div class="panorama-quick-actions">
+                        <button type="button" class="panorama-action-btn share" onclick="sharePanoramaRecord('${item.id}', '${collection}')" title="Copiar link desta ficha">
+                            <i class="fas fa-share-nodes"></i><span>${shareLabel}</span>
+                        </button>
+                        <button type="button" class="panorama-action-btn planner ${item.onPlanner ? 'is-active' : ''}" onclick="runPanoramaAction('planner', '${item.id}', '${collection}')" title="${item.onPlanner ? 'Remover do Planner da Presidência' : 'Sinalizar no Planner da Presidência'}">
+                            <i class="fas fa-tasks"></i><span>Planner</span>
+                        </button>
+                        <button type="button" class="panorama-action-btn dispatch ${item.onDispatch ? 'is-active' : ''}" onclick="runPanoramaAction('dispatch', '${item.id}', '${collection}')" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}">
+                            <i class="fas fa-clipboard-list"></i><span>Despacho</span>
+                        </button>
+                        <button type="button" class="panorama-action-btn decision ${item.onDiretoriaValidation ? 'is-active' : ''}" onclick="runPanoramaAction('decision', '${item.id}', '${collection}')" title="${item.onDiretoriaValidation ? 'Remover da validação/decisão da Diretoria' : 'Marcar para validação/decisão da Diretoria'}">
+                            <i class="fas fa-gavel"></i><span>Decisão</span>
+                        </button>
+                    </div>
+                </div>`;
+        }
+
+        window.openItemPanorama = (id, type) => {
+            const collection = ['projects', 'contracts'].includes(type) ? type : activeTab;
+            const item = dataStore[collection]?.find(i => i.id === id);
+            if (!item) return;
+
+            const isContract = collection === 'contracts';
+            const status = normalizeStatus(item.status) || 'Sem status';
+            const area = item.coord || 'Não informado';
+            const services = normalizeCargoList(item);
+            const docs = getDocLinksArray(item);
+            const comments = [...getObsLogFromItem(item)].sort((a,b) => (b.ts || 0) - (a.ts || 0));
+            const roadmap = sortRoadmapItems(item.roadmap || []);
+            const tasks = isContract ? [] : normalizeTasks(item.tasks || []);
+            const parentProject = !isContract && item.parentProjectId ? getProjectNameById(item.parentProjectId) : '';
+            const relatedProject = item.projRelation ? getProjectNameById(item.projRelation) : '';
+
+            const titleEl = document.getElementById('panoramaTitle');
+            const kickerEl = document.getElementById('panoramaKicker');
+            const iconEl = document.getElementById('panoramaIcon');
+            const editBtn = document.getElementById('panoramaEditBtn');
+            if (titleEl) titleEl.textContent = item.name || (isContract ? 'Contrato / Convênio' : 'Projeto');
+            if (kickerEl) kickerEl.textContent = isContract ? 'Ficha do contrato / convênio' : 'Ficha do projeto';
+            if (iconEl) iconEl.innerHTML = `<i class="fas ${isContract ? 'fa-file-contract' : 'fa-project-diagram'}"></i>`;
+            if (editBtn) editBtn.onclick = () => window.closePanoramaAndEdit(item.id, collection);
+            const actionStrip = document.getElementById('panoramaActionStrip');
+            if (actionStrip) actionStrip.innerHTML = renderPanoramaActions(item, collection);
+
+            const hero = `
+                <div class="panorama-hero">
+                    <div class="panorama-hero-meta">
+                        <span class="compact-record-area"><i class="fas fa-building"></i> Área: ${escapeHtml(area)}</span>
+                        <span class="compact-record-status ${window.getStatusColor(status)}">${escapeHtml(status)}</span>
+                        ${isContract && item.type ? `<span class="compact-record-area"><i class="fas fa-file-signature"></i>${escapeHtml(item.type)}</span>` : ''}
+                    </div>
+                    <div class="panorama-description markdown-content">${md(item.desc, 'Sem descrição / escopo cadastrado.')}</div>
+                </div>`;
+
+            const servicesHtml = services.length
+                ? `<div class="panorama-tags">${services.map(s => `<span class="panorama-tag" title="${escapeHtml(getCargoFullName(s))}"><i class="fas fa-sitemap"></i>${escapeHtml(getCargoAcronym(s))} — ${escapeHtml(getCargoFullName(s))}</span>`).join('')}</div>`
+                : '<div class="panorama-empty">Nenhuma divisão/serviço cadastrado.</div>';
+
+            const identification = `
+                <div class="panorama-info-grid">
+                    ${panoramaInfo('Área responsável', area)}
+                    ${panoramaInfo('Status', status)}
+                    ${panoramaInfo('Prazo', panoramaDate(item.prazo))}
+                    ${panoramaInfo('Prioridade', item.priority)}
+                    ${!isContract ? panoramaInfo('Complexidade', item.complexity) : panoramaInfo('Tipo de objeto', item.type)}
+                    ${panoramaInfo('Duração', item.duration)}
+                    ${panoramaInfo('SEI', item.sei)}
+                    ${!isContract ? panoramaInfo('Projeto guarda-chuva', parentProject || 'Projeto independente') : panoramaInfo('Projeto vinculado', relatedProject || 'Não vinculado')}
+                </div>
+                <div class="mt-3"><span class="panorama-info-label">Divisões / Serviços responsáveis</span>${servicesHtml}</div>`;
+
+            let specific = '';
+            if (isContract) {
+                specific = panoramaSection('Dados do contrato / convênio', 'fa-file-contract', `
+                    <div class="panorama-info-grid">
+                        ${panoramaInfo('Programa', item.program || 'Nenhum')}
+                        ${panoramaInfo('Componente', item.programComponent ? `Componente ${item.programComponent}` : 'Não informado')}
+                        ${panoramaInfo('Repasse de recurso', item.hasResource)}
+                        ${panoramaInfo('Valor do recurso', item.resourceValue ? formatCurrencyBR(item.resourceValue) : 'Não informado')}
+                    </div>`);
+            } else {
+                const activeDecision = item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim();
+                specific = panoramaSection('Gestão e decisão', 'fa-compass', `
+                    <div class="panorama-info-grid">
+                        ${panoramaInfo('Decisão necessária', activeDecision ? 'Sim' : 'Não')}
+                        ${panoramaInfo('Nível da decisão', activeDecision ? item.decisionLevel : 'Não se aplica')}
+                        ${panoramaInfo('Despacho', item.onDispatch ? 'Sinalizado' : 'Não sinalizado')}
+                        ${panoramaInfo('Planner da Presidência', item.onPlanner ? 'Sinalizado' : 'Não sinalizado')}
+                        ${panoramaInfo('Validação da Diretoria', item.onDiretoriaValidation ? 'Sinalizado' : 'Não sinalizado')}
+                    </div>
+                    ${activeDecision ? `<div class="panorama-callout decision mt-3"><strong>Decisão necessária:</strong><br>${md(item.decisionDesc)}</div>` : ''}`);
+            }
+
+            const risks = panoramaSection('Riscos / impedimentos', 'fa-triangle-exclamation', item.risks
+                ? `<div class="panorama-callout risk markdown-content">${md(item.risks)}</div>`
+                : '<div class="panorama-empty">Nenhum risco ou impedimento cadastrado.</div>');
+
+            let tasksSection = '';
+            if (!isContract) {
+                const taskHtml = tasks.length ? tasks.map(task => `
+                    <div class="panorama-task">
+                        <div class="text-sm font-extrabold ${task.done ? 'text-emerald-700' : 'text-slate-700'}"><i class="fas ${task.done ? 'fa-circle-check' : 'fa-circle'} mr-2 text-xs"></i>${escapeHtml(task.title)}</div>
+                        ${task.subtasks?.length ? `<div class="mt-2 ml-5 space-y-1">${task.subtasks.map(st => `<div class="text-xs ${st.done ? 'text-emerald-700' : 'text-slate-500'}"><i class="fas ${st.done ? 'fa-check' : 'fa-minus'} mr-2"></i>${escapeHtml(st.title)}</div>`).join('')}</div>` : ''}
+                    </div>`).join('') : '<div class="panorama-empty">Nenhuma tarefa cadastrada.</div>';
+                tasksSection = panoramaSection('Tarefas e subtarefas', 'fa-list-check', taskHtml);
+            }
+
+            const roadmapHtml = roadmap.length ? `<div class="panorama-roadmap">${roadmap.map(r => `
+                <div class="panorama-roadmap-item">
+                    <div class="panorama-roadmap-date">${r.noDate || !r.data ? 'Data a definir' : panoramaDate(r.data)}</div>
+                    <div class="panorama-roadmap-step">${escapeHtml(r.etapa || 'Marco sem descrição')}</div>
+                </div>`).join('')}</div>` : '<div class="panorama-empty">Nenhum marco cadastrado.</div>';
+            const roadmapSection = panoramaSection('Roadmap', 'fa-route', roadmapHtml, true);
+
+            const docsHtml = docs.length
+                ? `<div class="space-y-2">${docs.map(link => renderDocLinkCard(link)).join('')}</div>`
+                : '<div class="panorama-empty">Nenhum documento cadastrado.</div>';
+            const docsSection = panoramaSection('Documentos', 'fa-paperclip', docsHtml, true);
+
+            const commentsHtml = comments.length ? comments.map(o => `
+                <div class="panorama-comment">
+                    <div class="panorama-comment-meta"><span><i class="fas fa-user mr-1"></i>${escapeHtml(getObsAuthorLabel(o) || 'Autor não registrado')}</span><span>${escapeHtml(formatDateTime(o.ts || Date.now()))}</span></div>
+                    <div class="panorama-comment-text preserve-lines">${escapeHtml(o.text || '')}</div>
+                </div>`).join('') : '<div class="panorama-empty">Nenhum comentário registrado.</div>';
+            const commentsSection = panoramaSection('Histórico de comentários', 'fa-comments', commentsHtml, true);
+
+            const auditHtml = (typeof renderAuditDetailHtml === 'function') ? renderAuditDetailHtml(item) : '';
+            const auditSection = auditHtml ? panoramaSection('Registro e atualização', 'fa-clock-rotate-left', auditHtml, true) : '';
+
+            const body = document.getElementById('panoramaBody');
+            if (body) body.innerHTML = `${hero}<div class="panorama-grid">${panoramaSection('Identificação e responsáveis', 'fa-id-card', identification)}${specific}${risks}${tasksSection}${roadmapSection}${docsSection}${commentsSection}${auditSection}</div>`;
+
+            const modal = document.getElementById('itemPanoramaModal');
+            if (modal) modal.style.display = 'flex';
+        };
+
         window.editItem = (id, type) => {
             const t = type || activeTab;
             currentProjectCollection = t;
@@ -9464,6 +10144,7 @@ window.openAddBacklogItemModal = (meetingId) => {
             if (!container) return;
             const isContracts = activeTab === 'contracts';
             const isProjects = activeTab === 'projects';
+            const collection = isContracts ? 'contracts' : 'projects';
             container.className = 'space-y-4';
 
             const availableStatuses = [...new Set(items.map(item => normalizeStatus(item.status)).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
@@ -9494,8 +10175,8 @@ window.openAddBacklogItemModal = (meetingId) => {
 
             const title = isContracts ? 'Tabela de contratos e convênios' : 'Tabela de projetos';
             const subtitle = isContracts
-                ? 'Visualização operacional com filtros, ordenação, vínculo e ações rápidas.'
-                : 'Visualização operacional com filtros, ordenação, hierarquia, progresso e ações rápidas.';
+                ? 'Visualização completa com filtros, ordenação e vínculos.'
+                : 'Visualização completa com filtros, ordenação, hierarquia e progresso.';
             const columns = isContracts ? `
                 <th>Contrato / Convênio</th>
                 <th>Coord.</th>
@@ -9524,11 +10205,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                 const status = normalizeStatus(item.status);
                 const actionHtml = `
                     <div class="table-actions">
-                        ${isProjects ? `<button onclick="event.stopPropagation(); shareProject('${item.id}')" class="table-action-btn" title="Copiar link do projeto"><i class="fas fa-share-nodes"></i></button>` : ''}
-                        <button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${activeTab}')" class="table-action-btn ${item.onDispatch ? 'active-dispatch' : ''}" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}"><i class="fas fa-clipboard-list"></i></button>
-                        <button onclick="event.stopPropagation(); togglePlanner('${item.id}', '${activeTab}')" class="table-action-btn ${item.onPlanner ? 'active-planner' : ''}" title="${item.onPlanner ? 'Remover do Planner da Presidência' : 'Sinalizar no Planner da Presidência'}"><i class="fas fa-tasks"></i></button>
-                        <button onclick="event.stopPropagation(); toggleDiretoriaValidation('${item.id}', '${activeTab}')" class="table-action-btn ${item.onDiretoriaValidation ? 'active-validation' : ''}" title="${item.onDiretoriaValidation ? 'Remover da Validação da Diretoria' : 'Marcar para Validação da Diretoria'}"><i class="fas fa-user-check"></i></button>
-                        <button onclick="event.stopPropagation(); editItem('${item.id}', '${activeTab}')" class="table-action-btn" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button type="button" onclick="event.stopPropagation(); openItemPanorama('${item.id}', '${collection}')" class="table-action-btn table-view-only-btn" title="Visualizar ficha completa" aria-label="Visualizar ficha completa"><i class="fas fa-eye"></i></button>
                     </div>`;
                 const primary = `<div class="table-primary-title">${escapeHtml(item.name || 'Sem título')}</div>`;
                 const baseCells = `
@@ -9543,7 +10220,7 @@ window.openAddBacklogItemModal = (meetingId) => {
                         ? `Respeito à Vida${item.programComponent ? ` — C${item.programComponent}` : ''}`
                         : (item.program || '--');
                     const projectName = getProjectNameById(item.projRelation);
-                    return `<tr onclick="editItem('${item.id}', '${activeTab}')">
+                    return `<tr class="table-summary-row" onclick="openItemPanorama('${item.id}', '${collection}')">
                         ${baseCells}
                         <td><span class="table-pill program-pill text-purple-700 bg-purple-50 border-purple-100">${escapeHtml(programLabel)}</span></td>
                         <td><span class="font-black text-slate-700">${formatCurrencyBR(item.resourceValue)}</span></td>
@@ -9563,12 +10240,12 @@ window.openAddBacklogItemModal = (meetingId) => {
                     ? `<div class="min-w-[110px]"><div class="flex justify-end gap-2 text-[9px] font-black text-slate-500"><span>${progress.pct}%</span></div><div class="progress-summary-track !mt-1 !h-[6px]"><div class="progress-summary-fill" style="width:${progress.pct}%"></div></div></div>`
                     : '<span class="table-meta-muted">--</span>';
                 const parent = getProjectParent(item.parentProjectId);
-                return `<tr onclick="editItem('${item.id}', '${activeTab}')">
+                return `<tr class="table-summary-row" onclick="openItemPanorama('${item.id}', '${collection}')">
                     ${baseCells}
                     <td><span class="table-pill priority-pill ${item.priority === 'Urgente' ? 'text-red-700 bg-red-50 border-red-100' : 'text-slate-600 bg-slate-50 border-slate-200'}">${escapeHtml(item.priority || '--')}</span></td>
                     <td><span class="table-pill ${complexity === 'Alta' ? 'tag-g' : (complexity === 'Baixa' ? 'tag-p' : 'tag-m')}">${escapeHtml(complexity)}</span></td>
                     <td>${progressHtml}</td>
-                    <td>${parent ? `<button class="project-link-chip" onclick="event.stopPropagation(); editItem('${parent.id}','projects')" title="Abrir projeto maior"><i class="fas fa-arrow-up-right-dots"></i><span>${escapeHtml(compactText(parent.name, 42))}</span></button>` : '<span class="table-meta-muted">--</span>'}</td>
+                    <td>${parent ? `<button class="project-link-chip" onclick="event.stopPropagation(); openItemPanorama('${parent.id}','projects')" title="Abrir ficha do projeto maior"><i class="fas fa-arrow-up-right-dots"></i><span>${escapeHtml(compactText(parent.name, 42))}</span></button>` : '<span class="table-meta-muted">--</span>'}</td>
                     <td>${decisionHtml}</td>
                     <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
                     <td>${actionHtml}</td>
@@ -9680,15 +10357,15 @@ window.openAddBacklogItemModal = (meetingId) => {
                 });
 
                 document.getElementById('statResource').innerHTML =
-                    `<span class="text-xl sm:text-2xl text-slate-400 mr-2 align-middle">R$</span>${totalResource.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                    `<span class="contract-money-symbol">R$</span>${totalResource.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 
                 if (document.getElementById('statRV1')) {
                     document.getElementById('statRV1').innerHTML =
-                        `<span class="text-xl sm:text-2xl text-slate-400 mr-2 align-middle">R$</span>${rv1Sum.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                        `<span class="contract-money-symbol">R$</span>${rv1Sum.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                 }
                 if (document.getElementById('statRV3')) {
                     document.getElementById('statRV3').innerHTML =
-                        `<span class="text-xl sm:text-2xl text-slate-400 mr-2 align-middle">R$</span>${rv3Sum.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                        `<span class="contract-money-symbol">R$</span>${rv3Sum.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                 }
             }
             // Concluídos e cancelados: ficam ocultos no board e aparecem apenas em caixas/modais próprias
@@ -9802,9 +10479,9 @@ Object.keys(cols).forEach(key => {
                                 </div>
                                 <span class="text-xs font-black text-slate-500 bg-white border border-slate-200 rounded-lg px-3 py-1">${items.length}</span>
                             </div>
-                            <div class="space-y-4"></div>
+                            <div class="contract-compact-grid"></div>
                         `;
-                        const list = wrap.querySelector('div.space-y-4');
+                        const list = wrap.querySelector('.contract-compact-grid');
                         if (items.length === 0) {
                             const empty = document.createElement('div');
                             empty.className = "text-xs text-slate-400 italic text-center py-4 bg-white rounded-2xl border border-slate-200";
@@ -9832,199 +10509,30 @@ Object.keys(cols).forEach(key => {
                 }
             }};
 
-        // Função auxiliar para criar HTML do card
+        // Função auxiliar para criar HTML do card — versão compacta
         function createCardHtml(item, today) {
-            const sortedRoadmap = sortRoadmapItems(item.roadmap || []);
-            const roadmapHtml = sortedRoadmap.length > 0 ? `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-3">Roadmap</p><div class="space-y-3 relative before:absolute before:left-2 before:-translate-x-1/2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">` + sortedRoadmap.map(r => { const semData = r.noDate || !r.data; const isPast = !semData && r.data < today; const dotClass = semData ? 'bg-slate-400 ring-4 ring-slate-100' : (isPast ? 'bg-slate-300' : 'bg-blue-500 ring-4 ring-blue-100'); const dateClass = semData ? 'text-slate-500 font-black' : (isPast ? 'text-slate-400' : 'text-blue-600 font-black'); const textClass = isPast ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700 font-bold'; const dateLabel = semData ? 'Data a definir' : new Date(r.data + "T00:00:00").toLocaleDateString('pt-BR'); return `<div class="flex items-start gap-3 relative z-10"><div class="w-4 shrink-0 flex justify-center pt-1.5"><div class="w-2.5 h-2.5 rounded-full ${dotClass}"></div></div><div class="flex-1"><p class="text-[11px] ${dateClass}">${dateLabel}</p><p class="text-xs ${textClass}">${r.etapa}</p></div></div>`; }).join('') + `</div></div>` : `<div class="mt-4 pt-4 border-t border-slate-100"><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-1">Roadmap</p><p class="text-xs text-slate-400 italic">Nenhum marco.</p></div>`;
-            const respectBadge = (activeTab === 'contracts' && item.program === 'Respeito à Vida' && (item.programComponent === '1' || item.programComponent === '3'))
-                ? `<span class=\"ml-2 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-100\">Respeito à Vida — C${item.programComponent}</span>`
-                : '';
-
-            const complexityTag = item.complexity ? `<span class="pmg-tag ${item.complexity === 'Alta' ? 'tag-g' : (item.complexity === 'Baixa' ? 'tag-p' : 'tag-m')} ml-2" title="Complexidade">${item.complexity === 'Alta' ? 'G' : (item.complexity === 'Baixa' ? 'P' : 'M')}</span>` : '';
-            // Desdobramento operacional removido dos cards após retirada da aba Operacional.
-            const operationalHtml = '';
-
-            const formatDateBR = (value) => value ? new Date(value + "T00:00:00").toLocaleDateString('pt-BR') : '';
-            const escapeHtml = (value) => String(value || '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-            const stripSummaryLabel = (value) => String(value || '')
-                .replace(/^\s*(pr[oó]xima\s+a[cç][aã]o|a[cç][oõ]es?\s+seguintes?|encaminhamentos?|decis[aã]o\s+necess[aá]ria|ponto\s+de\s+decis[aã]o)\s*[:\-–—]\s*/i, '')
-                .trim();
-            const decisionResumoText = stripSummaryLabel(item.decisionDesc || '').trim();
-
-            // Comentários do registro (mais recentes primeiro), com data/hora e autor
-            const itemComments = [...getObsLogFromItem(item)].sort((a, b) => (b.ts || 0) - (a.ts || 0));
-            const commentsDetailHtml = itemComments.length ? `
-                <div class="pt-2">
-                    <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2"><i class="fas fa-comments mr-1"></i> Comentários</p>
-                    <div class="space-y-2">
-                        ${itemComments.map(o => `
-                            <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
-                                <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
-                                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-700"><i class="fas fa-user text-slate-300 mr-1"></i>${escapeHtml(getObsAuthorLabel(o) || 'Autor não registrado')}</span>
-                                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">${formatDateTime(o.ts || Date.now())}</span>
-                                </div>
-                                <div class="text-sm text-slate-600 leading-relaxed markdown-content">${md(o.text)}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            ` : '';
-
-            let decisionResumoHtml = '';
-            const shouldShowDecisionResumo = Boolean(activeTab === 'projects' && decisionResumoText && item.decisionNeeded !== 'Não');
-            if (shouldShowDecisionResumo) {
-                decisionResumoHtml = `
-                    <div class="summary-box border-amber-200 bg-amber-50/80">
-                        <p class="summary-box-title text-amber-700"><i class="fas fa-gavel"></i> Decisão necessária</p>
-                        <div class="summary-box-body markdown-content markdown-compact clamp-2">${md(decisionResumoText)}</div>
-                        <div class="summary-meta">
-                            <span class="summary-meta-chip bg-white border border-amber-200 text-amber-700">${escapeHtml(item.decisionLevel || 'Nível não informado')}</span>
-                        </div>
-                    </div>
-                `;
-            }
-
-            let servicesBadgeHtml = '';
-            const sList = normalizeCargoList(item);
-            if (sList.length) {
-                const color = activeTab === 'operational' ? 'text-orange-600 bg-orange-50 border-orange-100' : 'text-indigo-700 bg-indigo-50 border-indigo-100';
-                const servicesTitle = activeTab === 'operational' ? 'Serviços envolvidos' : 'Divisões / serviços responsáveis';
-                servicesBadgeHtml = `
-                    <div class="card-summary-section">
-                        <p class="card-summary-section-title"><i class="fas fa-sitemap"></i>${servicesTitle}</p>
-                        <div class="services-grid">${sList.map(s => `<span class="unit-badge ${color}" title="${escapeHtml(getCargoFullName(s))}"><i class="fas fa-sitemap text-[8px]"></i><span>${escapeHtml(getCargoAcronym(s))}</span></span>`).join('')}</div>
-                    </div>`;
-            }
-
-            const parentProject = activeTab === 'projects' ? getProjectParent(item.parentProjectId) : null;
-            const subprojectProgress = activeTab === 'projects' ? getSubprojectProgress(item.id) : { children: [], total: 0, done: 0, pct: 0 };
-            const taskProgress = activeTab === 'projects' ? getTaskProgress(item.tasks || []) : { total: 0, done: 0, pct: 0 };
-            const hierarchySummaryHtml = activeTab === 'projects' && (parentProject || subprojectProgress.total) ? `
-                <div class="card-summary-section">
-                    <p class="card-summary-section-title"><i class="fas fa-diagram-project"></i> Hierarquia do projeto</p>
-                    <div class="flex flex-wrap gap-2">
-                        ${parentProject ? `<button class="project-link-chip" type="button" onclick="event.stopPropagation(); editItem('${parentProject.id}','projects')" title="Abrir projeto guarda-chuva"><i class="fas fa-arrow-up-right-dots"></i><span>${escapeHtml(parentProject.name)}</span></button>` : '<span class="text-[10px] font-bold text-slate-400">Projeto independente</span>'}
-                        ${subprojectProgress.total ? `<span class="project-link-chip"><i class="fas fa-code-branch"></i><span>${subprojectProgress.total} ${subprojectProgress.total === 1 ? 'subprojeto' : 'subprojetos'}</span></span>` : ''}
-                    </div>
-                </div>` : '';
-            const progressBlocks = [];
-            if (taskProgress.total) progressBlocks.push(`
-                <div class="progress-summary-card">
-                    <div class="progress-summary-head"><span><i class="fas fa-list-check mr-1"></i>Tarefas</span><span class="progress-summary-value">${taskProgress.done}/${taskProgress.total} · ${taskProgress.pct}%</span></div>
-                    <div class="progress-summary-track"><div class="progress-summary-fill" style="width:${taskProgress.pct}%"></div></div>
-                </div>`);
-            if (subprojectProgress.total) progressBlocks.push(`
-                <div class="progress-summary-card">
-                    <div class="progress-summary-head"><span><i class="fas fa-code-branch mr-1"></i>Subprojetos</span><span class="progress-summary-value">${subprojectProgress.done}/${subprojectProgress.total} · ${subprojectProgress.pct}%</span></div>
-                    <div class="progress-summary-track"><div class="progress-summary-fill" style="width:${subprojectProgress.pct}%"></div></div>
-                </div>`);
-            const progressSummaryHtml = progressBlocks.length ? `<div class="space-y-2">${progressBlocks.join('')}</div>` : '';
-            const tasksDetailHtml = activeTab === 'projects' && normalizeTasks(item.tasks || []).length ? `
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase mb-2"><i class="fas fa-list-check mr-1"></i>Tarefas e subtarefas</p>
-                    <div class="space-y-2">${normalizeTasks(item.tasks || []).map(task => `
-                        <div class="rounded-xl border border-slate-200 bg-white p-3">
-                            <div class="flex items-center gap-2 text-sm font-bold ${task.done ? 'text-emerald-700' : 'text-slate-700'}"><i class="fas ${task.done ? 'fa-circle-check' : 'fa-circle'} text-xs"></i>${escapeHtml(task.title)}</div>
-                            ${task.subtasks.length ? `<div class="mt-2 ml-5 space-y-1">${task.subtasks.map(subtask => `<div class="text-xs ${subtask.done ? 'text-emerald-700' : 'text-slate-500'}"><i class="fas ${subtask.done ? 'fa-check' : 'fa-minus'} mr-2"></i>${escapeHtml(subtask.title)}</div>`).join('')}</div>` : ''}
-                        </div>`).join('')}</div>
-                </div>` : '';
-            const childrenDetailHtml = activeTab === 'projects' && subprojectProgress.total ? `
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase mb-2"><i class="fas fa-code-branch mr-1"></i>Subprojetos vinculados</p>
-                    <div class="child-project-list">${subprojectProgress.children.map(child => `<button class="child-project-item" type="button" onclick="event.stopPropagation(); editItem('${child.id}','projects')"><span>${escapeHtml(child.name || 'Projeto sem nome')}</span><span class="table-pill ${window.getStatusColor(normalizeStatus(child.status))}">${escapeHtml(normalizeStatus(child.status) || 'Sem status')}</span></button>`).join('')}</div>
-                </div>` : '';
-
-            const priorityBadgeHtml = item.priority === 'Urgente'
-                ? '<span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black bg-red-100 text-red-600 border-red-200">Urgente</span>'
-                : '';
+            const status = normalizeStatus(item.status) || 'Sem status';
+            const area = item.coord || 'Não informado';
+            const collection = activeTab === 'contracts' ? 'contracts' : 'projects';
             return `
-            <div class="accordion-row bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-3 group hover:border-blue-300 transition-colors">
-                <div class="px-5 py-5 flex flex-col gap-4">
-                    <div class="card-header-layout">
-                        <div class="card-click-area" onclick="this.closest('.accordion-row').classList.toggle('active')">
-                            <div class="card-content-line">
-                                <div class="card-status-strip ${window.getStatusColorBg(normalizeStatus(item.status))}"></div>
-                                <div class="card-main-content">
-                                    <div class="card-main-title-block">
-                                        <div class="card-title-topline">
-                                            <div class="card-badge-row">
-                                                <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-black uppercase tracking-wider">${item.coord || 'N/A'}</span>
-                                                <span class="text-[10px] uppercase px-2 py-0.5 rounded-lg border font-black ${window.getStatusColor(normalizeStatus(item.status))}">${normalizeStatus(item.status) || 'Sem status'}</span>
-                                                ${priorityBadgeHtml}
-                                                ${respectBadge}
-                                            </div>
-                                            <div class="card-actions card-top-actions">
-                                                ${activeTab === 'projects' ? `<button onclick="event.stopPropagation(); shareProject('${item.id}')" class="btn-dispatch" title="Copiar link do projeto"><i class="fas fa-share-nodes"></i></button>` : ''}
-                                                <button onclick="event.stopPropagation(); toggleDispatch('${item.id}', '${activeTab}')" class="btn-dispatch ${item.onDispatch ? 'active-dispatch' : ''}" title="${item.onDispatch ? 'Remover de Despacho' : 'Enviar para Despacho'}">
-                                                    <i class="fas fa-clipboard-list"></i>
-                                                </button>
-                                                <button onclick="event.stopPropagation(); togglePlanner('${item.id}', '${activeTab}')" class="btn-planner ${item.onPlanner ? 'active-planner' : ''}" title="${item.onPlanner ? 'Remover do Planner da Presidência' : 'Sinalizar no Planner da Presidência'}">
-                                                    <i class="fas fa-tasks"></i>
-                                                </button>
-                                                <button onclick="event.stopPropagation(); toggleDiretoriaValidation('${item.id}', '${activeTab}')" class="btn-validation ${item.onDiretoriaValidation ? 'active-validation' : ''}" title="${item.onDiretoriaValidation ? 'Remover da Validação da Diretoria' : 'Marcar para Validação da Diretoria'}">
-                                                    <i class="fas fa-user-check"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <h4 class="font-bold text-slate-900 text-base leading-snug card-title-full">${item.name}</h4>
-                                    </div>
-                                    <div class="card-summary-stack">
-                                        ${servicesBadgeHtml}
-                                        ${hierarchySummaryHtml}
-                                        ${progressSummaryHtml}
-                                        ${decisionResumoHtml ? `<div class="decision-summary-grid">${decisionResumoHtml}</div>` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="card-footer-meta">
-                        <div class="flex items-center gap-3 text-xs text-slate-400 font-bold uppercase">
-                            <span class="card-date-chip"><i class="far fa-calendar"></i> ${item.prazo ? new Date(item.prazo + "T00:00:00").toLocaleDateString('pt-BR') : '--'}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="editItem('${item.id}')" class="text-slate-300 hover:text-blue-600 transition-colors text-sm w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-blue-50"><i class="fas fa-edit"></i></button>
-                            <button type="button" class="card-toggle-btn" onclick="this.closest('.accordion-row').classList.toggle('active')">
-                                <i class="fas fa-chevron-down chevron-icon transition-transform text-sm"></i>
-                            </button>
-                        </div>
+            <article class="compact-record-card" data-record-id="${escapeHtml(item.id || '')}">
+                <div class="compact-record-status-bar ${window.getStatusColorBg(status)}"></div>
+                <div class="compact-record-body">
+                    <h4 class="compact-record-name">${escapeHtml(item.name || 'Sem título')}</h4>
+                    <div class="compact-record-meta">
+                        <span class="compact-record-area"><i class="fas fa-building"></i><span>Área: ${escapeHtml(area)}</span></span>
+                        <span class="compact-record-status ${window.getStatusColor(status)}">${escapeHtml(status)}</span>
                     </div>
                 </div>
-
-                <div class="accordion-content px-5 bg-slate-50/50">
-                    <div class="py-5 space-y-5">
-                        <div class="space-y-5">
-                            <div><p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2">Descrição / Escopo</p><div class="text-sm text-slate-700 leading-relaxed font-medium markdown-content">${md(item.desc, 'Sem descrição.')}</div></div>
-                            ${tasksDetailHtml}
-                            ${childrenDetailHtml}
-                            ${item.risks ? `<div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs font-semibold text-slate-500 text-red-500 uppercase mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Riscos / Impedimentos</p><div class="text-sm text-red-700 leading-relaxed font-bold markdown-content">${md(item.risks)}</div></div>` : ''}
-                            ${commentsDetailHtml}
-                            ${getDocLinksArray(item).length ? `<div class="pt-2">
-                                <p class="text-xs font-semibold text-slate-500 text-slate-400 uppercase mb-2"><i class="fas fa-paperclip mr-1"></i> Documentos</p>
-                                <div class="space-y-2">
-                                    ${getDocLinksArray(item).map(link => renderDocLinkCard(link)).join('')}
-                                </div>
-                            </div>` : ''}
-                            ${roadmapHtml}
-                        </div>
-                        
-                        ${operationalHtml}
-
-                        <div class="space-y-4 pt-4 border-t border-slate-200">
-                            <div class="grid grid-cols-2 gap-4">
-                                ${item.sei ? `<div><p class="text-[10px] font-black text-slate-400 uppercase mb-1">SEI</p><p class="text-sm font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded inline-block truncate max-w-full">${item.sei}</p></div>` : ''}
-                            </div>
-                            ${item.docLink ? `<div class="pt-2"><a href="${item.docLink}" target="_blank" class="text-xs font-bold text-blue-500 hover:underline flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Docs</a></div>` : ''}
-                        </div>
-                    </div>
+                <div class="compact-record-actions">
+                    <button type="button" class="compact-record-action primary-view" onclick="event.stopPropagation(); openItemPanorama('${item.id}', '${collection}')" title="Visualizar ficha completa" aria-label="Visualizar ficha completa">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button type="button" class="compact-record-action" onclick="event.stopPropagation(); editItem('${item.id}', '${collection}')" title="Editar registro" aria-label="Editar registro">
+                        <i class="fas fa-pen"></i>
+                    </button>
                 </div>
-            </div>`;
+            </article>`;
         }
 
         // ... (changeMonth, renderCalendar, openCalendarModal... e Auth mantidos) ...
