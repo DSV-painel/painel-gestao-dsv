@@ -7745,6 +7745,7 @@ document.getElementById('projRisks').value = '';
             const url = new URL(window.location.href);
             url.searchParams.set('tab', 'projects');
             url.searchParams.set('project', projectId);
+            url.searchParams.set('open', '1');
             url.hash = '';
             try {
                 await navigator.clipboard.writeText(url.toString());
@@ -7765,6 +7766,9 @@ document.getElementById('projRisks').value = '';
         function tryOpenSharedProject() {
             if (sharedProjectOpened || !currentUser) return;
             const params = new URLSearchParams(window.location.search);
+            // O painel sempre inicia na Visão Geral. Só abre um registro automaticamente
+            // quando o link foi gerado explicitamente pela função de compartilhamento.
+            if (params.get('open') !== '1') return;
             const contractId = params.get('contract');
             const projectId = params.get('project');
             const collection = contractId ? 'contracts' : 'projects';
@@ -7777,6 +7781,14 @@ document.getElementById('projRisks').value = '';
             setTimeout(() => {
                 if (params.get('panorama') === '1') window.openItemPanorama?.(recordId, collection);
                 else window.editItem?.(recordId, collection);
+
+                // Depois de consumir o deep link, limpa os parâmetros.
+                // Assim, ao recarregar/abrir novamente, o painel volta para a Visão Geral.
+                try {
+                    const cleanUrl = new URL(window.location.href);
+                    ['project','contract','panorama','open','tab'].forEach(key => cleanUrl.searchParams.delete(key));
+                    window.history.replaceState({}, document.title, cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+                } catch (e) {}
             }, 120);
         }
 
@@ -8506,6 +8518,7 @@ Item: ${itemLabel}`,
             if (collection === 'contracts') url.searchParams.set('contract', id);
             else url.searchParams.set('project', id);
             url.searchParams.set('panorama', '1');
+            url.searchParams.set('open', '1');
             url.hash = '';
             try {
                 await navigator.clipboard.writeText(url.toString());
@@ -10920,7 +10933,7 @@ window.setListFilter = f => { f = normalizeStatus(f); if(f === 'Concluído' && t
             updateAuthIndicator(user);
             if (window.__dsvListenersStarted) return;
             window.__dsvListenersStarted = true;
- initListeners(); applyAcronymLabelsToSelect('projServiceAdder'); applyAcronymLabelsToSelect('filterService'); setTimeout(() => { const hasSharedProject = new URLSearchParams(window.location.search).has('project'); window.switchTab(hasSharedProject ? 'projects' : 'overview'); if (hasSharedProject) tryOpenSharedProject(); }, 500); // Indicadores: listeners de busca/filtro
+ initListeners(); applyAcronymLabelsToSelect('projServiceAdder'); applyAcronymLabelsToSelect('filterService'); setTimeout(() => { const params = new URLSearchParams(window.location.search); const hasExplicitSharedRecord = params.get('open') === '1' && (params.has('project') || params.has('contract')); if (!hasExplicitSharedRecord) { ['itemPanoramaModal','projectModal','completedModal','canceledModal'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); window.switchTab('overview'); } else { tryOpenSharedProject(); } }, 500); // Indicadores: listeners de busca/filtro
                     const s = document.getElementById('indicatorSearch');
                     const c = document.getElementById('indicatorClearSearch');
                     const tf = document.getElementById('indicatorTypeFilter');
