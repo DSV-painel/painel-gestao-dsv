@@ -3306,7 +3306,7 @@ textarea.input-style { min-height: 92px; resize: vertical; }
 
 
 /* Tabela completa + ficha como camada intermediária */
-.table-view:not(.table-summary-view) { min-width: 1380px; }
+.table-view:not(.table-summary-view) { min-width: 1780px; }
 .table-view tbody tr.table-summary-row { cursor: pointer; }
 .table-view tbody tr.table-summary-row:hover .table-primary-title { color: #005ca8; }
 .table-view tbody tr.table-summary-row .table-actions { justify-content: center; }
@@ -4440,12 +4440,28 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 .table-controls{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;}
 .table-control{min-height:38px;max-width:190px;border:1px solid #dbe3eb;background:#fff;border-radius:.75rem;padding:.55rem .75rem;color:#475569;font-size:12px;font-weight:800;outline:none;}
 .table-control:focus{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(96,165,250,.15);}
+
+.table-toolbar-stack{display:flex;flex-direction:column;gap:.8rem;min-width:0;flex:1 1 auto;}
+.table-controls{justify-content:flex-start!important;}
+.table-date-toolbar{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;}
+.table-date-toolbar-group{display:flex;align-items:center;gap:.4rem;min-height:38px;padding:.35rem .55rem;border:1px solid #dbe3eb;background:#f8fafc;border-radius:.75rem;}
+.table-date-toolbar-group>span:first-child{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#64748b;white-space:nowrap;}
+.table-date-toolbar-group input{min-height:30px;border:1px solid #dbe3eb;background:#fff;border-radius:.55rem;padding:.25rem .4rem;color:#475569;font-size:11px;font-weight:700;outline:none;}
+.table-date-toolbar-group input:focus{border-color:#60a5fa;box-shadow:0 0 0 2px rgba(96,165,250,.12);}
+.table-date-toolbar-group .date-separator{font-size:10px;font-weight:800;color:#94a3b8;text-transform:lowercase;}
+@media (max-width: 900px){.table-date-toolbar-group{width:100%;flex-wrap:wrap}.table-date-toolbar-group input{flex:1 1 130px}.table-view-toolbar{align-items:stretch!important}.table-view-count{align-self:flex-start}}
 .table-reset-btn{width:38px;height:38px;border-radius:.75rem;border:1px solid #dbe3eb;background:#fff;color:#64748b;display:inline-flex;align-items:center;justify-content:center;transition:.2s ease;}
 .table-reset-btn:hover{color:#dc2626;background:#fef2f2;border-color:#fecaca;}
 .project-parent-field .input-style{background:#fff;}
 .task-list{display:flex;flex-direction:column;gap:.75rem;}
-.task-row{border:1px solid #dbe3eb;background:#fff;border-radius:1rem;padding:.85rem;box-shadow:0 1px 2px rgba(15,23,42,.03);}
-.task-main-line{display:grid;grid-template-columns:28px minmax(0,1fr) 38px;gap:.65rem;align-items:center;}
+.task-row{border:1px solid #dbe3eb;background:#fff;border-radius:1rem;padding:.85rem;box-shadow:0 1px 2px rgba(15,23,42,.03);transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;}
+.task-row.task-dragging{opacity:.55;border-color:#60a5fa;box-shadow:0 8px 18px rgba(37,99,235,.12);}
+.task-row.task-drop-before{box-shadow:0 -4px 0 #2563eb,0 1px 2px rgba(15,23,42,.03);}
+.task-row.task-drop-after{box-shadow:0 4px 0 #2563eb,0 1px 2px rgba(15,23,42,.03);}
+.task-main-line{display:grid;grid-template-columns:30px 28px minmax(0,1fr) 38px;gap:.65rem;align-items:center;}
+.task-drag-handle{width:30px;height:34px;border-radius:.65rem;display:inline-flex;align-items:center;justify-content:center;color:#94a3b8;background:#f8fafc;border:1px solid #e2e8f0;cursor:grab;touch-action:none;}
+.task-drag-handle:hover{color:#2563eb;background:#eff6ff;border-color:#bfdbfe;}
+.task-drag-handle:active{cursor:grabbing;}
 .task-check,.subtask-check{width:18px;height:18px;accent-color:#005ca8;cursor:pointer;}
 .task-title-input,.subtask-title-input{width:100%;border:0;background:transparent;outline:none;color:#1e293b;font-size:14px;font-weight:800;min-width:0;}
 .task-remove,.subtask-remove{width:34px;height:34px;border-radius:.7rem;display:inline-flex;align-items:center;justify-content:center;color:#94a3b8;background:#f8fafc;border:1px solid #e2e8f0;transition:.2s ease;}
@@ -4465,13 +4481,35 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 .child-project-item:hover{border-color:#93c5fd;background:#f8fbff;}
 .share-feedback{position:fixed;right:1rem;bottom:1rem;z-index:999999;background:#0f172a;color:#fff;border-radius:.85rem;padding:.8rem 1rem;font-size:12.5px;font-weight:800;box-shadow:0 16px 36px rgba(15,23,42,.22);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s ease;}
 .share-feedback.show{opacity:1;transform:translateY(0);}
+/* Tabela estilo Planner: ordenação e filtros no próprio cabeçalho */
+.table-view thead th{vertical-align:top;}
+.table-head-cell{display:flex;flex-direction:column;gap:.45rem;min-width:max-content;}
+.table-head-sort{display:inline-flex;align-items:center;gap:.4rem;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;text-align:left;white-space:nowrap;}
+.table-head-sort:hover{color:#dbeafe;}
+.table-head-sort i{font-size:10px;opacity:.75;}
+.table-head-filter{min-height:30px;max-width:170px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:.55rem;padding:.35rem .45rem;font-size:10px;font-weight:800;text-transform:none;letter-spacing:0;outline:none;}
+.table-head-filter option{color:#0f172a;background:#fff;}
+.table-date-filter{display:grid;grid-template-columns:1fr;gap:.25rem;min-width:130px;}
+.table-date-filter input{width:130px;min-height:28px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:.5rem;padding:.25rem .35rem;font-size:9.5px;font-weight:800;outline:none;color-scheme:dark;}
+.table-date-filter input::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.8;}
+.table-filter-hint{font-size:9px;line-height:1;color:#cbd5e1;font-weight:800;text-transform:none;letter-spacing:0;}
+.table-header-reset{width:32px;height:32px;border-radius:.6rem;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;display:inline-flex;align-items:center;justify-content:center;}
+.table-header-reset:hover{background:#fff;color:#dc2626;}
+.table-action-btn.active-risk,.compact-record-action.active-risk{background:#dc2626!important;color:#fff!important;border-color:#dc2626!important;box-shadow:0 4px 12px rgba(220,38,38,.22);}
+.compact-record-risk-chip{display:inline-flex;align-items:center;gap:.35rem;min-height:28px;padding:.34rem .58rem;border-radius:.65rem;font-size:11px;line-height:1.15;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;}
+.risk-alert-form-btn{min-height:44px;width:100%;display:flex;align-items:center;justify-content:center;gap:.55rem;border-radius:.75rem;border:1px solid #fecaca;background:#fff;color:#b91c1c;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;transition:.18s ease;}
+.risk-alert-form-btn:hover{background:#fef2f2;}
+.risk-alert-form-btn.is-active{background:#dc2626;color:#fff;border-color:#dc2626;box-shadow:0 4px 12px rgba(220,38,38,.18);}
+.panorama-action-btn.risk.is-active{background:#dc2626!important;color:#fff!important;border-color:#dc2626!important;}
+.decision-return-box{border-color:#bbf7d0!important;background:#f0fdf4!important;color:#166534!important;}
 @media(max-width:760px){
   .view-mode-wrapper,.view-mode-actions{align-items:stretch;}
   .view-mode-wrapper{flex-direction:column;}
   .view-mode-actions,.github-feature-btn{width:100%;}
   .table-controls{justify-content:stretch;}
   .table-control{max-width:none;flex:1 1 150px;}
-  .task-main-line{grid-template-columns:24px minmax(0,1fr) 34px;}
+  .task-main-line{grid-template-columns:28px 24px minmax(0,1fr) 34px;}
+  .task-drag-handle{width:28px;height:32px;}
   .subtasks-container,.add-subtask-btn{margin-left:.5rem;}
 }
 </style>
@@ -4573,7 +4611,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 10010;
   width: 100%;
   height: 100%;
   background: rgba(15,23,42,.72);
@@ -5348,9 +5386,18 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 <label class="field-label">Processo SEI</label>
 <input class="input-style" id="projSei" type="text"/>
 </div>
+<div class="flex flex-col hidden-field" id="projectStartDateField">
+<label class="field-label">Data de início</label>
+<input class="input-style" id="projStartDate" type="date"/>
+</div>
 <div class="flex flex-col">
 <label class="field-label" id="labelPrazo">Prazo Final</label>
 <input class="input-style" id="projPrazo" type="date"/>
+</div>
+<div class="flex flex-col hidden-field" id="projectEndDateField">
+<label class="field-label">Data de encerramento</label>
+<input class="input-style" id="projEndDate" type="date"/>
+<p class="mt-2 text-[11px] text-slate-400 font-semibold">Preencha quando o projeto for efetivamente encerrado.</p>
 </div>
 <!-- NOVO CAMPO: DURAÇÃO (DIAS) -->
 <div class="flex flex-col hidden-field" id="operationalDurationField">
@@ -5448,11 +5495,24 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 <label class="field-label text-amber-700">Qual decisão precisa ser tomada?</label>
 <textarea class="input-style resize-none preserve-lines border-amber-200 bg-amber-50/40 focus:ring-amber-200" id="projDecisionDesc" placeholder="Use Markdown. Ex: **Decisão pendente:** aprovar escopo; - impacto; [documento](https://...)" rows="3"></textarea>
 </div>
+<div class="flex flex-col">
+<label class="field-label text-emerald-700">Data do retorno</label>
+<input class="input-style border-emerald-200 focus:ring-emerald-200" id="projDecisionReturnDate" type="date"/>
+</div>
+<div class="sm:col-span-2 flex flex-col">
+<label class="field-label text-emerald-700">Retorno / decisão tomada</label>
+<textarea class="input-style resize-none preserve-lines border-emerald-200 bg-emerald-50/40 focus:ring-emerald-200" id="projDecisionReturn" placeholder="Registre aqui a deliberação, decisão tomada ou retorno recebido." rows="3"></textarea>
+</div>
 </div>
 </div>
 <div class="flex flex-col">
 <label class="field-label">Status</label>
 <select class="input-style" id="projStatus" onchange="toggleRiskInput()"></select>
+</div>
+<div class="flex flex-col hidden-field" id="projectRiskAlertField">
+<label class="field-label text-red-600">Alerta gerencial de risco</label>
+<input id="projRiskAlert" type="hidden" value="Não"/>
+<button class="risk-alert-form-btn" id="projRiskAlertBtn" onclick="toggleFormRiskAlert()" type="button"><i class="fas fa-triangle-exclamation"></i><span>Sinalizar risco</span></button>
 </div>
 <!-- NOVO CAMPO DE RISCOS -->
 <div class="flex flex-col hidden-field animate-fade-in" id="riskField">
@@ -5480,7 +5540,7 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
 <div>
 <h4 class="form-section-title !mb-0 !border-0 !pb-0"><strong>05. Tarefas e entregas intermediárias</strong></h4>
-<p class="mt-1 text-[11px] text-slate-400 font-semibold">Crie tarefas, subtarefas e acompanhe o percentual concluído do projeto.</p>
+<p class="mt-1 text-[11px] text-slate-400 font-semibold">Crie tarefas, subtarefas e acompanhe o percentual concluído do projeto. Arraste pelo ícone <i class="fas fa-grip-vertical mx-1"></i> para reordenar.</p>
 </div>
 <div class="text-right">
 <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">Progresso</div>
@@ -6421,6 +6481,13 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
         let tableSortMode = localStorage.getItem('dsvTableSortMode') || 'name-asc';
         let tableStatusFilter = 'all';
         let tableCoordFilter = 'all';
+        let tableServiceFilter = 'all';
+        let tablePriorityFilter = 'all';
+        let tableComplexityFilter = 'all';
+        let tableDecisionFilter = 'all';
+        let tableRiskFilter = 'all';
+        let tableParentFilter = 'all';
+        let tableDateFilters = { startFrom:'', startTo:'', deadlineFrom:'', deadlineTo:'', endFrom:'', endTo:'' };
         let sharedProjectOpened = false;
         let currentPortariaFilter = 'all';
         let currentGanttFilter = 'all';
@@ -7193,6 +7260,9 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
             const projectActionDecisionField = document.getElementById('projectActionDecisionField');
             const parentProjectField = document.getElementById('parentProjectField');
             const tasksSection = document.getElementById('tasksSection');
+            const projectStartDateField = document.getElementById('projectStartDateField');
+            const projectEndDateField = document.getElementById('projectEndDateField');
+            const projectRiskAlertField = document.getElementById('projectRiskAlertField');
             const tasksContainer = document.getElementById('tasksContainer');
             if (tasksContainer) tasksContainer.innerHTML = '';
             setTaskFormProgressDisplay(null);
@@ -7209,12 +7279,19 @@ typeField.classList.add('hidden-field');
             if (projectActionDecisionField) projectActionDecisionField.classList.add('hidden-field');
             if (parentProjectField) parentProjectField.classList.add('hidden-field');
             if (tasksSection) tasksSection.classList.add('hidden-field');
+            if (projectStartDateField) projectStartDateField.classList.add('hidden-field');
+            if (projectEndDateField) projectEndDateField.classList.add('hidden-field');
+            if (projectRiskAlertField) projectRiskAlertField.classList.add('hidden-field');
             if (document.getElementById('projParentProject')) document.getElementById('projParentProject').value = '';
             
                         programField.classList.add('hidden-field');
             componentField.classList.add('hidden-field');
 document.getElementById('projRisks').value = '';
-            ['projNextAction','projNextActionOwner','projNextActionDeadline','projDecisionDesc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            if (document.getElementById('projStartDate')) document.getElementById('projStartDate').value = '';
+            if (document.getElementById('projEndDate')) document.getElementById('projEndDate').value = '';
+            if (document.getElementById('projRiskAlert')) document.getElementById('projRiskAlert').value = 'Não';
+            if (typeof window.updateFormRiskAlertButton === 'function') window.updateFormRiskAlertButton();
+            ['projNextAction','projNextActionOwner','projNextActionDeadline','projDecisionDesc','projDecisionReturn','projDecisionReturnDate'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
             const decisionNeededEl = document.getElementById('projDecisionNeeded'); if (decisionNeededEl) decisionNeededEl.value = 'Não';
             const decisionLevelEl = document.getElementById('projDecisionLevel'); if (decisionLevelEl) decisionLevelEl.value = 'Diretoria DSV';
             if (typeof window.toggleDecisionFields === 'function') window.toggleDecisionFields();
@@ -7235,6 +7312,9 @@ document.getElementById('projRisks').value = '';
                 if (projectActionDecisionField) projectActionDecisionField.classList.remove('hidden-field');
                 if (parentProjectField) parentProjectField.classList.remove('hidden-field');
                 if (tasksSection) tasksSection.classList.remove('hidden-field');
+                if (projectStartDateField) projectStartDateField.classList.remove('hidden-field');
+                if (projectEndDateField) projectEndDateField.classList.remove('hidden-field');
+                if (projectRiskAlertField) projectRiskAlertField.classList.remove('hidden-field');
                 window.populateParentProjectOptions?.('', '');
             } else if (activeTab === 'contracts') {
                 document.getElementById('modalTitle').innerText = 'Novo Contrato / Convênio';
@@ -7331,18 +7411,48 @@ document.getElementById('projRisks').value = '';
         window.toggleContractProgramFields = toggleContractProgramFields;
 
         window.toggleOriginInput = () => { const originType = document.querySelector('input[name="originType"]:checked').value; const wrapper = document.getElementById('projectSelectWrapper'); const select = document.getElementById('projRelation'); const label = wrapper.querySelector('label'); if (originType === 'pontual') { wrapper.classList.add('hidden-field'); select.innerHTML = ''; } else { wrapper.classList.remove('hidden-field'); if (originType === 'projeto') { label.innerText = "Vincular a qual Projeto?"; select.innerHTML = '<option value="">Selecione o Projeto...</option>' + dataStore.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join(''); } else if (originType === 'contrato') { label.innerText = "Vincular a qual Contrato?"; select.innerHTML = '<option value="">Selecione o Contrato...</option>' + dataStore.contracts.map(c => `<option value="${c.id}">${c.name}</option>`).join(''); } } };
-        window.toggleRiskInput = () => { const status = document.getElementById('projStatus').value; const riskField = document.getElementById('riskField'); const show = ["Em Execução (com risco)"].includes(status); riskField.classList.toggle('hidden-field', !show); };
+        window.updateFormRiskAlertButton = () => {
+            const input = document.getElementById('projRiskAlert');
+            const btn = document.getElementById('projRiskAlertBtn');
+            if (!input || !btn) return;
+            const active = input.value === 'Sim';
+            btn.classList.toggle('is-active', active);
+            btn.innerHTML = active
+                ? '<i class="fas fa-triangle-exclamation"></i><span>Risco sinalizado</span>'
+                : '<i class="fas fa-triangle-exclamation"></i><span>Sinalizar risco</span>';
+        };
+        window.toggleFormRiskAlert = (forceValue = null) => {
+            const input = document.getElementById('projRiskAlert');
+            if (!input) return;
+            const next = forceValue === null ? input.value !== 'Sim' : !!forceValue;
+            input.value = next ? 'Sim' : 'Não';
+            window.updateFormRiskAlertButton();
+            window.toggleRiskInput();
+            updateProjectDirtyState?.();
+        };
+        window.toggleRiskInput = () => {
+            const status = document.getElementById('projStatus')?.value || '';
+            const riskField = document.getElementById('riskField');
+            const alertActive = document.getElementById('projRiskAlert')?.value === 'Sim';
+            const hasRiskText = !!String(document.getElementById('projRisks')?.value || '').trim();
+            const show = ["Em Execução (com risco)"].includes(status) || alertActive || hasRiskText;
+            if (riskField) riskField.classList.toggle('hidden-field', !show);
+            window.updateFormRiskAlertButton?.();
+        };
         window.toggleDecisionFields = () => {
             const needed = document.getElementById('projDecisionNeeded')?.value === 'Sim';
             const detail = document.getElementById('decisionDetailField');
             if (detail) detail.classList.toggle('hidden-field', !needed);
 
-            // Ao marcar "Não", limpa os campos ocultos para evitar que uma decisão antiga
-            // continue sendo salva/renderizada no card depois que o texto foi apagado.
+            // Ao marcar "Não", limpa pergunta e retorno para evitar resíduos de uma decisão antiga.
             if (!needed) {
                 const descEl = document.getElementById('projDecisionDesc');
                 const levelEl = document.getElementById('projDecisionLevel');
+                const returnEl = document.getElementById('projDecisionReturn');
+                const returnDateEl = document.getElementById('projDecisionReturnDate');
                 if (descEl) descEl.value = '';
+                if (returnEl) returnEl.value = '';
+                if (returnDateEl) returnDateEl.value = '';
                 if (levelEl) levelEl.value = 'Diretoria DSV';
             }
         };
@@ -7493,6 +7603,50 @@ document.getElementById('projRisks').value = '';
             window.updateTaskFormProgress();
         };
 
+        let draggedTaskRow = null;
+        function clearTaskDropMarkers() {
+            document.querySelectorAll('#tasksContainer > .task-row').forEach(row => row.classList.remove('task-drop-before', 'task-drop-after'));
+        }
+        function bindTaskDrag(row) {
+            const handle = row.querySelector('.task-drag-handle');
+            if (!handle) return;
+            handle.addEventListener('dragstart', (e) => {
+                draggedTaskRow = row;
+                row.classList.add('task-dragging');
+                if (e.dataTransfer) {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', row.dataset.taskId || 'task');
+                }
+            });
+            handle.addEventListener('dragend', () => {
+                row.classList.remove('task-dragging');
+                clearTaskDropMarkers();
+                draggedTaskRow = null;
+                window.updateTaskFormProgress();
+                updateProjectDirtyState?.();
+            });
+            row.addEventListener('dragover', (e) => {
+                if (!draggedTaskRow || draggedTaskRow === row) return;
+                e.preventDefault();
+                clearTaskDropMarkers();
+                const rect = row.getBoundingClientRect();
+                const before = e.clientY < rect.top + rect.height / 2;
+                row.classList.add(before ? 'task-drop-before' : 'task-drop-after');
+                if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+            });
+            row.addEventListener('drop', (e) => {
+                if (!draggedTaskRow || draggedTaskRow === row) return;
+                e.preventDefault();
+                const container = row.parentElement;
+                const rect = row.getBoundingClientRect();
+                const before = e.clientY < rect.top + rect.height / 2;
+                container.insertBefore(draggedTaskRow, before ? row : row.nextSibling);
+                clearTaskDropMarkers();
+                window.updateTaskFormProgress();
+                updateProjectDirtyState?.();
+            });
+        }
+
         window.addTaskRow = (task = {}) => {
             const container = document.getElementById('tasksContainer');
             if (!container) return;
@@ -7502,6 +7656,7 @@ document.getElementById('projRisks').value = '';
             row.dataset.taskId = normalized.id;
             row.innerHTML = `
                 <div class="task-main-line">
+                    <button class="task-drag-handle" type="button" draggable="true" title="Arraste para reordenar a tarefa" aria-label="Arraste para reordenar a tarefa"><i class="fas fa-grip-vertical"></i></button>
                     <input class="task-check" type="checkbox" ${normalized.done ? 'checked' : ''} onchange="syncTaskCompletion(this)">
                     <input class="task-title-input" type="text" placeholder="Nome da tarefa / entrega" value="${escapeHtml(normalized.title)}" oninput="updateTaskFormProgress()">
                     <button class="task-remove" type="button" title="Remover tarefa" onclick="this.closest('.task-row').remove(); updateTaskFormProgress();"><i class="fas fa-trash"></i></button>
@@ -7510,6 +7665,7 @@ document.getElementById('projRisks').value = '';
                 <button class="add-subtask-btn" type="button" onclick="addSubtaskRow(this)"><i class="fas fa-plus"></i> Adicionar subtarefa</button>
             `;
             container.appendChild(row);
+            bindTaskDrag(row);
             normalized.subtasks.forEach(subtask => window.addSubtaskRow(row, subtask));
             window.updateTaskFormProgress();
         };
@@ -7877,11 +8033,13 @@ document.getElementById('projRisks').value = '';
             const normalizedDecisionNeeded = decisionIsActive ? 'Sim' : 'Não';
             const normalizedDecisionLevel = decisionIsActive && document.getElementById('projDecisionLevel') ? document.getElementById('projDecisionLevel').value : '';
             const normalizedDecisionDesc = decisionIsActive ? rawDecisionDesc : '';
+            const normalizedDecisionReturn = decisionIsActive && document.getElementById('projDecisionReturn') ? document.getElementById('projDecisionReturn').value.trim() : '';
+            const normalizedDecisionReturnDate = decisionIsActive && document.getElementById('projDecisionReturnDate') ? document.getElementById('projDecisionReturnDate').value : '';
 
             const data = {
-                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, decisionNeeded: normalizedDecisionNeeded, decisionLevel: normalizedDecisionLevel, decisionDesc: normalizedDecisionDesc, services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
+                name: document.getElementById('projName').value, desc: document.getElementById('projDesc').value, sei: document.getElementById('projSei').value, prazo: document.getElementById('projPrazo').value, coord: document.getElementById('projCoord').value, status: document.getElementById('projStatus').value, priority: document.getElementById('projPriority').value, docLinks: window.getDocLinksFromForm(), risks: document.getElementById('projRisks').value, decisionNeeded: normalizedDecisionNeeded, decisionLevel: normalizedDecisionLevel, decisionDesc: normalizedDecisionDesc, decisionReturn: normalizedDecisionReturn, decisionReturnDate: normalizedDecisionReturnDate, services: servicesList, service: servicesList.length > 0 ? servicesList[0] : '', cargosEnvolvidos: cargosList, involvedRoles: cargosList, cargoEnvolvido: cargosList.length > 0 ? cargosList[0] : '', duration: document.getElementById('projDuration').value, complexity: document.getElementById('projComplexity').value, roadmap: roadmap, ...buildAuditFields(existingForAudit)
             };
-            if (collectionName === 'projects') { data.tasks = window.getTasksFromForm?.() || []; data.parentProjectId = document.getElementById('projParentProject')?.value || ''; }
+            if (collectionName === 'projects') { data.tasks = window.getTasksFromForm?.() || []; data.parentProjectId = document.getElementById('projParentProject')?.value || ''; data.startDate = document.getElementById('projStartDate')?.value || ''; data.endDate = document.getElementById('projEndDate')?.value || ''; data.riskAlert = document.getElementById('projRiskAlert')?.value === 'Sim'; }
             if (collectionName === 'contracts') { data.type = document.getElementById('projType').value; data.hasResource = document.getElementById('projHasResource').value; data.resourceValue = document.getElementById('projResourceValue').value; data.program = document.getElementById('contractProgram').value; data.programComponent = document.getElementById('contractComponent').value; } else if (collectionName === 'operational') { data.services = servicesList; data.service = servicesList.length > 0 ? servicesList[0] : ''; data.originType = document.querySelector('input[name="originType"]:checked').value; data.projRelation = document.getElementById('projRelation').value; }
             // Confirmação ao marcar como Concluído
             const __existingItem = existingForAudit;
@@ -7982,6 +8140,50 @@ window.confirmModal = ({ title = 'Confirmar', message = '', okText = 'Confirmar'
     });
 };
 
+
+function getLifecycleDateFromTimestamp(value) {
+    if (!value) return '';
+    let d = null;
+    if (typeof value === 'number') d = new Date(value);
+    else if (value instanceof Date) d = value;
+    else if (typeof value === 'string') {
+        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+        const parsed = new Date(value); if (!Number.isNaN(parsed.getTime())) d = parsed;
+    } else if (typeof value === 'object') {
+        const seconds = value.seconds ?? value._seconds;
+        if (Number.isFinite(seconds)) d = new Date(seconds * 1000);
+        else if (typeof value.toDate === 'function') d = value.toDate();
+    }
+    if (!d || Number.isNaN(d.getTime())) return '';
+    const y = d.getFullYear(); const m = String(d.getMonth()+1).padStart(2,'0'); const day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+}
+function getProjectStartDate(item) {
+    if (item?.startDate) return item.startDate;
+    const dated = (item?.roadmap || []).filter(r => r?.data && !r?.noDate).map(r => r.data).sort();
+    return dated[0] || '';
+}
+function getProjectEndDate(item) {
+    return item?.endDate || getLifecycleDateFromTimestamp(item?.concludedAt) || '';
+}
+function projectHasRiskAlert(item) {
+    return !!(item?.riskAlert || normalizeStatus(item?.status) === 'Em Execução (com risco)' || String(item?.risks || '').trim());
+}
+window.toggleProjectRiskAlert = async (id, collectionName = 'projects') => {
+    const item = dataStore[collectionName]?.find(i => i.id === id);
+    if (!item || collectionName !== 'projects') return;
+    const newVal = !item.riskAlert;
+    try {
+        item.riskAlert = newVal;
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), { riskAlert: newVal }, { merge: true });
+        if (document.getElementById('itemPanoramaModal')?.style.display === 'flex') window.openItemPanorama(id, collectionName);
+        else window.renderData();
+        window.renderOverview?.();
+    } catch (err) {
+        item.riskAlert = !newVal;
+        console.error('Erro ao atualizar alerta de risco:', err);
+    }
+};
 
 window.toggleDispatch = async (id, collectionName) => {
     if (!collectionName) collectionName = activeTab;
@@ -8325,6 +8527,7 @@ Item: ${itemLabel}`,
             if (action === 'planner') await window.togglePlanner(id, collection);
             if (action === 'dispatch') await window.toggleDispatch(id, collection);
             if (action === 'decision') await window.toggleDiretoriaValidation(id, collection);
+            if (action === 'risk') await window.toggleProjectRiskAlert(id, collection);
             const modal = document.getElementById('itemPanoramaModal');
             if (modal && modal.style.display !== 'none') window.openItemPanorama(id, collection);
         };
@@ -8346,6 +8549,7 @@ Item: ${itemLabel}`,
                         <button type="button" class="panorama-action-btn decision ${item.onDiretoriaValidation ? 'is-active' : ''}" onclick="runPanoramaAction('decision', '${item.id}', '${collection}')" title="${item.onDiretoriaValidation ? 'Remover da validação/decisão da Diretoria' : 'Marcar para validação/decisão da Diretoria'}">
                             <i class="fas fa-gavel"></i><span>Decisão</span>
                         </button>
+                        ${collection === 'projects' ? `<button type="button" class="panorama-action-btn risk ${projectHasRiskAlert(item) ? 'is-active' : ''}" onclick="runPanoramaAction('risk', '${item.id}', '${collection}')" title="${item.riskAlert ? 'Remover alerta gerencial de risco' : 'Sinalizar alerta gerencial de risco'}"><i class="fas fa-triangle-exclamation"></i><span>Risco</span></button>` : ''}
                     </div>
                 </div>`;
         }
@@ -8395,7 +8599,9 @@ Item: ${itemLabel}`,
                 <div class="panorama-info-grid">
                     ${panoramaInfo('Área responsável', area)}
                     ${panoramaInfo('Status', status)}
+                    ${!isContract ? panoramaInfo('Início', panoramaDate(getProjectStartDate(item))) : ''}
                     ${panoramaInfo('Prazo', panoramaDate(item.prazo))}
+                    ${!isContract ? panoramaInfo('Encerramento', panoramaDate(getProjectEndDate(item))) : ''}
                     ${panoramaInfo('Prioridade', item.priority)}
                     ${!isContract ? panoramaInfo('Complexidade', item.complexity) : panoramaInfo('Tipo de objeto', item.type)}
                     ${panoramaInfo('Duração', item.duration)}
@@ -8415,20 +8621,24 @@ Item: ${itemLabel}`,
                     </div>`);
             } else {
                 const activeDecision = item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim();
+                const decisionAnswered = activeDecision && String(item.decisionReturn || '').trim();
                 specific = panoramaSection('Gestão e decisão', 'fa-compass', `
                     <div class="panorama-info-grid">
-                        ${panoramaInfo('Decisão necessária', activeDecision ? 'Sim' : 'Não')}
+                        ${panoramaInfo('Decisão necessária', activeDecision ? (decisionAnswered ? 'Respondida' : 'Pendente') : 'Não')}
                         ${panoramaInfo('Nível da decisão', activeDecision ? item.decisionLevel : 'Não se aplica')}
+                        ${panoramaInfo('Data do retorno', decisionAnswered ? panoramaDate(item.decisionReturnDate) : 'Não informado')}
+                        ${panoramaInfo('Alerta de risco', projectHasRiskAlert(item) ? 'Sinalizado' : 'Não sinalizado')}
                         ${panoramaInfo('Despacho', item.onDispatch ? 'Sinalizado' : 'Não sinalizado')}
                         ${panoramaInfo('Planner da Presidência', item.onPlanner ? 'Sinalizado' : 'Não sinalizado')}
                         ${panoramaInfo('Validação da Diretoria', item.onDiretoriaValidation ? 'Sinalizado' : 'Não sinalizado')}
                     </div>
-                    ${activeDecision ? `<div class="panorama-callout decision mt-3"><strong>Decisão necessária:</strong><br>${md(item.decisionDesc)}</div>` : ''}`);
+                    ${activeDecision ? `<div class="panorama-callout decision mt-3"><strong>Decisão necessária:</strong><br>${md(item.decisionDesc)}</div>` : ''}
+                    ${decisionAnswered ? `<div class="panorama-callout decision-return-box mt-3 markdown-content"><strong>Retorno / decisão tomada:</strong><br>${md(item.decisionReturn)}</div>` : ''}`);
             }
 
             const risks = panoramaSection('Riscos / impedimentos', 'fa-triangle-exclamation', item.risks
                 ? `<div class="panorama-callout risk markdown-content">${md(item.risks)}</div>`
-                : '<div class="panorama-empty">Nenhum risco ou impedimento cadastrado.</div>');
+                : (projectHasRiskAlert(item) ? '<div class="panorama-callout risk"><strong>Alerta gerencial de risco sinalizado.</strong> Inclua a descrição do risco na edição do projeto.</div>' : '<div class="panorama-empty">Nenhum risco ou impedimento cadastrado.</div>'));
 
             let tasksSection = '';
             if (!isContract) {
@@ -8506,6 +8716,9 @@ Item: ${itemLabel}`,
                  if (document.getElementById('serviceFieldLabel')) document.getElementById('serviceFieldLabel').innerText = 'Divisões/Serviços responsáveis (Portaria nº 44)';
                  const projectActionDecisionFieldEdit = document.getElementById('projectActionDecisionField');
                  if (projectActionDecisionFieldEdit) projectActionDecisionFieldEdit.classList.remove('hidden-field');
+                 document.getElementById('projectStartDateField')?.classList.remove('hidden-field');
+                 document.getElementById('projectEndDateField')?.classList.remove('hidden-field');
+                 document.getElementById('projectRiskAlertField')?.classList.remove('hidden-field');
                  const projectServices = item.services || (item.service ? [item.service] : []);
                  projectServices.forEach(s => window.addServiceTag(s));
             }
@@ -8526,6 +8739,8 @@ Item: ${itemLabel}`,
             migrateEncaminhamentosToObsLog(item, obsLog, t);
             document.getElementById('projSei').value = item.sei || '';
             document.getElementById('projPrazo').value = item.prazo || '';
+            if (document.getElementById('projStartDate')) document.getElementById('projStartDate').value = item.startDate || '';
+            if (document.getElementById('projEndDate')) document.getElementById('projEndDate').value = item.endDate || '';
             document.getElementById('projCoord').value = item.coord || '';
             if (typeof window.populateCargoOptions === 'function') window.populateCargoOptions();
             document.getElementById('projStatus').value = normalizeStatus(item.status) || 'Backlog';
@@ -8542,6 +8757,10 @@ Item: ${itemLabel}`,
             if (document.getElementById('projDecisionNeeded')) document.getElementById('projDecisionNeeded').value = savedDecisionNeeded;
             if (document.getElementById('projDecisionLevel')) document.getElementById('projDecisionLevel').value = savedDecisionNeeded === 'Sim' ? (item.decisionLevel || 'Diretoria DSV') : 'Diretoria DSV';
             if (document.getElementById('projDecisionDesc')) document.getElementById('projDecisionDesc').value = savedDecisionNeeded === 'Sim' ? savedDecisionDesc : '';
+            if (document.getElementById('projDecisionReturn')) document.getElementById('projDecisionReturn').value = savedDecisionNeeded === 'Sim' ? (item.decisionReturn || '') : '';
+            if (document.getElementById('projDecisionReturnDate')) document.getElementById('projDecisionReturnDate').value = savedDecisionNeeded === 'Sim' ? (item.decisionReturnDate || '') : '';
+            if (document.getElementById('projRiskAlert')) document.getElementById('projRiskAlert').value = item.riskAlert ? 'Sim' : 'Não';
+            window.updateFormRiskAlertButton?.();
             if (typeof window.toggleDecisionFields === 'function') window.toggleDecisionFields();
             document.getElementById('projDuration').value = item.duration || '';
             document.getElementById('projComplexity').value = item.complexity || 'Média';
@@ -9015,8 +9234,8 @@ function overviewAttentionItems(today) {
             const entry = ensure(collectionName, item);
             const prazo = overviewDate(item.prazo);
             if (prazo && overviewDayStart(prazo) < today) { entry.reasons.push(`Prazo vencido em ${overviewFullDateLabel(prazo)}`); entry.score += 6; }
-            if (status === 'Em Execução (com risco)') { entry.reasons.push('Execução com risco'); entry.score += 5; }
-            if (collectionName === 'projects' && item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim()) { entry.reasons.push(`Decisão necessária${item.decisionLevel ? ` · ${item.decisionLevel}` : ''}`); entry.score += 7; }
+            if ((collectionName === 'projects' && projectHasRiskAlert(item)) || status === 'Em Execução (com risco)') { entry.reasons.push('Risco sinalizado'); entry.score += 5; }
+            if (collectionName === 'projects' && item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim() && !String(item.decisionReturn || '').trim()) { entry.reasons.push(`Decisão necessária${item.decisionLevel ? ` · ${item.decisionLevel}` : ''}`); entry.score += 7; }
             if (item.onDiretoriaValidation) { entry.reasons.push('Aguardando validação da Diretoria'); entry.score += 4; }
             if (item.priority === 'Urgente') entry.score += 2;
             if (!entry.reasons.length) map.delete(entry.key);
@@ -9057,7 +9276,7 @@ window.renderOverview = () => {
     const activeProjects = projects.filter(item => activeStatuses.has(normalizeStatus(item.status)));
     const completedProjects = projects.filter(item => normalizeStatus(item.status) === 'Concluído');
     const activeContracts = contracts.filter(item => activeStatuses.has(normalizeStatus(item.status)));
-    const decisions = projects.filter(item => normalizeStatus(item.status) !== 'Concluído' && normalizeStatus(item.status) !== 'Cancelado' && item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim());
+    const decisions = projects.filter(item => normalizeStatus(item.status) !== 'Concluído' && normalizeStatus(item.status) !== 'Cancelado' && item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim() && !String(item.decisionReturn || '').trim());
     const attentionItems = overviewAttentionItems(today);
     const agenda = overviewCollectAgenda(today);
     const next30 = agenda.filter(item => item.diff <= 30);
@@ -9071,7 +9290,7 @@ window.renderOverview = () => {
     setText('ovProjectsTotal', projects.length);
     setText('ovProjectsNote', `${activeProjects.length} ativos · ${completedProjects.length} concluídos`);
     setText('ovAttentionTotal', attentionItems.length);
-    setText('ovAttentionNote', `${projects.filter(item => normalizeStatus(item.status) === 'Em Execução (com risco)').length} em risco · ${attentionItems.filter(item => item.reasons.some(reason => reason.startsWith('Prazo vencido'))).length} atrasados`);
+    setText('ovAttentionNote', `${projects.filter(projectHasRiskAlert).length} em risco · ${attentionItems.filter(item => item.reasons.some(reason => reason.startsWith('Prazo vencido'))).length} atrasados`);
     setText('ovContractsTotal', contracts.length);
     setText('ovContractsNote', `${activeContracts.length} ativos · ${totalResources.toLocaleString('pt-BR', { style:'currency', currency:'BRL' })}`);
     setText('ovIndicatorsOnTrack', onTrackIndicators.length);
@@ -10124,6 +10343,21 @@ window.openAddBacklogItemModal = (meetingId) => {
             return `<div class="table-service-list">${services.map(s => `<span class="table-pill ${colorClass}" title="${escapeHtml(getCargoFullName(s))}">${escapeHtml(getCargoAcronym(s))}</span>`).join('')}</div>`;
         }
 
+        function tableSortDirection(field) {
+            if (tableSortMode === `${field}-asc`) return 'asc';
+            if (tableSortMode === `${field}-desc`) return 'desc';
+            return '';
+        }
+        function tableSortIcon(field) {
+            const dir = tableSortDirection(field);
+            return dir === 'asc' ? 'fa-arrow-up-short-wide' : (dir === 'desc' ? 'fa-arrow-down-wide-short' : 'fa-sort');
+        }
+        window.toggleTableSort = (field) => {
+            const dir = tableSortDirection(field);
+            tableSortMode = `${field}-${dir === 'asc' ? 'desc' : 'asc'}`;
+            localStorage.setItem('dsvTableSortMode', tableSortMode);
+            window.renderData();
+        };
         window.setTableSortMode = (value) => {
             tableSortMode = value || 'name-asc';
             localStorage.setItem('dsvTableSortMode', tableSortMode);
@@ -10131,13 +10365,59 @@ window.openAddBacklogItemModal = (meetingId) => {
         };
         window.setTableStatusFilter = (value) => { tableStatusFilter = value || 'all'; window.renderData(); };
         window.setTableCoordFilter = (value) => { tableCoordFilter = value || 'all'; window.renderData(); };
+        window.setTableHeaderFilter = (key, value) => {
+            const normalized = value || 'all';
+            if (key === 'service') tableServiceFilter = normalized;
+            if (key === 'priority') tablePriorityFilter = normalized;
+            if (key === 'complexity') tableComplexityFilter = normalized;
+            if (key === 'decision') tableDecisionFilter = normalized;
+            if (key === 'risk') tableRiskFilter = normalized;
+            if (key === 'parent') tableParentFilter = normalized;
+            window.renderData();
+        };
+        window.setTableDateFilter = (key, value) => {
+            if (Object.prototype.hasOwnProperty.call(tableDateFilters, key)) tableDateFilters[key] = value || '';
+            window.renderData();
+        };
         window.resetTableControls = () => {
             tableSortMode = 'name-asc';
             tableStatusFilter = 'all';
             tableCoordFilter = 'all';
+            tableServiceFilter = 'all';
+            tablePriorityFilter = 'all';
+            tableComplexityFilter = 'all';
+            tableDecisionFilter = 'all';
+            tableRiskFilter = 'all';
+            tableParentFilter = 'all';
+            tableDateFilters = { startFrom:'', startTo:'', deadlineFrom:'', deadlineTo:'', endFrom:'', endTo:'' };
             localStorage.setItem('dsvTableSortMode', tableSortMode);
             window.renderData();
         };
+        function tableDateInRange(value, from, to) {
+            if (!from && !to) return true;
+            if (!value) return false;
+            if (from && value < from) return false;
+            if (to && value > to) return false;
+            return true;
+        }
+        function firstServiceLabel(item) {
+            const services = normalizeCargoList(item);
+            return services.length ? getCargoFullName(services[0]) : '';
+        }
+        function decisionState(item) {
+            const active = item.decisionNeeded === 'Sim' && String(item.decisionDesc || '').trim();
+            if (!active) return 'none';
+            return String(item.decisionReturn || '').trim() ? 'answered' : 'pending';
+        }
+        function tableSelect(options, value, handler, aria) {
+            return `<select class="table-head-filter" aria-label="${escapeHtml(aria)}" onclick="event.stopPropagation()" onchange="${handler}">${options.map(([v,l]) => `<option value="${escapeHtml(v)}" ${String(value)===String(v)?'selected':''}>${escapeHtml(l)}</option>`).join('')}</select>`;
+        }
+        function sortableHead(label, field, filterHtml = '') {
+            return `<th><div class="table-head-cell"><button type="button" class="table-head-sort" onclick="toggleTableSort('${field}')"><span>${label}</span><i class="fas ${tableSortIcon(field)}"></i></button>${filterHtml}</div></th>`;
+        }
+        function dateHead(label, field, prefix) {
+            return sortableHead(label, field, `<div class="table-date-filter" onclick="event.stopPropagation()"><span class="table-filter-hint">de / até</span><input type="date" value="${tableDateFilters[prefix+'From'] || ''}" onchange="setTableDateFilter('${prefix}From',this.value)"><input type="date" value="${tableDateFilters[prefix+'To'] || ''}" onchange="setTableDateFilter('${prefix}To',this.value)"></div>`);
+        }
 
         function renderProjectContractTable(items, today) {
             const container = document.getElementById('projectsList');
@@ -10147,36 +10427,16 @@ window.openAddBacklogItemModal = (meetingId) => {
             const collection = isContracts ? 'contracts' : 'projects';
             container.className = 'space-y-4';
 
-            const availableStatuses = [...new Set(items.map(item => normalizeStatus(item.status)).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
-            const availableCoords = [...new Set(items.map(item => item.coord).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
-            if (tableStatusFilter !== 'all' && !availableStatuses.includes(tableStatusFilter)) tableStatusFilter = 'all';
-            if (tableCoordFilter !== 'all' && !availableCoords.includes(tableCoordFilter)) tableCoordFilter = 'all';
-            let tableItems = [...items];
-            if (tableStatusFilter !== 'all') tableItems = tableItems.filter(item => normalizeStatus(item.status) === tableStatusFilter);
-            if (tableCoordFilter !== 'all') tableItems = tableItems.filter(item => item.coord === tableCoordFilter);
-
-            const statusOrder = Object.fromEntries(UNIFIED_STATUS.map((status, index) => [status, index]));
-            const priorityOrder = { Urgente: 0, Alta: 1, Média: 2, Baixa: 3 };
-            const complexityOrder = { Alta: 0, Média: 1, Baixa: 2 };
-            tableItems.sort((a, b) => {
-                const nameCompare = String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR', { sensitivity: 'base' });
-                if (tableSortMode === 'name-desc') return -nameCompare;
-                if (tableSortMode === 'deadline-asc' || tableSortMode === 'deadline-desc') {
-                    const aDate = a.prazo || '9999-12-31';
-                    const bDate = b.prazo || '9999-12-31';
-                    const result = aDate.localeCompare(bDate);
-                    return tableSortMode === 'deadline-desc' ? -result : result;
-                }
-                if (tableSortMode === 'status') return (statusOrder[normalizeStatus(a.status)] ?? 99) - (statusOrder[normalizeStatus(b.status)] ?? 99) || nameCompare;
-                if (tableSortMode === 'priority') return (priorityOrder[a.priority] ?? 99) - (priorityOrder[b.priority] ?? 99) || nameCompare;
-                if (tableSortMode === 'complexity') return (complexityOrder[a.complexity] ?? 99) - (complexityOrder[b.complexity] ?? 99) || nameCompare;
-                return nameCompare;
-            });
+            // Visualização de tabela sem filtros próprios: respeita apenas os filtros gerais do painel.
+            // Isso evita uma segunda camada de filtros dentro da própria tabela.
+            let tableItems = [...items].sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || ''), 'pt-BR', { sensitivity: 'base' }));
 
             const title = isContracts ? 'Tabela de contratos e convênios' : 'Tabela de projetos';
             const subtitle = isContracts
-                ? 'Visualização completa com filtros, ordenação e vínculos.'
-                : 'Visualização completa com filtros, ordenação, hierarquia e progresso.';
+                ? 'Visualização consolidada dos contratos, convênios e vínculos.'
+                : 'Visualização consolidada da hierarquia, datas, decisões e riscos dos projetos.';
+
+            // Cabeçalho simples: somente nomes das colunas, sem filtros ou ordenação embutidos.
             const columns = isContracts ? `
                 <th>Contrato / Convênio</th>
                 <th>Coord.</th>
@@ -10197,94 +10457,47 @@ window.openAddBacklogItemModal = (meetingId) => {
                 <th>Progresso</th>
                 <th>Projeto maior</th>
                 <th>Decisão</th>
+                <th>Risco</th>
+                <th>Início</th>
                 <th>Prazo</th>
+                <th>Encerramento</th>
                 <th>Ações</th>
             `;
 
             const rows = tableItems.map(item => {
                 const status = normalizeStatus(item.status);
-                const actionHtml = `
-                    <div class="table-actions">
-                        <button type="button" onclick="event.stopPropagation(); openItemPanorama('${item.id}', '${collection}')" class="table-action-btn table-view-only-btn" title="Visualizar ficha completa" aria-label="Visualizar ficha completa"><i class="fas fa-eye"></i></button>
-                    </div>`;
+                const actionHtml = `<div class="table-actions">${isProjects ? `<button type="button" onclick="event.stopPropagation(); toggleProjectRiskAlert('${item.id}','projects')" class="table-action-btn ${projectHasRiskAlert(item)?'active-risk':''}" title="Alerta gerencial de risco"><i class="fas fa-triangle-exclamation"></i></button>` : ''}<button type="button" onclick="event.stopPropagation(); openItemPanorama('${item.id}', '${collection}')" class="table-action-btn table-view-only-btn" title="Visualizar ficha completa" aria-label="Visualizar ficha completa"><i class="fas fa-eye"></i></button></div>`;
                 const primary = `<div class="table-primary-title">${escapeHtml(item.name || 'Sem título')}</div>`;
-                const baseCells = `
-                    <td>${primary}</td>
-                    <td><span class="table-pill">${escapeHtml(item.coord || 'N/A')}</span></td>
-                    <td>${getServicePillsHtml(item, isContracts ? 'text-purple-700 bg-purple-50 border-purple-100' : 'text-indigo-700 bg-indigo-50 border-indigo-100')}</td>
-                    <td><span class="table-pill status-pill ${window.getStatusColor(status)}">${escapeHtml(status || 'Sem status')}</span></td>
-                `;
-
+                const baseCells = `<td>${primary}</td><td><span class="table-pill">${escapeHtml(item.coord || 'N/A')}</span></td><td>${getServicePillsHtml(item,isContracts?'text-purple-700 bg-purple-50 border-purple-100':'text-indigo-700 bg-indigo-50 border-indigo-100')}</td><td><span class="table-pill status-pill ${window.getStatusColor(status)}">${escapeHtml(status || 'Sem status')}</span></td>`;
                 if (isContracts) {
-                    const programLabel = item.program === 'Respeito à Vida'
-                        ? `Respeito à Vida${item.programComponent ? ` — C${item.programComponent}` : ''}`
-                        : (item.program || '--');
+                    const programLabel = item.program === 'Respeito à Vida' ? `Respeito à Vida${item.programComponent ? ` — C${item.programComponent}` : ''}` : (item.program || '--');
                     const projectName = getProjectNameById(item.projRelation);
-                    return `<tr class="table-summary-row" onclick="openItemPanorama('${item.id}', '${collection}')">
-                        ${baseCells}
-                        <td><span class="table-pill program-pill text-purple-700 bg-purple-50 border-purple-100">${escapeHtml(programLabel)}</span></td>
-                        <td><span class="font-black text-slate-700">${formatCurrencyBR(item.resourceValue)}</span></td>
-                        <td>${projectName ? `<span class="table-pill" title="${escapeHtml(projectName)}">${escapeHtml(compactText(projectName, 48))}</span>` : '<span class="table-meta-muted">--</span>'}</td>
-                        <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
-                        <td>${actionHtml}</td>
-                    </tr>`;
+                    return `<tr class="table-summary-row" onclick="openItemPanorama('${item.id}','${collection}')">${baseCells}<td><span class="table-pill program-pill text-purple-700 bg-purple-50 border-purple-100">${escapeHtml(programLabel)}</span></td><td><span class="font-black text-slate-700">${formatCurrencyBR(item.resourceValue)}</span></td><td>${projectName ? `<span class="table-pill" title="${escapeHtml(projectName)}">${escapeHtml(compactText(projectName,48))}</span>`:'<span class="table-meta-muted">--</span>'}</td><td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td><td>${actionHtml}</td></tr>`;
                 }
-
                 const complexity = item.complexity || 'Média';
-                const decisionActive = item.decisionNeeded !== 'Não' && item.decisionDesc;
-                const decisionHtml = decisionActive
-                    ? `<span class="table-pill decision-pill text-amber-700 bg-amber-50 border-amber-100" title="${escapeHtml(item.decisionDesc)}"><i class="fas fa-scale-balanced"></i>${escapeHtml(item.decisionLevel || 'Decisão')}</span>`
-                    : '<span class="table-meta-muted">--</span>';
+                const dState = decisionState(item);
+                const decisionHtml = dState === 'pending' ? `<span class="table-pill decision-pill text-amber-700 bg-amber-50 border-amber-100" title="${escapeHtml(item.decisionDesc)}"><i class="fas fa-scale-balanced"></i>Pendente</span>` : (dState === 'answered' ? `<span class="table-pill decision-pill text-emerald-700 bg-emerald-50 border-emerald-100" title="${escapeHtml(item.decisionReturn)}"><i class="fas fa-circle-check"></i>Respondida</span>` : '<span class="table-meta-muted">--</span>');
                 const progress = getProjectProgressSummary(item);
-                const progressHtml = progress.total
-                    ? `<div class="min-w-[110px]"><div class="flex justify-end gap-2 text-[9px] font-black text-slate-500"><span>${progress.pct}%</span></div><div class="progress-summary-track !mt-1 !h-[6px]"><div class="progress-summary-fill" style="width:${progress.pct}%"></div></div></div>`
-                    : '<span class="table-meta-muted">--</span>';
+                const progressHtml = progress.total ? `<div class="min-w-[110px]"><div class="flex justify-end gap-2 text-[9px] font-black text-slate-500"><span>${progress.pct}%</span></div><div class="progress-summary-track !mt-1 !h-[6px]"><div class="progress-summary-fill" style="width:${progress.pct}%"></div></div></div>` : '<span class="table-meta-muted">--</span>';
                 const parent = getProjectParent(item.parentProjectId);
-                return `<tr class="table-summary-row" onclick="openItemPanorama('${item.id}', '${collection}')">
-                    ${baseCells}
-                    <td><span class="table-pill priority-pill ${item.priority === 'Urgente' ? 'text-red-700 bg-red-50 border-red-100' : 'text-slate-600 bg-slate-50 border-slate-200'}">${escapeHtml(item.priority || '--')}</span></td>
-                    <td><span class="table-pill ${complexity === 'Alta' ? 'tag-g' : (complexity === 'Baixa' ? 'tag-p' : 'tag-m')}">${escapeHtml(complexity)}</span></td>
-                    <td>${progressHtml}</td>
-                    <td>${parent ? `<button class="project-link-chip" onclick="event.stopPropagation(); openItemPanorama('${parent.id}','projects')" title="Abrir ficha do projeto maior"><i class="fas fa-arrow-up-right-dots"></i><span>${escapeHtml(compactText(parent.name, 42))}</span></button>` : '<span class="table-meta-muted">--</span>'}</td>
-                    <td>${decisionHtml}</td>
-                    <td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td>
-                    <td>${actionHtml}</td>
-                </tr>`;
+                const riskHtml = projectHasRiskAlert(item) ? `<span class="table-pill text-red-700 bg-red-50 border-red-100"><i class="fas fa-triangle-exclamation"></i>Sinalizado</span>` : '<span class="table-meta-muted">--</span>';
+                return `<tr class="table-summary-row" onclick="openItemPanorama('${item.id}','${collection}')">${baseCells}<td><span class="table-pill priority-pill ${item.priority==='Urgente'?'text-red-700 bg-red-50 border-red-100':'text-slate-600 bg-slate-50 border-slate-200'}">${escapeHtml(item.priority||'--')}</span></td><td><span class="table-pill ${complexity==='Alta'?'tag-g':(complexity==='Baixa'?'tag-p':'tag-m')}">${escapeHtml(complexity)}</span></td><td>${progressHtml}</td><td>${parent?`<button class="project-link-chip" onclick="event.stopPropagation(); openItemPanorama('${parent.id}','projects')" title="Abrir ficha do projeto maior"><i class="fas fa-arrow-up-right-dots"></i><span>${escapeHtml(compactText(parent.name,42))}</span></button>`:'<span class="table-meta-muted">--</span>'}</td><td>${decisionHtml}</td><td>${riskHtml}</td><td><span class="table-meta-muted">${formatDateBRShort(getProjectStartDate(item))}</span></td><td><span class="table-meta-muted">${formatDateBRShort(item.prazo)}</span></td><td><span class="table-meta-muted">${formatDateBRShort(getProjectEndDate(item))}</span></td><td>${actionHtml}</td></tr>`;
             }).join('');
 
-            const sortOptions = `
-                <option value="name-asc" ${tableSortMode === 'name-asc' ? 'selected' : ''}>Nome A–Z</option>
-                <option value="name-desc" ${tableSortMode === 'name-desc' ? 'selected' : ''}>Nome Z–A</option>
-                <option value="deadline-asc" ${tableSortMode === 'deadline-asc' ? 'selected' : ''}>Prazo mais próximo</option>
-                <option value="deadline-desc" ${tableSortMode === 'deadline-desc' ? 'selected' : ''}>Prazo mais distante</option>
-                <option value="status" ${tableSortMode === 'status' ? 'selected' : ''}>Status</option>
-                ${isProjects ? `<option value="priority" ${tableSortMode === 'priority' ? 'selected' : ''}>Prioridade</option><option value="complexity" ${tableSortMode === 'complexity' ? 'selected' : ''}>Complexidade</option>` : ''}
-            `;
-            const statusOptions = '<option value="all">Todos os status</option>' + availableStatuses.map(status => `<option value="${escapeHtml(status)}" ${tableStatusFilter === status ? 'selected' : ''}>${escapeHtml(status)}</option>`).join('');
-            const coordOptions = '<option value="all">Todas as coordenações</option>' + availableCoords.map(coord => `<option value="${escapeHtml(coord)}" ${tableCoordFilter === coord ? 'selected' : ''}>${escapeHtml(coord)}</option>`).join('');
-            const colSpan = isContracts ? 9 : 11;
-
+            const colSpan = isContracts ? 9 : 14;
             container.innerHTML = `
                 <div class="table-view-card">
                     <div class="table-view-toolbar">
-                        <div class="table-toolbar-stack">
-                            <div>
-                                <div class="table-view-title"><i class="fas fa-table-list mr-2"></i>${title}</div>
-                                <div class="table-view-subtitle">${subtitle}</div>
-                            </div>
-                            <div class="table-controls">
-                                <select class="table-control" onchange="setTableStatusFilter(this.value)">${statusOptions}</select>
-                                <select class="table-control" onchange="setTableCoordFilter(this.value)">${coordOptions}</select>
-                                <select class="table-control" onchange="setTableSortMode(this.value)">${sortOptions}</select>
-                                <button class="table-reset-btn" onclick="resetTableControls()" type="button" title="Limpar filtros e ordenação"><i class="fas fa-rotate-left"></i></button>
-                            </div>
+                        <div>
+                            <div class="table-view-title"><i class="fas fa-table-list mr-2"></i>${title}</div>
+                            <div class="table-view-subtitle">${subtitle}</div>
                         </div>
-                        <span class="table-view-count">${tableItems.length} de ${items.length} ${items.length === 1 ? 'registro' : 'registros'}</span>
+                        <span class="table-view-count">${items.length} ${items.length===1?'registro':'registros'}</span>
                     </div>
                     <div class="table-view-scroll">
                         <table class="table-view">
                             <thead><tr>${columns}</tr></thead>
-                            <tbody>${rows || `<tr><td colspan="${colSpan}"><div class="table-empty-state"><i class="fas fa-inbox text-2xl mb-3 block"></i>Nenhum registro encontrado com os filtros atuais.</div></td></tr>`}</tbody>
+                            <tbody>${rows || `<tr><td colspan="${colSpan}"><div class="table-empty-state"><i class="fas fa-inbox text-2xl mb-3 block"></i>Nenhum registro encontrado.</div></td></tr>`}</tbody>
                         </table>
                     </div>
                 </div>
@@ -10296,7 +10509,7 @@ window.openAddBacklogItemModal = (meetingId) => {
         window.applyPanelFilters = (items, collection = activeTab) => {
             let out = items || [];
             const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
-            if(search) out = out.filter(i => { const activeDecisionText = (collection === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : ''; const activeDecisionLevel = activeDecisionText ? i.decisionLevel : ''; const hay = [i.name, i.desc, ...getObsLogFromItem(i).map(o => o.text), activeDecisionText, activeDecisionLevel, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
+            if(search) out = out.filter(i => { const activeDecisionText = (collection === 'projects' && i.decisionNeeded !== 'Não') ? i.decisionDesc : ''; const activeDecisionLevel = activeDecisionText ? i.decisionLevel : ''; const hay = [i.name, i.desc, i.risks, i.startDate, i.prazo, i.endDate, ...getObsLogFromItem(i).map(o => o.text), activeDecisionText, activeDecisionLevel, i.decisionReturn, ...(i.services || []), i.service].filter(Boolean).join(' ').toLowerCase(); return hay.includes(search); });
             if(currentFilter !== 'all') out = out.filter(i => i.coord === currentFilter);
             if(collection === 'operational' || collection === 'projects') { const serviceFilter = document.getElementById('filterService')?.value || 'all'; if(serviceFilter !== 'all') { out = out.filter(i => { const s = i.services || (i.service ? [i.service] : []); return s.includes(serviceFilter); }); } }
             if(currentPriorityFilter !== 'all') out = out.filter(i => i.priority === currentPriorityFilter);
@@ -10522,9 +10735,11 @@ Object.keys(cols).forEach(key => {
                     <div class="compact-record-meta">
                         <span class="compact-record-area"><i class="fas fa-building"></i><span>Área: ${escapeHtml(area)}</span></span>
                         <span class="compact-record-status ${window.getStatusColor(status)}">${escapeHtml(status)}</span>
+                        ${collection === 'projects' && projectHasRiskAlert(item) ? '<span class="compact-record-risk-chip"><i class="fas fa-triangle-exclamation"></i> Risco</span>' : ''}
                     </div>
                 </div>
                 <div class="compact-record-actions">
+                    ${collection === 'projects' ? `<button type="button" class="compact-record-action ${projectHasRiskAlert(item) ? 'active-risk' : ''}" onclick="event.stopPropagation(); toggleProjectRiskAlert('${item.id}', '${collection}')" title="${item.riskAlert ? 'Remover alerta gerencial de risco' : 'Sinalizar alerta gerencial de risco'}" aria-label="Alerta de risco"><i class="fas fa-triangle-exclamation"></i></button>` : ''}
                     <button type="button" class="compact-record-action primary-view" onclick="event.stopPropagation(); openItemPanorama('${item.id}', '${collection}')" title="Visualizar ficha completa" aria-label="Visualizar ficha completa">
                         <i class="fas fa-eye"></i>
                     </button>
@@ -11030,6 +11245,18 @@ const filenameBase = (safeTitle || 'pauta')
             window.hideInlineModal('completedModal');
         };
 
+        // Concluídos / Cancelados: consulta abre primeiro a ficha em modo leitura.
+        // A edição fica disponível como ação separada e também pelo botão “Editar ficha” do panorama.
+        window.openArchivedItemPanorama = (id, collection = activeTab, sourceModalId = '') => {
+            if (sourceModalId) window.hideInlineModal(sourceModalId);
+            requestAnimationFrame(() => window.openItemPanorama(id, collection));
+        };
+
+        window.openArchivedItemEdit = (id, collection = activeTab, sourceModalId = '') => {
+            if (sourceModalId) window.hideInlineModal(sourceModalId);
+            requestAnimationFrame(() => window.editItem(id, collection));
+        };
+
         window.renderCompletedModalList = () => {
             const listEl = document.getElementById('completedCardsContainer');
             const countEl = document.getElementById('completedCount');
@@ -11092,10 +11319,16 @@ const filenameBase = (safeTitle || 'pauta')
                                 <div class="mt-2 flex flex-wrap gap-2">${meta}</div>
                                 ${item.desc ? `<div class="mt-2 text-xs text-slate-600 line-clamp-2">${item.desc}</div>` : ''}
                             </div>
-                            <div class="flex-none">
-                                <button class="bg-slate-900 text-white text-xs font-black px-3 py-2 rounded-xl hover:bg-slate-800"
-                                        onclick="editItem('${item.id}', '${activeTab}')">
-                                    Abrir
+                            <div class="flex-none flex items-center gap-2">
+                                <button class="bg-slate-900 text-white text-xs font-black px-3 py-2 rounded-xl hover:bg-slate-800 flex items-center gap-2"
+                                        onclick="openArchivedItemPanorama('${item.id}', '${activeTab}', 'completedModal')"
+                                        title="Abrir ficha do projeto">
+                                    <i class="fas fa-eye"></i> Abrir ficha
+                                </button>
+                                <button class="h-9 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-black hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center gap-2"
+                                        onclick="openArchivedItemEdit('${item.id}', '${activeTab}', 'completedModal')"
+                                        title="Editar projeto" aria-label="Editar projeto">
+                                    <i class="fas fa-pen"></i> Editar
                                 </button>
                             </div>
                         </div>
@@ -11114,6 +11347,10 @@ const filenameBase = (safeTitle || 'pauta')
 
         window.closeCanceledModal = () => {
             window.hideInlineModal('canceledModal');
+        };
+
+        window.openCanceledItem = (id, collection = activeTab) => {
+            window.openArchivedItemPanorama(id, collection, 'canceledModal');
         };
 
         window.renderCanceledModalList = () => {
@@ -11167,10 +11404,16 @@ const filenameBase = (safeTitle || 'pauta')
                                 <div class="mt-2 flex flex-wrap gap-2">${meta}</div>
                                 ${item.desc ? `<div class="mt-2 text-xs text-slate-600 line-clamp-2">${item.desc}</div>` : ''}
                             </div>
-                            <div class="flex-none">
-                                <button class="bg-slate-900 text-white text-xs font-black px-3 py-2 rounded-xl hover:bg-slate-800"
-                                        onclick="editItem('${item.id}', '${activeTab}')">
-                                    Abrir
+                            <div class="flex-none flex items-center gap-2">
+                                <button class="bg-slate-900 text-white text-xs font-black px-3 py-2 rounded-xl hover:bg-slate-800 flex items-center gap-2"
+                                        onclick="openArchivedItemPanorama('${item.id}', '${activeTab}', 'canceledModal')"
+                                        title="Abrir ficha do projeto">
+                                    <i class="fas fa-eye"></i> Abrir ficha
+                                </button>
+                                <button class="h-9 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-black hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center gap-2"
+                                        onclick="openArchivedItemEdit('${item.id}', '${activeTab}', 'canceledModal')"
+                                        title="Editar projeto" aria-label="Editar projeto">
+                                    <i class="fas fa-pen"></i> Editar
                                 </button>
                             </div>
                         </div>
