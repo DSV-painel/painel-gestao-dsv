@@ -10735,7 +10735,6 @@ Object.keys(cols).forEach(key => {
                     <div class="compact-record-meta">
                         <span class="compact-record-area"><i class="fas fa-building"></i><span>Área: ${escapeHtml(area)}</span></span>
                         <span class="compact-record-status ${window.getStatusColor(status)}">${escapeHtml(status)}</span>
-                        ${collection === 'projects' && projectHasRiskAlert(item) ? '<span class="compact-record-risk-chip"><i class="fas fa-triangle-exclamation"></i> Risco</span>' : ''}
                     </div>
                 </div>
                 <div class="compact-record-actions">
