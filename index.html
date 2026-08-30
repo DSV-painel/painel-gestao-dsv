@@ -5,6 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>DSV · Painel de Gestão</title>
+<link rel="icon" type="image/svg+xml" href="https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/productivity/default/24px.svg"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -10440,16 +10441,94 @@ window.openAddBacklogItemModal = (meetingId) => {
             const collection = isContracts ? 'contracts' : 'projects';
             container.className = 'space-y-4';
 
-            // Visualização de tabela sem filtros próprios: respeita apenas os filtros gerais do painel.
-            // Isso evita uma segunda camada de filtros dentro da própria tabela.
-            let tableItems = [...items].sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || ''), 'pt-BR', { sensitivity: 'base' }));
+            // Na visualização em tabela, os filtros ficam no próprio cabeçalho do bloco,
+            // no padrão Planner: status + coordenação + ordenação + limpar filtros.
+            const sourceItems = [...(items || [])];
+            const compareText = (a, b) => String(a || '').localeCompare(String(b || ''), 'pt-BR', { sensitivity: 'base' });
+            const uniqueSorted = values => [...new Set(values.filter(Boolean))].sort(compareText);
+
+            const availableStatuses = uniqueSorted(sourceItems.map(item => normalizeStatus(item.status)));
+            const availableCoords = uniqueSorted(sourceItems.map(item => item.coord));
+
+            // Evita carregar um filtro inválido ao alternar entre Projetos e Contratos.
+            if (tableStatusFilter !== 'all' && !availableStatuses.includes(tableStatusFilter)) tableStatusFilter = 'all';
+            if (tableCoordFilter !== 'all' && !availableCoords.includes(tableCoordFilter)) tableCoordFilter = 'all';
+
+            let tableItems = sourceItems.filter(item => {
+                if (tableStatusFilter !== 'all' && normalizeStatus(item.status) !== tableStatusFilter) return false;
+                if (tableCoordFilter !== 'all' && item.coord !== tableCoordFilter) return false;
+                return true;
+            });
+
+            const priorityRank = { 'Urgente': 0, 'Alta': 1, 'Média': 2, 'Baixa': 3 };
+            const complexityRank = { 'Alta': 0, 'Média': 1, 'Baixa': 2 };
+            const dateRank = value => value ? String(value) : '9999-12-31';
+            const progressRank = item => {
+                const summary = getProjectProgressSummary(item);
+                return Number(summary?.pct || 0);
+            };
+
+            const projectSortOptions = [
+                ['name-asc', 'Nome A–Z'],
+                ['name-desc', 'Nome Z–A'],
+                ['status-asc', 'Status A–Z'],
+                ['coord-asc', 'Coordenação A–Z'],
+                ['priority-desc', 'Prioridade: maior primeiro'],
+                ['complexity-desc', 'Complexidade: maior primeiro'],
+                ['progress-desc', 'Progresso: maior primeiro'],
+                ['prazo-asc', 'Prazo: mais próximo'],
+                ['prazo-desc', 'Prazo: mais distante']
+            ];
+            const contractSortOptions = [
+                ['name-asc', 'Nome A–Z'],
+                ['name-desc', 'Nome Z–A'],
+                ['status-asc', 'Status A–Z'],
+                ['coord-asc', 'Coordenação A–Z'],
+                ['prazo-asc', 'Prazo: mais próximo'],
+                ['prazo-desc', 'Prazo: mais distante'],
+                ['resource-desc', 'Recurso: maior primeiro'],
+                ['resource-asc', 'Recurso: menor primeiro']
+            ];
+            const sortOptions = isProjects ? projectSortOptions : contractSortOptions;
+            if (!sortOptions.some(([value]) => value === tableSortMode)) {
+                tableSortMode = 'name-asc';
+                localStorage.setItem('dsvTableSortMode', tableSortMode);
+            }
+
+            tableItems.sort((a, b) => {
+                switch (tableSortMode) {
+                    case 'name-desc': return compareText(b.name, a.name);
+                    case 'status-asc': return compareText(normalizeStatus(a.status), normalizeStatus(b.status)) || compareText(a.name, b.name);
+                    case 'coord-asc': return compareText(a.coord, b.coord) || compareText(a.name, b.name);
+                    case 'priority-desc': return (priorityRank[a.priority] ?? 99) - (priorityRank[b.priority] ?? 99) || compareText(a.name, b.name);
+                    case 'complexity-desc': return (complexityRank[a.complexity || 'Média'] ?? 99) - (complexityRank[b.complexity || 'Média'] ?? 99) || compareText(a.name, b.name);
+                    case 'progress-desc': return progressRank(b) - progressRank(a) || compareText(a.name, b.name);
+                    case 'prazo-asc': return compareText(dateRank(a.prazo), dateRank(b.prazo)) || compareText(a.name, b.name);
+                    case 'prazo-desc': return compareText(dateRank(b.prazo), dateRank(a.prazo)) || compareText(a.name, b.name);
+                    case 'resource-desc': return parseCurrencyBR(b.resourceValue) - parseCurrencyBR(a.resourceValue) || compareText(a.name, b.name);
+                    case 'resource-asc': return parseCurrencyBR(a.resourceValue) - parseCurrencyBR(b.resourceValue) || compareText(a.name, b.name);
+                    case 'name-asc':
+                    default: return compareText(a.name, b.name);
+                }
+            });
 
             const title = isContracts ? 'Tabela de contratos e convênios' : 'Tabela de projetos';
             const subtitle = isContracts
-                ? 'Visualização consolidada dos contratos, convênios e vínculos.'
-                : 'Visualização consolidada da hierarquia, datas, decisões e riscos dos projetos.';
+                ? 'Visualização operacional com filtros e ordenação dos registros.'
+                : 'Visualização operacional com filtros, ordenação, hierarquia, progresso e ações rápidas.';
 
-            // Cabeçalho simples: somente nomes das colunas, sem filtros ou ordenação embutidos.
+            const statusSelectOptions = [
+                `<option value="all" ${tableStatusFilter === 'all' ? 'selected' : ''}>Todos os status</option>`,
+                ...availableStatuses.map(status => `<option value="${escapeHtml(status)}" ${tableStatusFilter === status ? 'selected' : ''}>${escapeHtml(status)}</option>`)
+            ].join('');
+            const coordSelectOptions = [
+                `<option value="all" ${tableCoordFilter === 'all' ? 'selected' : ''}>Todas as coordenações</option>`,
+                ...availableCoords.map(coord => `<option value="${escapeHtml(coord)}" ${tableCoordFilter === coord ? 'selected' : ''}>${escapeHtml(coord)}</option>`)
+            ].join('');
+            const sortSelectOptions = sortOptions
+                .map(([value, label]) => `<option value="${value}" ${tableSortMode === value ? 'selected' : ''}>${label}</option>`)
+                .join('');
+
             const columns = isContracts ? `
                 <th>Contrato / Convênio</th>
                 <th>Coord.</th>
@@ -10498,19 +10577,29 @@ window.openAddBacklogItemModal = (meetingId) => {
             }).join('');
 
             const colSpan = isContracts ? 9 : 14;
+            const visibleCount = tableItems.length;
+            const totalCount = sourceItems.length;
             container.innerHTML = `
                 <div class="table-view-card">
                     <div class="table-view-toolbar">
-                        <div>
-                            <div class="table-view-title"><i class="fas fa-table-list mr-2"></i>${title}</div>
-                            <div class="table-view-subtitle">${subtitle}</div>
+                        <div class="table-toolbar-stack">
+                            <div>
+                                <div class="table-view-title"><i class="fas fa-table-list mr-2"></i>${title}</div>
+                                <div class="table-view-subtitle">${subtitle}</div>
+                            </div>
+                            <div class="table-controls" aria-label="Filtros da tabela">
+                                <select class="table-control" aria-label="Filtrar por status" onchange="setTableStatusFilter(this.value)">${statusSelectOptions}</select>
+                                <select class="table-control" aria-label="Filtrar por coordenação" onchange="setTableCoordFilter(this.value)">${coordSelectOptions}</select>
+                                <select class="table-control" aria-label="Ordenar registros" onchange="setTableSortMode(this.value)">${sortSelectOptions}</select>
+                                <button type="button" class="table-reset-btn" onclick="resetTableControls()" title="Limpar filtros e ordenação" aria-label="Limpar filtros e ordenação"><i class="fas fa-rotate-left"></i></button>
+                            </div>
                         </div>
-                        <span class="table-view-count">${items.length} ${items.length===1?'registro':'registros'}</span>
+                        <span class="table-view-count">${visibleCount} de ${totalCount} ${totalCount===1?'registro':'registros'}</span>
                     </div>
                     <div class="table-view-scroll">
                         <table class="table-view">
                             <thead><tr>${columns}</tr></thead>
-                            <tbody>${rows || `<tr><td colspan="${colSpan}"><div class="table-empty-state"><i class="fas fa-inbox text-2xl mb-3 block"></i>Nenhum registro encontrado.</div></td></tr>`}</tbody>
+                            <tbody>${rows || `<tr><td colspan="${colSpan}"><div class="table-empty-state"><i class="fas fa-filter-circle-xmark text-2xl mb-3 block"></i>Nenhum registro encontrado para os filtros selecionados.</div></td></tr>`}</tbody>
                         </table>
                     </div>
                 </div>
