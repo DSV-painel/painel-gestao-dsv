@@ -5,7 +5,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>DSV · Painel de Gestão</title>
-<link rel="icon" type="image/svg+xml" href="https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/productivity/default/24px.svg"/>
+<!-- PROTÓTIPO 07/09/2026: progresso por entregas intermediárias; níveis de decisão simplificados; favicon Detran-SP -->
+<link rel="icon" type="image/png" href="data:image/png;base64,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"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -5487,8 +5488,6 @@ button.overview-list-item:hover { background:#f1f7fb; border-color:#bddbef; }
 <select class="input-style border-amber-200 focus:ring-amber-200" id="projDecisionLevel">
 <option value="Diretoria DSV">Diretoria DSV</option>
 <option value="Presidência">Presidência</option>
-<option value="Coordenação Geral">Coordenação Geral</option>
-<option value="Área técnica">Área técnica</option>
 <option value="Parceiro externo">Parceiro externo</option>
 </select>
 </div>
@@ -7709,10 +7708,10 @@ document.getElementById('projRisks').value = '';
         }
 
         function getProjectProgressSummary(project) {
-            const subprojects = getSubprojectProgress(project?.id);
-            if (subprojects.total) return { ...subprojects, kind: 'subprojects', label: 'Subprojetos concluídos' };
             const tasks = getTaskProgress(project?.tasks || []);
-            return { ...tasks, kind: 'tasks', label: 'Tarefas concluídas' };
+            if (tasks.total) return { ...tasks, kind: 'tasks', label: 'Entregas intermediárias concluídas' };
+            const subprojects = getSubprojectProgress(project?.id);
+            return { ...subprojects, kind: 'subprojects', label: 'Subprojetos concluídos' };
         }
 
         window.populateParentProjectOptions = (selectedId = '', editingId = '') => {
